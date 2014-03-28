@@ -1,0 +1,23 @@
+{
+    "name": "boots/boots",
+    "type": "library",
+    "description": "The missing framework for developing WordPress plugins and themes",
+    "keywords": ["wordpress","framework","boots"],
+    "homepage": "http://wpboots.com",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "M. Kamal Khan",
+            "email": "shout@bhittani.com",
+            "homepage": "http://bhittani.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0"
+    },
+    "extra": {
+        "installer-paths": {
+            "extend/{$name}/": ["type:boots-extension"]
+        }
+    }
+}
