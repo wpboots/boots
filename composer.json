@@ -19,5 +19,10 @@
         "installer-paths": {
             "extend/{$name}/": ["type:boots-extension"]
         }
+    },
+    "scripts": {
+        "post-update-cmd": "rm -rf vendor",
+        "post-package-install": "rm -rf vendor",
+        "post-install-cmd": "rm -rf vendor"
     }
 }
