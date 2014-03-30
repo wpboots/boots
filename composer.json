@@ -27,8 +27,6 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=5.2.0",
 
-        "boots/enqueue": "dev-master"
     }
 }
