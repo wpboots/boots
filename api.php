@@ -135,7 +135,8 @@ if(!class_exists('Boots')) :
             $this->Settings['BOOTS_URL'] = $this->Settings['APP_URL'] . '/' . basename($path);
             $this->Settings['BOOTS_EXTEND_DIR'] = $path . '/extend';
             $this->Settings['BOOTS_EXTEND_URL'] = $this->Settings['BOOTS_URL'] . '/extend';
-            $this->Settings['PHP_VERSION'] = PHP_VERSION_ID;
+            $this->Settings['PHP_VERSION'] = phpversion();
+            $this->Settings['PHP_VERSION_ID'] = PHP_VERSION_ID;
 
             $this->Settings = array_merge($this->Settings, $Args);
             ksort($this->Settings);
@@ -207,7 +208,7 @@ if(!class_exists('Boots')) :
                 }
             }
 
-            return new $class(& $this, & $this->Settings, $fdir, $furl);
+            return new $class($this, $this->Settings, $fdir, $furl);
         }
 
         private function dump_error($error, $type = E_USER_ERROR)
