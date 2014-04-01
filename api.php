@@ -185,7 +185,7 @@ if(!class_exists('Boots')) :
 
             if(!file_exists($json_file))
             {
-                $this->dump_error('File <strong>' . $json_file . '</strong> could not be found. Make sure you use composer to install extensions.');
+                $this->error('File <strong>' . $json_file . '</strong> could not be found. Make sure you use composer to install extensions.');
             }
 
             $json = json_decode(file_get_contents($json_file), true);
@@ -196,31 +196,19 @@ if(!class_exists('Boots')) :
             {
                 if(!file_exists($file))
                 {
-                    $this->dump_error('File <strong>' . $file . '</strong> could not be found.');
+                    $this->error('File <strong>' . $file . '</strong> could not be found.');
                 }
                 else
                 {
                     include $file;
                     if(!class_exists($class))
                     {
-                        $this->dump_error('Class <strong>' . $class . '</strong> could not be located in <strong>' . $file . '</strong>.');
+                        $this->error('Class <strong>' . $class . '</strong> could not be located in <strong>' . $file . '</strong>.');
                     }
                 }
             }
 
             return new $class($this, $this->Settings, $fdir, $furl);
-        }
-
-        private function dump_error($error, $type = E_USER_ERROR)
-        {
-            if($this->Settings['APP_MODE'] == 'dev')
-            {
-                trigger_error($error, $type);
-            }
-            else
-            {
-                //die();
-            }
         }
 
         /**
@@ -240,6 +228,71 @@ if(!class_exists('Boots')) :
                 $this->Extensions[$extension] = $this->load_extension($extension);
             }
             return $this->Extensions[$extension];
+        }
+
+        /**
+          * Boots custom error handler callback
+          * Fires when triggered by self or an extension.
+          *
+          * @see    Boots::error
+          *
+          * @since  1.0.0
+          * @uses   Boots::error_handler
+          * @access public
+          * @return boolean
+          */
+        public function error_handler($type, $error, $file, $line, $context)
+        {
+            $message = '<strong>';
+            switch($type)
+            {
+                case E_USER_ERROR:   $message .= 'Error';   $fire = true; break;
+                case E_USER_WARNING: $message .= 'Warning'; $fire = true; break;
+                case E_USER_NOTICE:  $message .= 'Notice';  $fire = true; break;
+                default: $fire = false; break;
+            }
+            $message .= ':</strong> ';
+            if(!$fire)
+            {
+                return false;
+            }
+            if($type == E_USER_ERROR)
+            {
+                die($message . $error);
+            }
+            else
+            {
+                echo $message . $error;
+            }
+            return true;
+        }
+
+        /**
+          * Dumps an error if in dev mode
+          * Sets the error handler before triggering.
+          * Resets the error handler afterwards.
+          *
+          * @since  1.0.0
+          * @uses   Boots::error_handler
+          * @access public
+          * @param  string   $error Error message.
+          * @param  CONSTANT $type  E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE.
+          * @return void
+          */
+        public function error($error, $type = E_USER_ERROR)
+        {
+            if($this->Settings['APP_MODE'] == 'dev')
+            {
+                set_error_handler(array(&$this, 'error_handler'));
+
+                $Call = next(debug_backtrace());
+                $error .= ' in <strong>' . $Call['file'] . '</strong>';
+                $error .= ' on line <strong>' . $Call['line'] . '</strong>';
+
+                trigger_error($error, $type);
+
+                restore_error_handler();
+            }
         }
 
         /**
