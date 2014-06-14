@@ -25,7 +25,7 @@
         "post-install-cmd": "installer\\boots::postCmdInstallUpdate",
         "post-update-cmd": "installer\\boots::postCmdInstallUpdate"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
 
     }
