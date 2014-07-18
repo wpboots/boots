@@ -7,9 +7,9 @@
  * @version 1.0.0
  * @license GPLv2
  *
- * Boots - The missing WordPress framework. http://wpboots.com
+ * Boots - The missing WordPress framework.
  *
- * Copyright (C) <2014>  <M. Kamal Khan>
+ * Copyright (C) <2014>  <M. Kamal Khan> http://wpboots.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -176,8 +176,13 @@ if(!class_exists('Boots')) :
             $exdir = $this->Settings['BOOTS_EXTEND_DIR'];
             $exurl = $this->Settings['BOOTS_EXTEND_URL'];
 
-            $fdir = $exdir . '/' . str_replace('-', '_', $ext);
-            $furl = $exurl . '/' . str_replace('-', '_', $ext);
+            // Regex snippet from
+            // http://php.net/manual/en/function.preg-replace.php#111695
+            $re = '/(?<!^)([A-Z][a-z]|(?<=[a-z])[^a-z]|(?<=[A-Z])[0-9_])/';
+            $ff = strtolower(preg_replace($re, '-$1', $ext));
+
+            $fdir = $exdir . '/' . $ff;
+            $furl = $exurl . '/' . $ff;
 
             $file = $fdir . '/' . 'api.php';
 
@@ -307,8 +312,7 @@ if(!class_exists('Boots')) :
           */
         public function __get($extension)
         {
-            $extension = strip_tags($extension);
-            return $this->extend($extension);
+            return $this->extend(strip_tags($extension));
         }
     }
 
