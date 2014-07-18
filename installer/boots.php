@@ -90,7 +90,12 @@ class boots
             }
         }
 
-        $path_package = self::$path_extend . DIRECTORY_SEPARATOR . strtolower($package_name);
+        $path_package = self::$path_extend . DIRECTORY_SEPARATOR;
+        // Regex snippet from
+        // http://php.net/manual/en/function.preg-replace.php#111695
+        $re = '/(?<!^)([A-Z][a-z]|(?<=[a-z])[^a-z]|(?<=[A-Z])[0-9_])/';
+        $path_package .= strtolower(preg_replace($re, '-$1', $package_name));
+
         if(is_dir($path_package))
         {
             # http://goo.gl/b2fOh8
@@ -100,7 +105,7 @@ class boots
         // copy package to extend directory
 
         # http://goo.gl/GSBB5g
-        xcopy($path, self::$path_extend . DIRECTORY_SEPARATOR . strtolower($package_name));
+        xcopy($path, $path_package);
     }
 
     public static function postCmdInstallUpdate(Event $event)
