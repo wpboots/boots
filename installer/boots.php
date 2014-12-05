@@ -35,7 +35,7 @@ class boots
                 ->getInstallationManager()
                 ->getInstallPath($package);
 
-        $name_array = explode(DIRECTORY_SEPARATOR, $name);
+        $name_array = explode('/', $name);
         $package_name = ucwords($name_array[count($name_array)-1]);
 
         $class_name = 'Boots_' . $package_name;
