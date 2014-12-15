@@ -87,9 +87,8 @@ if(!class_exists('Boots_1_0_0')) :
                 trigger_error("ABSPATH is required", E_USER_ERROR);
             }
 
-			$file = $Args['ABSPATH'];
-			$this->Settings['APP_FILE'] = $file;
-			$abspath = $Args['ABSPATH'] = dirname($file);
+			$this->Settings['APP_FILE'] = basename($Args['ABSPATH']);
+			$abspath = $Args['ABSPATH'] = dirname($Args['ABSPATH']);
 			$path = $Args['ABSPATH'] . '/boots';
 
             $this->Settings['BOOTS'] = 'Boots';
