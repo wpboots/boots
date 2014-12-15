@@ -87,8 +87,10 @@ if(!class_exists('Boots_1_0_0')) :
                 trigger_error("ABSPATH is required", E_USER_ERROR);
             }
 
-            $abspath = $Args['ABSPATH'] = dirname($Args['ABSPATH']);
-            $path = $Args['ABSPATH'] . '/boots';
+			$file = $Args['ABSPATH'];
+			$this->Settings['APP_FILE'] = $file;
+			$abspath = $Args['ABSPATH'] = dirname($file);
+			$path = $Args['ABSPATH'] . '/boots';
 
             $this->Settings['BOOTS'] = 'Boots';
 
@@ -99,7 +101,7 @@ if(!class_exists('Boots_1_0_0')) :
             $this->Settings['WP_AJAXURL'] = admin_url('admin-ajax.php'); // use the ajax extension instead
             $this->Settings['WP_VERSION'] = get_bloginfo('version');
             $this->Settings['WP_URL'] = get_bloginfo('wpurl');
-            $this->Settings['WP_SITE_URL'] = site_url();
+            $this->Settings['WP_SITE_URL'] = home_url();
             $this->Settings['WP_ADMIN_URL'] = rtrim(admin_url(), '/');
             $this->Settings['WP_ADMIN_POSTS_URL'] = admin_url('edit.php');
             $this->Settings['WP_ADMIN_PAGES_URL'] = admin_url('edit.php?post_type=page');
