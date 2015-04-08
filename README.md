@@ -65,7 +65,6 @@ You now know the flow of working with boots, thats great! Lets dive more into th
 **Minimum**
 - [PHP](http://php.net/) 5.2.17+
 - [WordPress](http://wordpress.org/) 3.5+
-- [Composer](https://getcomposer.org/)
 
 **Recommended**
 - [PHP](http://php.net/) 5.3+
