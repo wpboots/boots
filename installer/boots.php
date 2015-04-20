@@ -3,6 +3,7 @@
 namespace installer;
 
 use Composer\Script\Event;
+use Composer\Installer\PackageEvent;
 
 class boots
 {
@@ -12,7 +13,7 @@ class boots
 
     private static $remove_vendor = false;
 
-    public static function postPackageInstallUpdate(Event $event)
+    public static function postPackageInstallUpdate(PackageEvent $event)
     {
         $composer = $event->getComposer();
 
