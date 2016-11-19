@@ -58,11 +58,11 @@ class Boots
     protected $bootsDir;
 
     /**
-     * Main boots api file name
+     * Source directory name
      * @since 2.0.0
      * @var string
      */
-    protected $bootsFile = 'boots.php';
+    protected $srcDir;
 
     /**
      * Manifest file name
@@ -93,10 +93,10 @@ class Boots
      */
     public function __construct($type, array $config)
     {
-        $this->config = $config;
         $this->type = $type;
-        $this->bootsDir = basename(dirname(dirname(__FILE__))); // . '/' . basename(__DIR__);
-        // var_dump($this->bootsDir);
+        $this->config = $config;
+        $this->bootsDir = basename(dirname(dirname(__FILE__)));
+        $this->srcDir = basename(__DIR__);
         $this->setupManifest();
         $this->renew();
     }
@@ -198,11 +198,6 @@ class Boots
         $classVersion = str_replace('.', '_', $version);
         $nsInfo = explode('\\', get_class());
         $class = "{$nsInfo[0]}\V_{$classVersion}";
-        // if(!class_exists($class))
-        // {
-        //     $path = "{$this->bootsDir}/{$this->bootsFile}";
-        //     include dirname($config['ABSPATH']) . '/' . $path;
-        // }
         $this->boots = new $class($type, $config);
         $this->setConfig($config);
         return $this;
