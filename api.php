@@ -35,7 +35,7 @@ class Boots
      * @since 2.0.0
      * @var array
      */
-    protected $args;
+    protected $config;
 
     /**
      * Manifest array
@@ -85,9 +85,9 @@ class Boots
      * @param  string $extension Extension.
      * @return object
      */
-    public function __construct($type, array $args)
+    public function __construct($type, array $config)
     {
-        $this->args = $args;
+        $this->config = $config;
         $this->type = $type;
         $this->bootsDir = basename(__DIR__);
         $this->setupManifest();
@@ -101,7 +101,7 @@ class Boots
     protected function setupManifest()
     {
         $path = "{$this->bootsDir}/{$this->manifestFile}";
-        $jsonFile = dirname($this->args['ABSPATH']) . '/' . $path;
+        $jsonFile = dirname($this->config['ABSPATH']) . '/' . $path;
         $jsonContents = file_get_contents($jsonFile);
         $this->manifest = json_decode($jsonContents, true);
     }
@@ -133,20 +133,20 @@ class Boots
      * @since 2.0.0
      * @return array Arguments
      */
-    public function getArgs()
+    public function getConfig()
     {
-        return $this->args;
+        return $this->config;
     }
 
     /**
      * Set the configuration arguments.
      * @since 2.0.0
-     * @param  array $args Configuration
+     * @param  array $config Configuration
      * @return $this Allow chaining
      */
-    public function setArgs(array $args)
+    public function setConfig(array $config)
     {
-        $this->args = $args;
+        $this->config = $config;
         return $this;
     }
 
@@ -179,18 +179,18 @@ class Boots
      */
     public function renew()
     {
-        $args = $this->getArgs();
         $type = $this->getType();
+        $config = $this->getConfig();
         $version = $this->getVersion();
         $classVersion = str_replace('.', '_', $version);
         $class = "Boots_{$classVersion}";
         if(!class_exists($class))
         {
             $path = "{$this->bootsDir}/{$this->bootsFile}";
-            include dirname($args['ABSPATH']) . '/' . $path;
+            include dirname($config['ABSPATH']) . '/' . $path;
         }
-        $this->boots = new $class($type, $args);
-        $this->setArgs($args);
+        $this->boots = new $class($type, $config);
+        $this->setConfig($config);
         return $this;
     }
 
