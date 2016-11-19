@@ -1,77 +1,138 @@
-<?php
+<?php if(!defined('ABSPATH')) die(-1);
 
 /**
- * Boots
- * This is a wrapper class for the Boots API.
+ * A wrapper class for the Boots API.
  * By using this approach, any version updates
- * will not enforce developers to update anything
- * for migration.
+ * will not enforce developers to modify the usage.
  *
  * @package Boots
  * @subpackage API
- * @version 1.0.0
- * @license GPLv2
- *
- * Boots - The missing WordPress framework.
- *
- * Copyright (C) <2014>  <M. Kamal Khan> http://wpboots.com
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
+ * @version 0.1.0
+ * @see http://wpboots.com
+ * @link https://github.com/wpboots/boots
+ * @author Kamal Khan <shout@bhittani.com> https://bhittani.com
+ * @license https://github.com/wpboots/boots/blob/master/LICENSE
+ * @copyright Copyright (c) 2014-2016, Kamal Khan
  */
 
 if(!class_exists('Boots')) :
 
     class Boots
     {
-        private $Boots = null;
+        protected $type;
+
+        protected $args;
+
+        protected $manifest;
+
+        protected $bootsDir; // = 'boots';
+
+        protected $bootsFile = 'boots.php';
+
+        protected $manifestFile = 'boots.json';
+
         /**
-          * Load the boots.json file
-          * and fire up the class
-          * with the desired version of Boots.
-          *
-          * @since  1.0.0
-          * @uses   Boots
-          * @access public
-          * @param  string $extension Extension.
-          * @return object
-          */
-        public function __construct($type, & $Args)
+         * Boots framework instance
+         * @var Boots
+         */
+        protected $boots;
+
+        /**
+         * Load the boots.json file
+         * and fire up the class
+         * with the desired version of Boots.
+         *
+         * @since  1.0.0
+         * @uses   Boots
+         * @access public
+         * @param  string $extension Extension.
+         * @return object
+         */
+        public function __construct($type, array $args)
         {
-            $json = json_decode(file_get_contents(dirname($Args['ABSPATH']) . '/boots/boots.json'), true);
-            $version = $json['version'];
-            $class = 'Boots_' . $version;
+            $this->args = $args;
+            $this->type = $type;
+            $this->bootsDir = basename(__DIR__);
+            $this->extractManifest();
+            $this->renew();
+        }
+
+        protected function extractManifest()
+        {
+            $path = "{$this->bootsDir}/{$this->manifestFile}";
+            $jsonFile = dirname($this->args['ABSPATH']) . '/' . $path;
+            $jsonContents = file_get_contents($jsonFile);
+            $this->manifest = json_decode($jsonContents, true);
+        }
+
+        public function getType()
+        {
+            return $this->type;
+        }
+
+        public function setType($type)
+        {
+            $this->type = $type;
+            return $this;
+        }
+
+        public function getArgs()
+        {
+            return $this->args;
+        }
+
+        public function setArgs(array $args)
+        {
+            $this->args = $args;
+            return $this;
+        }
+
+        public function getVersion()
+        {
+            return $this->manifest['version'];
+        }
+
+        public function setVersion($version)
+        {
+            $this->version = $version;
+            return $this;
+        }
+
+        public function renew()
+        {
+            $args = $this->getArgs();
+            $type = $this->getType();
+            $version = $this->getVersion();
+            $classVersion = str_replace('.', '_', $version);
+            $class = "Boots_{$classVersion}";
             if(!class_exists($class))
             {
-                include dirname($Args['ABSPATH']) . '/boots/boots.php';
+                $path = "{$this->bootsDir}/{$this->bootsFile}";
+                include dirname($args['ABSPATH']) . '/' . $path;
             }
-            $this->Boots = new $class($type, $Args);
+            $this->boots = new $class($type, $args);
+            $this->setArgs($args);
+            return $this;
         }
+
+        public function instance()
+        {
+            return $this->boots;
+        }
+
         /**
-          * __get Magic Method
-          * Returns the extension instance
-          *
-          * @since  1.0.0
-          * @uses   Boots
-          * @access public
-          * @param  string $extension Extension.
-          * @return object
-          */
+         * __get Magic Method
+         * Returns the extension instance
+         *
+         * @since  1.0.0
+         * @uses   Boots
+         * @access public
+         * @param  string $extension Extension.
+         * @return object
+         */
         public function __get($extension)
         {
-            return $this->Boots->$extension;
+            return $this->boots->$extension;
         }
     }
 
