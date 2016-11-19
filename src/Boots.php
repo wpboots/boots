@@ -197,7 +197,7 @@ class Boots
         $version = $this->getVersion();
         $classVersion = str_replace('.', '_', $version);
         $nsParts = explode('\\', get_class());
-        $nsParts[count($nsParts)-1] = "V_{$classVersion}";
+        $nsParts[count($nsParts)-1] = "Boots_{$classVersion}";
         $class = implode('\\', $nsParts);
         $this->boots = new $class($type, $config);
         $this->setConfig($config);
