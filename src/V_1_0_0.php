@@ -1,5 +1,7 @@
 <?php
 
+namespace Boots;
+
 /**
  * Boots
  *
@@ -27,9 +29,9 @@
  *
  */
 
-if(!class_exists('Boots_1_0_0')) :
+// if(!class_exists('Boots_1_0_0')) :
 
-    class Boots_1_0_0
+    class V_1_0_0
     {
         /**
           * Application settings
@@ -317,4 +319,4 @@ if(!class_exists('Boots_1_0_0')) :
         }
     }
 
-endif;
+// endif;

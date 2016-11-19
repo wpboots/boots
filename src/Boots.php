@@ -1,4 +1,6 @@
-<?php if(!defined('ABSPATH')) die(-1);
+<?php
+
+namespace Boots;
 
 /**
  * A wrapper class for the Boots API.
@@ -15,6 +17,10 @@
  * @copyright Copyright (c) 2014-2016, Kamal Khan
  */
 
+// Die if accessing this script directly.
+if(!defined('ABSPATH')) die(-1);
+
+// Only load the class if it doesn't exist.
 if(!class_exists('Boots')) :
 
 /**
@@ -89,7 +95,8 @@ class Boots
     {
         $this->config = $config;
         $this->type = $type;
-        $this->bootsDir = basename(__DIR__);
+        $this->bootsDir = basename(dirname(dirname(__FILE__))); // . '/' . basename(__DIR__);
+        // var_dump($this->bootsDir);
         $this->setupManifest();
         $this->renew();
     }
@@ -189,12 +196,13 @@ class Boots
         $config = $this->getConfig();
         $version = $this->getVersion();
         $classVersion = str_replace('.', '_', $version);
-        $class = "Boots_{$classVersion}";
-        if(!class_exists($class))
-        {
-            $path = "{$this->bootsDir}/{$this->bootsFile}";
-            include dirname($config['ABSPATH']) . '/' . $path;
-        }
+        $nsInfo = explode('\\', get_class());
+        $class = "{$nsInfo[0]}\V_{$classVersion}";
+        // if(!class_exists($class))
+        // {
+        //     $path = "{$this->bootsDir}/{$this->bootsFile}";
+        //     include dirname($config['ABSPATH']) . '/' . $path;
+        // }
         $this->boots = new $class($type, $config);
         $this->setConfig($config);
         return $this;
