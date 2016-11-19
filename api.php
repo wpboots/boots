@@ -24,43 +24,50 @@ if(!class_exists('Boots')) :
 class Boots
 {
     /**
-     * Type: plugin or theme
+     * Type of application
+     * @since 2.0.0
      * @var string
      */
     protected $type;
 
     /**
      * Configuration arguments
+     * @since 2.0.0
      * @var array
      */
     protected $args;
 
     /**
      * Manifest array
+     * @since 2.0.0
      * @var array
      */
     protected $manifest;
 
     /**
      * Boots directory name
+     * @since 2.0.0
      * @var string
      */
     protected $bootsDir;
 
     /**
      * Main boots api file name
+     * @since 2.0.0
      * @var string
      */
     protected $bootsFile = 'boots.php';
 
     /**
      * Manifest file name
+     * @since 2.0.0
      * @var string
      */
     protected $manifestFile = 'boots.json';
 
     /**
      * Boots framework instance
+     * @since 1.0.0
      * @var Boots
      */
     protected $boots;
@@ -68,7 +75,7 @@ class Boots
     /**
      * Instantiate the api.
      * 
-     * Extract the manifest and fire up the boots api instance.
+     * Setup the manifest and fire up the boots api instance.
      *
      * @since  2.0.0
      *         Refactor and cleaning.
@@ -83,11 +90,15 @@ class Boots
         $this->args = $args;
         $this->type = $type;
         $this->bootsDir = basename(__DIR__);
-        $this->extractManifest();
+        $this->setupManifest();
         $this->renew();
     }
 
-    protected function extractManifest()
+    /**
+     * Extract and setup the manifest.
+     * @since 2.0.0
+     */
+    protected function setupManifest()
     {
         $path = "{$this->bootsDir}/{$this->manifestFile}";
         $jsonFile = dirname($this->args['ABSPATH']) . '/' . $path;
@@ -95,39 +106,77 @@ class Boots
         $this->manifest = json_decode($jsonContents, true);
     }
 
+    /**
+     * Get the type of the application.
+     * @since 2.0.0
+     * @return string plugin or theme
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * Set the type of the application.
+     * @since 2.0.0
+     * @param  string $type plugin or theme
+     * @return $this Allow chaining
+     */
     public function setType($type)
     {
         $this->type = $type;
         return $this;
     }
 
+    /**
+     * Get the configuration arguments.
+     * @since 2.0.0
+     * @return array Arguments
+     */
     public function getArgs()
     {
         return $this->args;
     }
 
+    /**
+     * Set the configuration arguments.
+     * @since 2.0.0
+     * @param  array $args Configuration
+     * @return $this Allow chaining
+     */
     public function setArgs(array $args)
     {
         $this->args = $args;
         return $this;
     }
 
+    /**
+     * Get the boots api version.
+     * @since 2.0.0
+     * @return string Version
+     */
     public function getVersion()
     {
         return $this->manifest['version'];
     }
 
+    /**
+     * Set the version of the boots api to be used.
+     * @since 2.0.0
+     * @param  string $version Version
+     * @return $this Allow chaining
+     */
     public function setVersion($version)
     {
         $this->version = $version;
         return $this;
     }
 
+    /**
+     * Instantiate the boots api.
+     * @since 2.0.0
+     * @return $this Allow chaining
+     */
     public function renew()
     {
         $args = $this->getArgs();
@@ -145,14 +194,19 @@ class Boots
         return $this;
     }
 
+    /**
+     * Get the versioned boots api instance.
+     * @since 2.0.0
+     * @return Boots_x_x_x Boots api instance
+     */
     public function instance()
     {
         return $this->boots;
     }
 
     /**
-     * __get Magic Method
-     * Returns the extension instance
+     * __get Magic Method.
+     * Returns an extension instance.
      *
      * @since  1.0.0
      * @uses   Boots
