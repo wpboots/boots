@@ -98,7 +98,7 @@ class Boots
         $this->bootsDir = basename(dirname(dirname(__FILE__)));
         $this->srcDir = basename(__DIR__);
         $this->setupManifest();
-        $this->renew();
+        $this->create();
     }
 
     /**
@@ -190,7 +190,7 @@ class Boots
      * @since 2.0.0
      * @return $this Allow chaining
      */
-    public function renew()
+    public function create()
     {
         $type = $this->getType();
         $config = $this->getConfig();
