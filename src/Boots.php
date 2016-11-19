@@ -207,7 +207,7 @@ class Boots
     /**
      * Get the versioned boots api instance.
      * @since 2.0.0
-     * @return Boots_x_x_x Boots api instance
+     * @return V_x_x_x Boots api instance
      */
     public function instance()
     {
