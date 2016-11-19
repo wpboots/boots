@@ -131,11 +131,17 @@ class Boots
     /**
      * Get the configuration arguments.
      * @since 2.0.0
+     * @param  string|null $key     Get individual key value
+     * @param  mixed|null  $default Default value
      * @return array Arguments
      */
-    public function getConfig()
+    public function getConfig($key = null, $default = null)
     {
-        return $this->config;
+        if(is_null($key)) {
+            return $this->config;
+        }
+        return array_key_exists($key, $this->config)
+            ? $this->config[$key] : $default;
     }
 
     /**
