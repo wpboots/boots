@@ -139,14 +139,14 @@ class Boots
     }
 
     /**
-     * Set the configuration arguments.
+     * Set and merge the configuration arguments.
      * @since 2.0.0
      * @param  array $config Configuration
      * @return $this Allow chaining
      */
     public function setConfig(array $config)
     {
-        $this->config = $config;
+        array_replace_recursive($this->config, $config);
         return $this;
     }
 
