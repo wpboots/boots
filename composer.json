@@ -1,7 +1,7 @@
 {
     "name": "boots/boots",
     "type": "library",
-    "description": "The missing framework for developing WordPress plugins and themes",
+    "description": "Rapid wordpress plugin and theme development framework",
     "keywords": ["wordpress","framework","boots"],
     "homepage": "http://wpboots.com",
     "license": "GPLv2",
