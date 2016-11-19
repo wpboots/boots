@@ -15,6 +15,9 @@
     "autoload": {
         "psr-0": {
             "installer\\boots" : ""
+        },
+        "psr-4": {
+            "Boots\\": "src/"
         }
     },
     "scripts": {

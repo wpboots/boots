@@ -1,2 +1,3 @@
-extend/
 .DS_Store
+vendor/
+extend/
