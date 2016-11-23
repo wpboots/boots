@@ -1,3 +1,5 @@
 .DS_Store
-vendor/
 extend/
+vendor/
+!vendor/composer/*
+!vendor/autoload.php
