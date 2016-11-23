@@ -125,6 +125,32 @@ class Repository_2_0_0_Test extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_should_append_a_value_on_to_a_key_value()
+    {
+        $this->assertEquals(null, $this->repo->get('foo'));
+        $this->repo->append('foo', 'foo');
+        $this->assertEquals(['foo'], $this->repo->get('foo'));
+        $this->repo->append('foo', 'bar');
+        $this->assertEquals(['foo', 'bar'], $this->repo->get('foo'));
+        $this->repo->append('foo', 'baz');
+        $this->assertEquals(['foo', 'bar', 'baz'], $this->repo->get('foo'));
+        
+        $this->assertEquals('two_one_value', $this->repo->get('two.two_one'));
+        $this->repo->append('two.two_one', 'two_one_value2');
+        $this->assertEquals(['two_one_value', 'two_one_value2'], $this->repo->get('two.two_one'));
+
+        $this->assertEquals(null, $this->repo->get('beep'));
+        $this->repo->append('beep', ['boop' => 'baz']);
+        $this->assertEquals('baz', $this->repo->get('beep.boop'));
+        $this->repo->append('beep.boop', 'baap');
+        $this->assertEquals(['baz', 'baap'], $this->repo->get('beep.boop'));
+
+        $this->assertEquals('one_value', $this->repo->get('one'));
+        $this->repo->append('one', 'foo');
+        $this->assertEquals(['one_value', 'foo'], $this->repo->get('one'));
+    }
+
+    /** @test */
     public function it_should_allow_delegation()
     {
         $this->assertEquals($this->config, $this->repo->all());

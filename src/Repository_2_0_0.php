@@ -156,6 +156,50 @@ class Repository_2_0_0 implements RepositoryInterface
     }
 
     /**
+     * Append a value onto a key value.
+     * @param  string     $k     Key string
+     * @param  mixed      $value Value to append
+     * @param  array|null $repo  For internal use
+     * @return $this Allow chaining
+     */
+    public function append($k, $value, & $repo = null)
+    {
+        $keys = explode('.', $k);
+        $key = array_shift($keys);
+        if (count($keys) == 0) {
+            $val = $this->get($key, []);
+            if (!is_array($val)) {
+                $val = [$val];
+            }
+            if (is_array($value)) {
+                $val = $value;
+            } else {
+                $val[] = $value;
+            }
+            if (is_null($repo)) {
+                $repo = [$key => $val];
+                $this->repo = array_replace_recursive($this->repo, $repo);
+                return $this;
+            }
+            $repo[$key] = $val;
+            return $this;
+        }
+        $val = $this->get($k, []);
+        if (!is_array($val)) {
+            $val = [$val];
+        }
+        if (is_array($value)) {
+            $val = $value;
+        } else {
+            $val[] = $value;
+        }
+        $repo[$key] = [];
+        $this->set(implode('.', $keys), $val, $repo[$key]);
+        $this->repo = array_replace_recursive($this->repo, $repo);
+        return $this;
+    }
+
+    /**
      * Add a repository as a delegate.
      * @param  RepositoryInterface $repository Repository interface
      * @return $this Allow chaining
