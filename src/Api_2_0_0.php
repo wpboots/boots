@@ -74,6 +74,25 @@ class Api_2_0_0
         $config->set('app.type', $this->boots->getType());
         $config->set('app.file', basename($config->get('abspath')));
         $config->set('app.path', dirname($config->get('abspath')));
+        return;
+        $config->set('wp.path', rtrim(ABSPATH, '/'));
+        $config->set('wp.ajax_url', \admin_url('admin-ajax.php'));
+        $config->set('wp.version', get_bloginfo('version'));
+        $config->set('wp.url', get_bloginfo('wpurl'));
+        $config->set('wp.site_url', home_url());
+        $config->set('wp.admin_url', rtrim(admin_url(), '/'));
+        $config->set('wp.admin_posts_url', admin_url('edit.php'));
+        $config->set('wp.admin_pages_url', admin_url('edit.php?post_type=page'));
+        $config->set('wp.includes_url', rtrim(includes_url(), '/'));
+        $config->set('wp.content_url', content_url());
+        $config->set('wp.plugins_url', plugins_url());
+        $config->set('wp.upload_path', wp_upload_dir());
+        $config->set('boots.path', $this->boots->getPath());
+        // $config->set('boots.url'] = $this->Settings['APP_URL'] . '/' . basename($path);
+        $config->set('boots.extend_path', $config->get('boots.path') . '/extend');
+        // $config->set('boots.extend_url'], $config->get('boots.url') . '/extend';
+        $config->set('php.version', phpversion());
+        $config->set('php.version_id', PHP_VERSION_ID);
     }
 
     public function setBoots(Boots $boots)

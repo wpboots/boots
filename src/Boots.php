@@ -189,6 +189,15 @@ class Boots
     }
 
     /**
+     * Get boots path.
+     * @return string Path to boots directory
+     */
+    public function getPath()
+    {
+        return $this->bootsDir;
+    }
+
+    /**
      * Get the versioned boots api instance.
      * @since 2.0.0
      * @return API_x_x_x Boots api instance
