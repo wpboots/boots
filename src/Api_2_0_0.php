@@ -34,7 +34,6 @@ class Api_2_0_0
     public function __construct(Boots $boots)
     {
         $this->setBoots($boots);
-        $this->validateConfig();
     }
 
     protected function validateConfig()
@@ -71,6 +70,7 @@ class Api_2_0_0
     public function setBoots(Boots $boots)
     {
         $this->boots = $boots;
+        $this->validateConfig();
         return $this;
     }
 }
