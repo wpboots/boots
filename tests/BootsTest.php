@@ -37,4 +37,16 @@ class BootsTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals($this->config, $this->boots->getConfig()->all());
     }
+
+    /** @test */
+    public function it_should_return_the_type_of_the_application()
+    {
+        $this->assertEquals('plugin', $this->boots->getType());
+    }
+
+    /** @test */
+    public function it_should_return_the_version_of_the_api()
+    {
+        $this->assertEquals('2.0.0', $this->boots->getVersion());
+    }
 }
