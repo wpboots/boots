@@ -6,18 +6,14 @@ class BootsTest extends PHPUnit_Framework_TestCase
 {
     protected $boots;
 
-    protected $config;
-
     public function setUp()
     {
-        $this->config = [
+        $this->boots = new Boots('plugin', [
             'abspath' => __FILE__,
             'id' => 'boots_test',
             'nick' => 'Boots Test',
             'version' => '0.1.0',
-        ];
-
-        $this->boots = new Boots('plugin', $this->config);
+        ]);
     }
 
     /** @test */
@@ -35,7 +31,11 @@ class BootsTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_setup_the_configuration_repository()
     {
-        $this->assertEquals($this->config, $this->boots->getConfig()->all());
+        $config = $this->boots->getConfig();
+        $this->assertEquals(__FILE__, $config->get('abspath'));
+        $this->assertEquals('boots_test', $config->get('id'));
+        $this->assertEquals('Boots Test', $config->get('nick'));
+        $this->assertEquals('0.1.0', $config->get('version'));
     }
 
     /** @test */
