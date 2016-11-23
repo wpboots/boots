@@ -51,24 +51,24 @@ class Boots_2_0_0
             );
         }
         $config = $this->api->getConfig();
-        if(!array_key_exists('APP_ID', $config)) {
+        if(!$config->has('abspath')) {
             throw new Exception\InvalidConfigException(
-                'APP_ID config key is required'
+                'abspath configuration key is required'
             );
         }
-        if(!array_key_exists('APP_NICK', $config)) {
+        if(!$config->has('id')) {
             throw new Exception\InvalidConfigException(
-                'APP_NICK config key is required'
+                'id configuration key is required'
             );
         }
-        if(!array_key_exists('APP_VERSION', $config)) {
+        if(!$config->has('nick')) {
             throw new Exception\InvalidConfigException(
-                'APP_VERSION config key is required'
+                'nick configuration key is required'
             );
         }
-        if(!array_key_exists('ABSPATH', $config)) {
+        if(!$config->has('version')) {
             throw new Exception\InvalidConfigException(
-                'ABSPATH config key is required'
+                'version configuration key is required'
             );
         }
     }
