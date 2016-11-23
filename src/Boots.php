@@ -20,9 +20,6 @@ namespace Boots;
 // Die if accessing this script directly.
 if(!defined('ABSPATH')) die(-1);
 
-// Only load the class if it doesn't exist.
-if(!class_exists('Boots')) :
-
 /**
  * @package Boots
  * @since 1.0.0
@@ -229,5 +226,3 @@ class Boots
         return $this->boots->$extension;
     }
 }
-
-endif;
