@@ -181,7 +181,7 @@ class Boots
      */
     public function setVersion($version)
     {
-        $this->version = $version;
+        $this->manifest['version'] = $version;
         return $this;
     }
 
