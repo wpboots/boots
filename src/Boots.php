@@ -76,11 +76,11 @@ class Boots
     protected $repositoryClass;
 
     /**
-     * Boots framework instance
+     * Boots api instance
      * @since 1.0.0
      * @var Boots
      */
-    protected $boots;
+    protected $api;
 
     /**
      * Instantiate the api.
@@ -102,7 +102,7 @@ class Boots
         $this->srcDir = basename(__DIR__);
         $this->setupManifest($config['abspath']);
         $this->setupConfig($config);
-        // $this->create();
+        $this->setupApi($this->getVersion());
     }
 
     protected function getLocalClass($prefix, $version)
@@ -138,18 +138,13 @@ class Boots
     /**
      * Instantiate the boots api.
      * @since 2.0.0
+     * @param  string $version Api version
      * @return $this Allow chaining
      */
-    protected function initialize()
+    protected function setupApi($version)
     {
-        $type = $this->getType();
-        $config = $this->getConfig();
-        $version = $this->getVersion();
-        $classVersion = str_replace('.', '_', $version);
-        $nsParts = explode('\\', get_class());
-        $nsParts[count($nsParts)-1] = "Boots_{$classVersion}";
-        $class = implode('\\', $nsParts);
-        $this->boots = new $class($this);
+        $class = $this->getLocalClass('Boots', $version);
+        $this->api = new $class($this);
         return $this;
     }
 
@@ -200,7 +195,7 @@ class Boots
      */
     public function getInstance()
     {
-        return $this->boots;
+        return $this->api;
     }
 
     /**
@@ -215,6 +210,6 @@ class Boots
      */
     public function __get($extension)
     {
-        return $this->boots->$extension;
+        return $this->api->$extension;
     }
 }
