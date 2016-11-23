@@ -123,6 +123,18 @@ class Repository_2_0_0_Test extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_should_set_a_default_value_for_a_given_key()
+    {
+        $this->assertEquals(null, $this->repo->get('default'));
+        $this->repo->preset('default', 'burp');
+        $this->assertEquals('burp', $this->repo->get('default'));
+
+        $this->assertEquals('two_one_value', $this->repo->get('two.two_one'));
+        $this->repo->preset('two.two_one', 1);
+        $this->assertEquals('two_one_value', $this->repo->get('two.two_one'));
+    }
+
+    /** @test */
     public function it_should_append_a_value_on_to_a_key_value()
     {
         $this->assertEquals(null, $this->repo->get('foo'));

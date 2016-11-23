@@ -156,6 +156,20 @@ class Repository_2_0_0 implements RepositoryInterface
     }
 
     /**
+     * Set a default value for a given key.
+     * @param string     $key   Key string
+     * @param mixed      $value Value to set
+     * @return $this Allow chaining
+     */
+    public function preset($key, $value)
+    {
+        if ($this->has($key)) {
+            return $this;
+        }
+        return $this->set($key, $value);
+    }
+
+    /**
      * Append a value onto a key value.
      * @param  string     $k     Key string
      * @param  mixed      $value Value to append

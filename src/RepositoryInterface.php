@@ -63,6 +63,14 @@ interface RepositoryInterface
     public function set($key, $value, & $repo = null);
 
     /**
+     * Set a default value for a given key.
+     * @param string     $key   Key string
+     * @param mixed      $value Value to set
+     * @return $this Allow chaining
+     */
+    public function preset($key, $value);
+
+    /**
      * Add a repository as a delegate.
      * @param  RepositoryInterface $repository Repository interface
      * @return $this Allow chaining
