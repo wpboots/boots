@@ -143,7 +143,7 @@ class Boots
      */
     protected function setupApi($version)
     {
-        $class = $this->getLocalClass('Boots', $version);
+        $class = $this->getLocalClass('Api', $version);
         $this->api = new $class($this);
         return $this;
     }
@@ -191,7 +191,7 @@ class Boots
     /**
      * Get the versioned boots api instance.
      * @since 2.0.0
-     * @return V_x_x_x Boots api instance
+     * @return API_x_x_x Boots api instance
      */
     public function getInstance()
     {

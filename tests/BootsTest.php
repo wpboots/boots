@@ -53,6 +53,6 @@ class BootsTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_return_the_api_instance()
     {
-        $this->assertInstanceOf('Boots\Boots_2_0_0', $this->boots->getInstance());
+        $this->assertInstanceOf('Boots\Api_2_0_0', $this->boots->getInstance());
     }
 }

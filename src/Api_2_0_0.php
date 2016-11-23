@@ -6,7 +6,7 @@ namespace Boots;
  * The boots api.
  *
  * @package Boots
- * @subpackage Boots_2_0_0
+ * @subpackage Api
  * @version 2.0.0
  * @see http://wpboots.com
  * @link https://github.com/wpboots/boots
@@ -20,37 +20,32 @@ if(!defined('ABSPATH')) die(-1);
 
 /**
  * @package Boots
- * @subpackage Boots_2_0_0
+ * @subpackage Api
+ * @version 2.0.0
  */
-class Boots_2_0_0
+class Api_2_0_0
 {
     /**
-     * Api instance
+     * Boots instance
      * @var Boots\Boots
      */
-    protected $api;
+    protected $boots;
 
-    public function __construct(Boots $api)
+    public function __construct(Boots $boots)
     {
-        $this->setApi($api);
+        $this->setBoots($boots);
         $this->validateConfig();
-    }
-
-    public function setApi(Boots $api)
-    {
-        $this->api = $api;
-        return $this;
     }
 
     protected function validateConfig()
     {
-        $type = $this->api->getType();
+        $type = $this->boots->getType();
         if(!in_array($type, ['plugin', 'theme'])) {
             throw new Exception\InvalidTypeException(
                 'Only plugin or theme type is acceptable'
             );
         }
-        $config = $this->api->getConfig();
+        $config = $this->boots->getConfig();
         if(!$config->has('abspath')) {
             throw new Exception\InvalidConfigException(
                 'abspath configuration key is required'
@@ -71,5 +66,11 @@ class Boots_2_0_0
                 'version configuration key is required'
             );
         }
+    }
+
+    public function setBoots(Boots $boots)
+    {
+        $this->boots = $boots;
+        return $this;
     }
 }
