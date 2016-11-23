@@ -67,10 +67,20 @@ class Api_2_0_0
         }
     }
 
+    protected function makeConfig()
+    {
+        $config = $this->boots->getConfig();
+        $config->preset('env', 'production');
+        $config->set('app.type', $this->boots->getType());
+        $config->set('app.file', basename($config->get('abspath')));
+        $config->set('app.path', dirname($config->get('abspath')));
+    }
+
     public function setBoots(Boots $boots)
     {
         $this->boots = $boots;
         $this->validateConfig();
+        $this->makeConfig();
         return $this;
     }
 }
