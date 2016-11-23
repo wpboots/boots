@@ -23,7 +23,7 @@ if(!defined('ABSPATH')) die(-1);
  * @subpackage Repository
  * @version 2.0.0
  */
-class Repository_2_0_0
+class Repository_2_0_0 implements RepositoryInterface
 {
     /**
      * The repository
@@ -160,7 +160,7 @@ class Repository_2_0_0
      * @param  RepositoryInterface $repository Repository interface
      * @return $this Allow chaining
      */
-    public function delegate($repository)
+    public function delegate(RepositoryInterface $repository)
     {
         $this->delegates[] = $repository;
         return $this;
