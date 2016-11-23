@@ -34,16 +34,16 @@ class Boots
     protected $type;
 
     /**
-     * Configuration arguments
+     * Configuration
      * @since 2.0.0
      * @var array
      */
     protected $config;
 
     /**
-     * Manifest array
+     * Manifest repository
      * @since 2.0.0
-     * @var array
+     * @var RepositoryInterface
      */
     protected $manifest;
 
@@ -69,6 +69,13 @@ class Boots
     protected $manifestFile = 'boots.json';
 
     /**
+     * Repository class
+     * @since 2.0.0
+     * @var string
+     */
+    protected $repositoryClass;
+
+    /**
      * Boots framework instance
      * @since 1.0.0
      * @var Boots
@@ -91,23 +98,79 @@ class Boots
     public function __construct($type, array $config)
     {
         $this->type = $type;
-        $this->config = $config;
         $this->bootsDir = basename(dirname(dirname(__FILE__)));
         $this->srcDir = basename(__DIR__);
-        $this->setupManifest();
-        $this->create();
+        $this->setupManifest($config['abspath']);
+        $this->setupConfig($config);
+        // $this->create();
+    }
+
+    protected function getLocalClass($prefix, $version)
+    {
+        $classVersion = str_replace('.', '_', $version);
+        $nsParts = explode('\\', get_class());
+        $nsParts[count($nsParts)-1] = "{$prefix}_{$classVersion}";
+        return implode('\\', $nsParts);
     }
 
     /**
      * Extract and setup the manifest.
      * @since 2.0.0
      */
-    protected function setupManifest()
+    protected function setupManifest($abspath)
     {
         $path = "{$this->bootsDir}/{$this->manifestFile}";
-        $jsonFile = dirname($this->config['ABSPATH']) . '/' . $path;
+        $jsonFile = dirname($abspath) . '/' . $path;
         $jsonContents = file_get_contents($jsonFile);
-        $this->manifest = json_decode($jsonContents, true);
+        $manifestArray = json_decode($jsonContents, true);
+        $repositoryVersion = $manifestArray['repository']['version'];
+        $this->repositoryClass = $this->getLocalClass('Repository', $repositoryVersion);
+        $this->manifest = new $this->repositoryClass($manifestArray);
+        return $this->manifest;
+    }
+
+    protected function setupConfig($config)
+    {
+        $this->config = new $this->repositoryClass($config);
+        return $this->config;
+    }
+
+    /**
+     * Instantiate the boots api.
+     * @since 2.0.0
+     * @return $this Allow chaining
+     */
+    protected function initialize()
+    {
+        $type = $this->getType();
+        $config = $this->getConfig();
+        $version = $this->getVersion();
+        $classVersion = str_replace('.', '_', $version);
+        $nsParts = explode('\\', get_class());
+        $nsParts[count($nsParts)-1] = "Boots_{$classVersion}";
+        $class = implode('\\', $nsParts);
+        $this->boots = new $class($this);
+        return $this;
+    }
+
+    /**
+     * Get the manifest repository.
+     * @since 2.0.0
+     * @return RepositoryInterface Manifest repository
+     */
+    public function getManifest()
+    {
+        return $this->manifest;
+    }
+
+    /**
+     * Get the configuration repository.
+     * @since 2.0.0
+     * @return RepositoryInterface Configuration repository
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -121,84 +184,13 @@ class Boots
     }
 
     /**
-     * Set the type of the application.
-     * @since 2.0.0
-     * @param  string $type plugin or theme
-     * @return $this Allow chaining
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-        return $this;
-    }
-
-    /**
-     * Get the configuration arguments.
-     * @since 2.0.0
-     * @param  string|null $key     Get individual key value
-     * @param  mixed|null  $default Default value
-     * @return array Arguments
-     */
-    public function getConfig($key = null, $default = null)
-    {
-        if(is_null($key)) {
-            return $this->config;
-        }
-        return array_key_exists($key, $this->config)
-            ? $this->config[$key] : $default;
-    }
-
-    /**
-     * Set and merge the configuration arguments.
-     * @since 2.0.0
-     * @param  array $config Configuration
-     * @return $this Allow chaining
-     */
-    public function setConfig(array $config)
-    {
-        array_replace_recursive($this->config, $config);
-        return $this;
-    }
-
-    /**
      * Get the boots api version.
      * @since 2.0.0
      * @return string Version
      */
     public function getVersion()
     {
-        return $this->manifest['version'];
-    }
-
-    /**
-     * Set the version of the boots api to be used.
-     * @since 2.0.0
-     * @param  string $version Version
-     * @return $this Allow chaining
-     */
-    public function setVersion($version)
-    {
-        $this->manifest['version'] = $version;
-        return $this;
-    }
-
-    /**
-     * Instantiate the boots api.
-     * @since 2.0.0
-     * @return $this Allow chaining
-     */
-    public function create()
-    {
-        $type = $this->getType();
-        $config = $this->getConfig();
-        $version = $this->getVersion();
-        $classVersion = str_replace('.', '_', $version);
-        $nsParts = explode('\\', get_class());
-        $nsParts[count($nsParts)-1] = "Boots_{$classVersion}";
-        $class = implode('\\', $nsParts);
-        // $this->boots = new $class($type, $config);
-        $this->boots = new $class($this);
-        return $this;
+        return $this->manifest->get('version');
     }
 
     /**
@@ -206,7 +198,7 @@ class Boots
      * @since 2.0.0
      * @return V_x_x_x Boots api instance
      */
-    public function instance()
+    public function getInstance()
     {
         return $this->boots;
     }
