@@ -166,25 +166,7 @@ class Repository_2_0_0 implements RepositoryInterface
     {
         $keys = explode('.', $k);
         $key = array_shift($keys);
-        if (count($keys) == 0) {
-            $val = $this->get($key, []);
-            if (!is_array($val)) {
-                $val = [$val];
-            }
-            if (is_array($value)) {
-                $val = $value;
-            } else {
-                $val[] = $value;
-            }
-            if (is_null($repo)) {
-                $repo = [$key => $val];
-                $this->repo = array_replace_recursive($this->repo, $repo);
-                return $this;
-            }
-            $repo[$key] = $val;
-            return $this;
-        }
-        $val = $this->get($k, []);
+        $val = $this->get(count($key) == 0 ? $key : $k, []);
         if (!is_array($val)) {
             $val = [$val];
         }
@@ -192,6 +174,15 @@ class Repository_2_0_0 implements RepositoryInterface
             $val = $value;
         } else {
             $val[] = $value;
+        }
+        if (count($keys) == 0) {
+            if (is_null($repo)) {
+                $repo = [$key => $val];
+                $this->repo = array_replace_recursive($this->repo, $repo);
+                return $this;
+            }
+            $repo[$key] = $val;
+            return $this;
         }
         $repo[$key] = [];
         $this->set(implode('.', $keys), $val, $repo[$key]);
