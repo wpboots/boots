@@ -49,4 +49,10 @@ class BootsTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals('2.0.0', $this->boots->getVersion());
     }
+
+    /** @test */
+    public function it_should_return_the_api_instance()
+    {
+        $this->assertInstanceOf('Boots\Boots_2_0_0', $this->boots->getInstance());
+    }
 }
