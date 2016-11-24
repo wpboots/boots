@@ -194,7 +194,7 @@ class Boots
      */
     public function getPath()
     {
-        return $this->bootsDir;
+        return dirname(__FILE__);
     }
 
     /**
