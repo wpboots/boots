@@ -13,6 +13,7 @@ class ComposerStaticIniteb3369937ec488614bcd4beab64f370d
         ),
         'D' => 
         array (
+            'Dotenv\\' => 7,
             'Doctrine\\Instantiator\\' => 22,
         ),
         'B' => 
@@ -25,6 +26,10 @@ class ComposerStaticIniteb3369937ec488614bcd4beab64f370d
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
+        ),
+        'Dotenv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
         ),
         'Doctrine\\Instantiator\\' => 
         array (

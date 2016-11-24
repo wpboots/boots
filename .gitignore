@@ -3,3 +3,4 @@ extend/
 vendor/*
 !vendor/composer
 !vendor/autoload.php
+.env
