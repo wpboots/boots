@@ -80,7 +80,8 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_set_the_app_dir()
     {
-        $this->assertEquals('boots', $this->boots->getConfig()->get('app.dir'));
+        $pluginDirName = basename(dirname(dirname($this->boots->getPath())));
+        $this->assertEquals($pluginDirName, $this->boots->getConfig()->get('app.dir'));
     }
 
     /** @test */
@@ -256,6 +257,5 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     public function it_should_set_the_php_version_id()
     {
         $this->assertEquals(PHP_VERSION_ID, $this->boots->getConfig()->get('php.version_id'));
-        dump($this->boots->getConfig()->all());
     }
 }
