@@ -84,7 +84,7 @@ class Boots
 
     /**
      * Instantiate the api.
-     * 
+     *
      * Setup the manifest and fire up the boots api instance.
      *
      * @since  2.0.0
@@ -105,12 +105,17 @@ class Boots
         $this->setupApi($this->getVersion());
     }
 
-    protected function getLocalClass($prefix, $version)
+    protected function getLocalClass($prefix, $version = '')
     {
-        $classVersion = str_replace('.', '_', $version);
+        $suffix = str_replace('.', '_', $version);
+        $suffix = empty($suffix) ? '' : "_{$suffix}";
         $nsParts = explode('\\', get_class());
-        $nsParts[count($nsParts)-1] = "{$prefix}_{$classVersion}";
-        return implode('\\', $nsParts);
+        $nsParts[count($nsParts)-1] = "{$prefix}{$suffix}";
+        $fqcn = implode('\\', $nsParts);
+        if (!class_exists($fqcn) || !interface_exists($fqcn)) {
+            require_once __DIR__ . "/{$prefix}{$suffix}.php";
+        }
+        return $fqcn;
     }
 
     /**
@@ -124,6 +129,7 @@ class Boots
         $jsonContents = file_get_contents($jsonFile);
         $manifestArray = json_decode($jsonContents, true);
         $repositoryVersion = $manifestArray['repository']['version'];
+        $this->getLocalClass('RepositoryInterface');
         $this->repositoryClass = $this->getLocalClass('Repository', $repositoryVersion);
         $this->manifest = new $this->repositoryClass($manifestArray);
         return $this->manifest;

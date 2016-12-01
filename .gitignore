@@ -1,6 +1,4 @@
 .DS_Store
-extend/
-vendor/*
-!vendor/composer
-!vendor/autoload.php
+/extend
+/vendor
 .env
