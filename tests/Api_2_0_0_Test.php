@@ -14,14 +14,23 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
 
     protected $appName;
 
-    protected $bootsName;
+    protected $bootsName = 'boots';
+
+    // For another plugin
+
+    protected $boots2;
+
+    protected $abspath2;
+
+    protected $appPath2;
+
+    protected $appName2;
 
     public function setUp()
     {
         $this->appPath = dirname(dirname(dirname(__FILE__)));
         $this->appName = basename($this->appPath);
         $this->abspath = "{$this->appPath}/index.php";
-        $this->bootsName = 'boots';
         $this->config = [
             'abspath' => $this->abspath,
             'id' => 'boots_test',
@@ -32,6 +41,16 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
         ];
 
         $this->boots = new Boots('plugin', $this->config);
+
+        // Another plugin
+        $this->appName2 = 'another-plugin';
+        $this->appPath2 = __DIR__ . "/{$this->appName2}";
+        $this->abspath2 = "{$this->appPath2}/plugin.php";
+        $this->boots2 = new Boots('plugin', array_replace($this->config, [
+            'abspath' => $this->abspath2,
+            'id' => 'boots_test_2',
+            'nick' => 'Boots Test 2',
+        ]));
     }
 
     /** @test */
@@ -230,12 +249,21 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     {
         $path = "{$this->appPath}/{$this->bootsName}";
         $this->assertEquals($path, $this->boots->getConfig()->get('boots.path'));
+
+        // Another plugin
+        $path = "{$this->appPath2}/{$this->bootsName}";
+        $this->assertEquals($path, $this->boots2->getConfig()->get('boots.path'));
     }
 
     /** @test */
     public function it_should_set_the_boots_extend_path()
     {
-        $this->assertEquals($this->boots->getConfig()->get('boots.path') . '/extend', $this->boots->getConfig()->get('boots.extend_path'));
+        $path = "{$this->appPath}/{$this->bootsName}";
+        $this->assertEquals($path . '/extend', $this->boots->getConfig()->get('boots.extend_path'));
+
+        // Another plugin
+        $path = "{$this->appPath2}/{$this->bootsName}";
+        $this->assertEquals($path . '/extend', $this->boots2->getConfig()->get('boots.extend_path'));
     }
 
     /** @test */
