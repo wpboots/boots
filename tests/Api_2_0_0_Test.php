@@ -8,15 +8,27 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
 
     protected $config;
 
+    protected $abspath;
+
+    protected $appPath;
+
+    protected $appName;
+
+    protected $bootsName;
+
     public function setUp()
     {
+        $this->appPath = dirname(dirname(dirname(__FILE__)));
+        $this->appName = basename($this->appPath);
+        $this->abspath = "{$this->appPath}/index.php";
+        $this->bootsName = 'boots';
         $this->config = [
-            'abspath' => dirname(dirname(__FILE__)),
+            'abspath' => $this->abspath,
             'id' => 'boots_test',
             'nick' => 'Boots Test',
             'version' => '0.1.0',
             'logo' => 'logo.png',
-            'icon' => 'icon.png',
+            'icon' => '/icon.png',
         ];
 
         $this->boots = new Boots('plugin', $this->config);
@@ -78,36 +90,28 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_should_set_the_app_dir()
-    {
-        $pluginDirName = basename(dirname(dirname($this->boots->getPath())));
-        $this->assertEquals($pluginDirName, $this->boots->getConfig()->get('app.dir'));
-    }
-
-    /** @test */
     public function it_should_set_the_app_path()
     {
-        $this->assertEquals(dirname(dirname($this->boots->getPath())), $this->boots->getConfig()->get('app.path'));
+        $this->assertEquals($this->appPath, $this->boots->getConfig()->get('app.path'));
     }
 
     /** @test */
     public function it_should_set_the_app_url()
     {
-        $pluginDirName = basename(dirname(dirname($this->boots->getPath())));
-        $this->assertEquals(plugins_url($pluginDirName), $this->boots->getConfig()->get('app.url'));
+        $this->assertEquals(plugins_url($this->appName), $this->boots->getConfig()->get('app.url'));
     }
 
     /** @test */
     public function it_should_set_the_app_logo()
     {
-        $logoUrl = $this->boots->getConfig()->get('app.url') . '/' . $this->config['logo'];
+        $logoUrl = plugins_url($this->appName) . '/' . ltrim($this->config['logo'], '/');
         $this->assertEquals($logoUrl, $this->boots->getConfig()->get('app.logo'));
     }
 
     /** @test */
     public function it_should_set_the_app_icon()
     {
-        $iconUrl = $this->boots->getConfig()->get('app.url') . '/' . $this->config['icon'];
+        $iconUrl = plugins_url($this->appName) . '/' . ltrim($this->config['icon'], '/');
         $this->assertEquals($iconUrl, $this->boots->getConfig()->get('app.icon'));
     }
 
@@ -224,7 +228,8 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_set_the_boots_path()
     {
-        $this->assertEquals($this->boots->getPath(), $this->boots->getConfig()->get('boots.path'));
+        $path = "{$this->appPath}/{$this->bootsName}";
+        $this->assertEquals($path, $this->boots->getConfig()->get('boots.path'));
     }
 
     /** @test */
@@ -236,7 +241,7 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_set_the_boots_url()
     {
-        $bootsUrl = $this->boots->getConfig()->get('app.url') . '/' . basename(dirname(dirname($this->boots->getPath())));
+        $bootsUrl = plugins_url($this->appName) . "/{$this->bootsName}";
         $this->assertEquals($bootsUrl, $this->boots->getConfig()->get('boots.url'));
     }
 

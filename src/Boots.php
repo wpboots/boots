@@ -98,7 +98,7 @@ class Boots
     public function __construct($type, array $config)
     {
         $this->type = $type;
-        $this->bootsDir = basename(dirname(dirname(__FILE__)));
+        $this->bootsDir = 'boots'; //basename(dirname(dirname(__FILE__)));
         // $this->srcDir = basename(__DIR__);
         $manifest = $this->extractManifest($config['abspath']);
         $this->loadRepository('Repository', $manifest['repository']['version']);
@@ -220,12 +220,12 @@ class Boots
     }
 
     /**
-     * Get boots path.
-     * @return string Path to boots directory
+     * Get boots directory name.
+     * @return string Directory name
      */
-    public function getPath()
+    public function getDirName()
     {
-        return dirname(__FILE__);
+        return $this->bootsDir;
     }
 
     /**

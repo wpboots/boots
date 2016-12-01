@@ -73,7 +73,6 @@ class Api_2_0_0
         $config = $this->boots->getConfig();
         $config->preset('env', 'production');
         $config->set('app.type', $this->boots->getType());
-        $config->set('app.dir', basename($config->get('abspath')));
         $config->set('app.path', dirname($config->get('abspath')));
         if ($type == 'plugin') {
             $pluginDirName = basename($config->get('app.path'));
@@ -85,10 +84,10 @@ class Api_2_0_0
             $config->set('app.parent_url',  get_template_directory_uri());
         }
         if ($config->has('logo')) {
-            $config->set('app.logo', $config->get('app.url') . '/' . $config->get('logo'));
+            $config->set('app.logo', $config->get('app.url') . '/' . ltrim($config->get('logo'), '/'));
         }
         if ($config->has('icon')) {
-            $config->set('app.icon', $config->get('app.url') . '/' . $config->get('icon'));
+            $config->set('app.icon', $config->get('app.url') . '/' . ltrim($config->get('icon'), '/'));
         }
         $config->set('wp.path', rtrim(ABSPATH, '/'));
         $config->set('wp.url', get_bloginfo('wpurl'));
@@ -108,9 +107,9 @@ class Api_2_0_0
         $config->set('wp.theme.parent_url',  get_template_directory_uri());
         $config->set('wp.using_child_theme', $config->get('wp.theme.path') != $config->get('wp.theme.parent_path'));
         $config->set('boots.version', $this->boots->getVersion());
-        $config->set('boots.path', $this->boots->getPath());
+        $config->set('boots.path', dirname($config->get('abspath')) . '/' . $this->boots->getDirName());
         $config->set('boots.extend_path', $config->get('boots.path') . '/extend');
-        $config->set('boots.url', $config->get('app.url') . '/' . basename(dirname(dirname($config->get('boots.path')))));
+        $config->set('boots.url', $config->get('app.url') . '/' . $this->boots->getDirName());
         $config->set('boots.extend_url', $config->get('boots.url') . '/extend');
         $config->set('php.version', phpversion());
         $config->set('php.version_id', PHP_VERSION_ID);
