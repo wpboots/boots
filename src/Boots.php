@@ -52,14 +52,7 @@ class Boots
      * @since 2.0.0
      * @var string
      */
-    protected $bootsDir;
-
-    /**
-     * Source directory name
-     * @since 2.0.0
-     * @var string
-     */
-    // protected $srcDir;
+    protected $bootsDir = 'boots';
 
     /**
      * Manifest file name
@@ -98,8 +91,6 @@ class Boots
     public function __construct($type, array $config)
     {
         $this->type = $type;
-        $this->bootsDir = 'boots'; //basename(dirname(dirname(__FILE__)));
-        // $this->srcDir = basename(__DIR__);
         $manifest = $this->extractManifest($config['abspath']);
         $this->loadRepository('Repository', $manifest['repository']['version']);
         $this->setupManifest($manifest);
