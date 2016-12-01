@@ -59,7 +59,7 @@ class Boots
      * @since 2.0.0
      * @var string
      */
-    protected $srcDir;
+    // protected $srcDir;
 
     /**
      * Manifest file name
@@ -99,7 +99,7 @@ class Boots
     {
         $this->type = $type;
         $this->bootsDir = basename(dirname(dirname(__FILE__)));
-        $this->srcDir = basename(__DIR__);
+        // $this->srcDir = basename(__DIR__);
         $manifest = $this->extractManifest($config['abspath']);
         $this->loadRepository('Repository', $manifest['repository']['version']);
         $this->setupManifest($manifest);
@@ -107,21 +107,36 @@ class Boots
         $this->setupApi($this->getVersion());
     }
 
-    protected function getLocalClass($prefix, $version = '')
+    protected function getLocal($prefix, $version)
     {
         $suffix = str_replace('.', '_', $version);
         $suffix = empty($suffix) ? '' : "_{$suffix}";
         $nsParts = explode('\\', get_class());
-        $nsParts[count($nsParts)-1] = "{$prefix}{$suffix}";
-        $fqcn = implode('\\', $nsParts);
-        if (!class_exists($fqcn) || !interface_exists($fqcn)) {
-            require_once __DIR__ . "/{$prefix}{$suffix}.php";
+        $name = $prefix . $suffix;
+        $nsParts[count($nsParts)-1] = $name;
+        return [implode('\\', $nsParts), $name];
+    }
+
+    protected function getLocalClass($prefix, $version = '')
+    {
+        $fqcn = $this->getLocal($prefix, $version);
+        if (!class_exists($fqcn[0])) {
+            require_once __DIR__ . "/{$fqcn[1]}.php";
         }
-        return $fqcn;
+        return $fqcn[0];
+    }
+
+    protected function getLocalInterface($prefix, $version = '')
+    {
+        $fqin = $this->getLocal($prefix, $version);
+        if (!class_exists($fqin[0])) {
+            require_once __DIR__ . "/{$fqin[1]}.php";
+        }
+        return $fqin[0];
     }
 
     /**
-     * Extract and setup the manifest.
+     * Extract the manifest.
      * @since 2.0.0
      */
     protected function extractManifest($abspath)
@@ -134,7 +149,7 @@ class Boots
 
     protected function loadRepository($prefix = 'Repository', $version = '')
     {
-        $this->getLocalClass("{$prefix}Interface");
+        $this->getLocalInterface("{$prefix}Interface");
         $this->repositoryClass = $this->getLocalClass($prefix, $version);
         return $this->repositoryClass;
     }
