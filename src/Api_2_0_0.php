@@ -37,6 +37,18 @@ class Api_2_0_0
      */
     protected $extensions;
 
+    /**
+     * Manifest file name
+     * @var string
+     */
+    protected $manifestFile = 'boots.json';
+
+    /**
+     * Name of the extension file
+     * @var string
+     */
+    protected $extensionFile = 'index.php';
+
     public function __construct(Boots $boots, array $extensions = [])
     {
         $this->boots = $boots;
@@ -124,8 +136,81 @@ class Api_2_0_0
         $config->set('php.version_id', PHP_VERSION_ID);
     }
 
+    /**
+     * Load an extension.
+     * @param  string $path    Exension file path
+     * @param  string $fqcn    Fully qualified class name
+     * @param  string $version Version
+     * @return string Fully qualified class name with version
+     */
+    protected function loadExtension($path, $fqcn, $version)
+    {
+        $suffix = str_replace('.', '_', $version);
+        $suffix = empty($suffix) ? '' : "_{$suffix}";
+        $fqcn = $fqcn . $suffix;
+        if (!class_exists($fqcn)) {
+            if (!is_file($path)) {
+                throw new \Exception(sprintf(
+                    'File %s could not be located.', $path
+                ));
+            }
+            require_once $path;
+            if (!class_exists($fqcn)) {
+                throw new \Exception(sprintf(
+                    'Class %s could not be located in %s.', $fqcn, $path
+                ));
+            }
+        }
+        return $fqcn;
+    }
+
+    protected function extend($extension)
+    {
+        if (array_key_exists($extension, $this->extensions)) {
+            return $this->extensions[$extension];
+        }
+        $config = $this->boots->getConfig();
+        $manifest = $this->boots->getManifest();
+        $path2extend = $config->get('boots.extend_path');
+        $path2extension = "{$path2extend}/{$extension}";
+        if (!is_dir($path2extension)) {
+            throw new \Exception(sprintf(
+                'Path %s could not be located.', $path2extension
+            ));
+        }
+        $path2manifest = "{$path2extension}/{$this->manifestFile}";
+        if (!is_file($path2manifest)) {
+            throw new \Exception(sprintf(
+                'Manifest file %s could not be located.', $path2manifest
+            ));
+        }
+        $jsonContents = file_get_contents($path2manifest);
+        $mArr = json_decode($jsonContents, true);
+        $manifest->set("extensions.{$extension}", $mArr);
+        $path2file = "{$path2extension}/{$this->extensionFile}";
+        $extensionFqcn = $this->loadExtension($path2file, $mArr['class'], $mArr['version']);
+        $instance = new $extensionFqcn;
+        $this->extensions[$extension] = $instance;
+        return $instance;
+    }
+
+    public function __isset($extension)
+    {
+        // Tell whether the extension exists or not.
+    }
+
+    public function __unset($extension)
+    {
+        // Remove an extension if it exists.
+    }
+
+    public function __set($extension, $value)
+    {
+        $this->extensions[$extension] = $value;
+    }
+
     public function __get($extension)
     {
-        return $this->extend(strip_tags($extension));
+        return $this->extend($extension);
     }
 }

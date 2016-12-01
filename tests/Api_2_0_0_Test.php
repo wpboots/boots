@@ -291,4 +291,10 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(PHP_VERSION_ID, $this->boots->getConfig()->get('php.version_id'));
     }
+
+    /** @test */
+    public function it_should_get_an_extension()
+    {
+        $this->assertInstanceOf('BootsExtensionTest', $this->boots2->extension);
+    }
 }
