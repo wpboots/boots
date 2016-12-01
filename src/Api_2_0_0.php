@@ -49,6 +49,11 @@ class Api_2_0_0
      */
     protected $extensionFile = 'index.php';
 
+    /**
+     * Validate and make the configuration.
+     * @param Boots $boots      Boots wrapper object
+     * @param array $extensions Optional extensions to bind
+     */
     public function __construct(Boots $boots, array $extensions = [])
     {
         $this->boots = $boots;
@@ -57,6 +62,10 @@ class Api_2_0_0
         $this->makeConfig();
     }
 
+    /**
+     * Validate application configuration.
+     * @return void
+     */
     protected function validateConfig()
     {
         $type = $this->boots->getType();
@@ -88,6 +97,10 @@ class Api_2_0_0
         }
     }
 
+    /**
+     * Make the configuration by setting widely used key values.
+     * @return void
+     */
     protected function makeConfig()
     {
         $type = $this->boots->getType();
@@ -150,13 +163,13 @@ class Api_2_0_0
         $fqcn = $fqcn . $suffix;
         if (!class_exists($fqcn)) {
             if (!is_file($path)) {
-                throw new \Exception(sprintf(
+                throw new Exception\InvalidExtensionException(sprintf(
                     'File %s could not be located.', $path
                 ));
             }
             require_once $path;
             if (!class_exists($fqcn)) {
-                throw new \Exception(sprintf(
+                throw new Exception\InvalidExtensionException(sprintf(
                     'Class %s could not be located in %s.', $fqcn, $path
                 ));
             }
@@ -164,6 +177,11 @@ class Api_2_0_0
         return $fqcn;
     }
 
+    /**
+     * Resolve an extension by injecting the boots wrapper.
+     * @param  string $fqcn Fully qualified class name of extension
+     * @return Object Extension instance
+     */
     protected function resolveExtension($fqcn)
     {
         $class = new \ReflectionClass($fqcn);
@@ -173,13 +191,18 @@ class Api_2_0_0
         }
         $params = $constructor->getParameters();
         if (count($params) != 1) {
-            throw new \Exception(sprintf(
+            throw new Exception\InvalidExtensionException(sprintf(
                 'Constructor for %s may only have one parameter.', $fqcn
             ));
         }
         return new $fqcn($this->boots);
     }
 
+    /**
+     * Bootstrap an extension if it isnt loaded.
+     * @param  string $extension Name of extension
+     * @return Object Extension instance
+     */
     protected function extend($extension)
     {
         if (array_key_exists($extension, $this->extensions)) {
@@ -190,13 +213,13 @@ class Api_2_0_0
         $path2extend = $config->get('boots.extend_path');
         $path2extension = "{$path2extend}/{$extension}";
         if (!is_dir($path2extension)) {
-            throw new \Exception(sprintf(
+            throw new Exception\InvalidExtensionException(sprintf(
                 'Path %s could not be located.', $path2extension
             ));
         }
         $path2manifest = "{$path2extension}/{$this->manifestFile}";
         if (!is_file($path2manifest)) {
-            throw new \Exception(sprintf(
+            throw new Exception\InvalidExtensionException(sprintf(
                 'Manifest file %s could not be located.', $path2manifest
             ));
         }
