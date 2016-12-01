@@ -196,12 +196,12 @@ class Api_2_0_0
 
     public function __isset($extension)
     {
-        // Tell whether the extension exists or not.
+        return array_key_exists($extension, $this->extensions);
     }
 
     public function __unset($extension)
     {
-        // Remove an extension if it exists.
+        unset($this->extensions[$extension]);
     }
 
     public function __set($extension, $value)

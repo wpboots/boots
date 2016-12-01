@@ -26,6 +26,16 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
 
     protected $appName2;
 
+    // For yet another plugin
+
+    protected $boots3;
+
+    protected $abspath3;
+
+    protected $appPath3;
+
+    protected $appName3;
+
     public function setUp()
     {
         $this->appPath = dirname(dirname(dirname(__FILE__)));
@@ -50,6 +60,16 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
             'abspath' => $this->abspath2,
             'id' => 'boots_test_2',
             'nick' => 'Boots Test 2',
+        ]));
+
+        // Yet another plugin
+        $this->appName3 = 'yet-another-plugin';
+        $this->appPath3 = __DIR__ . "/{$this->appName3}";
+        $this->abspath3 = "{$this->appPath3}/plugin.php";
+        $this->boots3 = new Boots('plugin', array_replace($this->config, [
+            'abspath' => $this->abspath3,
+            'id' => 'boots_test_3',
+            'nick' => 'Boots Test 3',
         ]));
     }
 
@@ -296,5 +316,6 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     public function it_should_get_an_extension()
     {
         $this->assertInstanceOf('BootsExtensionTest', $this->boots2->extension);
+        $this->assertInstanceOf('BootsExtensionTest_0_1_0', $this->boots3->extension);
     }
 }
