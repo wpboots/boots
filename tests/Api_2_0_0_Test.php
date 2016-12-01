@@ -318,4 +318,10 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('BootsExtensionTest', $this->boots2->extension);
         $this->assertInstanceOf('BootsExtensionTest_0_1_0', $this->boots3->extension);
     }
+
+    /** @test */
+    public function it_should_inject_boots_into_an_extension()
+    {
+        $this->assertInstanceOf(get_class($this->boots2), $this->boots2->extension->boots);
+    }
 }

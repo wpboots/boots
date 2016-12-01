@@ -164,6 +164,29 @@ class Api_2_0_0
         return $fqcn;
     }
 
+    protected function resolveExtension($fqcn)
+    {
+        $class = new \ReflectionClass($fqcn);
+        $constructor = $class->getConstructor();
+        if (is_null($constructor)) {
+            return new $fqcn;
+        }
+        $params = $constructor->getParameters();
+        if (count($params) != 1) {
+            throw new \Exception(sprintf(
+                'Constructor for %s may only have one parameter.', $fqcn
+            ));
+        }
+        // $reqType = get_class($this->boots);
+        // $param = array_shift($params);
+        // if ($param->getClass()->name != $reqType) {
+        //     throw new \Exception(sprintf(
+        //         'Constructor parameter for %s should be type hinted by %s.', $fqcn, $reqType
+        //     ));
+        // }
+        return new $fqcn($this->boots);
+    }
+
     protected function extend($extension)
     {
         if (array_key_exists($extension, $this->extensions)) {
@@ -189,7 +212,7 @@ class Api_2_0_0
         $manifest->set("extensions.{$extension}", $mArr);
         $path2file = "{$path2extension}/{$this->extensionFile}";
         $extensionFqcn = $this->loadExtension($path2file, $mArr['class'], $mArr['version']);
-        $instance = new $extensionFqcn;
+        $instance = $this->resolveExtension($extensionFqcn);
         $this->extensions[$extension] = $instance;
         return $instance;
     }
