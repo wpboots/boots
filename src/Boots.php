@@ -100,7 +100,9 @@ class Boots
         $this->type = $type;
         $this->bootsDir = basename(dirname(dirname(__FILE__)));
         $this->srcDir = basename(__DIR__);
-        $this->setupManifest($config['abspath']);
+        $manifest = $this->extractManifest($config['abspath']);
+        $this->loadRepository('Repository', $manifest['repository']['version']);
+        $this->setupManifest($manifest);
         $this->setupConfig($config);
         $this->setupApi($this->getVersion());
     }
@@ -122,16 +124,24 @@ class Boots
      * Extract and setup the manifest.
      * @since 2.0.0
      */
-    protected function setupManifest($abspath)
+    protected function extractManifest($abspath)
     {
         $path = "{$this->bootsDir}/{$this->manifestFile}";
         $jsonFile = dirname($abspath) . '/' . $path;
         $jsonContents = file_get_contents($jsonFile);
-        $manifestArray = json_decode($jsonContents, true);
-        $repositoryVersion = $manifestArray['repository']['version'];
-        $this->getLocalClass('RepositoryInterface');
-        $this->repositoryClass = $this->getLocalClass('Repository', $repositoryVersion);
-        $this->manifest = new $this->repositoryClass($manifestArray);
+        return json_decode($jsonContents, true);
+    }
+
+    protected function loadRepository($prefix = 'Repository', $version = '')
+    {
+        $this->getLocalClass("{$prefix}Interface");
+        $this->repositoryClass = $this->getLocalClass($prefix, $version);
+        return $this->repositoryClass;
+    }
+
+    protected function setupManifest(array $manifest)
+    {
+        $this->manifest = new $this->repositoryClass($manifest);
         return $this->manifest;
     }
 
