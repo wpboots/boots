@@ -9,7 +9,7 @@ namespace Boots;
  *
  * @package Boots
  * @subpackage Boots
- * @version 0.1.0
+ * @version 2.0.0
  * @see http://wpboots.com
  * @link https://github.com/wpboots/boots
  * @author Kamal Khan <shout@bhittani.com> https://bhittani.com
@@ -22,71 +22,57 @@ if(!defined('ABSPATH')) die(-1);
 
 /**
  * @package Boots
- * @since 1.0.0
+ * @subpackage Boots
+ * @version 2.0.0
  */
 class Boots
 {
     /**
      * Type of application
-     * @since 2.0.0
      * @var string
      */
     protected $type;
 
     /**
-     * Configuration
-     * @since 2.0.0
+     * Configuration repository
      * @var array
      */
     protected $config;
 
     /**
      * Manifest repository
-     * @since 2.0.0
      * @var RepositoryInterface
      */
     protected $manifest;
 
     /**
      * Boots directory name
-     * @since 2.0.0
      * @var string
      */
     protected $bootsDir = 'boots';
 
     /**
      * Manifest file name
-     * @since 2.0.0
      * @var string
      */
     protected $manifestFile = 'boots.json';
 
     /**
      * Repository class
-     * @since 2.0.0
      * @var string
      */
     protected $repositoryClass;
 
     /**
      * Boots api instance
-     * @since 1.0.0
-     * @var Boots
+     * @var Api
      */
     protected $api;
 
     /**
-     * Instantiate the api.
-     *
-     * Setup the manifest and fire up the boots api instance.
-     *
-     * @since  2.0.0
-     *         Refactor and cleaning.
-     * @since  1.0.0
-     * @uses   Boots
-     * @access public
-     * @param  string $extension Extension.
-     * @return object
+     * Setup and fire up the boots api instance.
+     * @param string $type   Type of application
+     * @param array  $config Configuration array
      */
     public function __construct($type, array $config)
     {
@@ -98,6 +84,12 @@ class Boots
         $this->setupApi($this->getVersion());
     }
 
+    /**
+     * Get a local class or interface.
+     * @param  string $prefix  Name of class or interface
+     * @param  string $version Version
+     * @return string Fully qualified class or interface name
+     */
     protected function getLocal($prefix, $version)
     {
         $suffix = str_replace('.', '_', $version);
@@ -108,6 +100,12 @@ class Boots
         return [implode('\\', $nsParts), $name];
     }
 
+    /**
+     * Get a local class.
+     * @param  string $prefix  Name of class
+     * @param  string $version Version
+     * @return string Fully qualified class name
+     */
     protected function getLocalClass($prefix, $version = '')
     {
         $fqcn = $this->getLocal($prefix, $version);
@@ -117,6 +115,12 @@ class Boots
         return $fqcn[0];
     }
 
+    /**
+     * Get a local interface.
+     * @param  string $prefix  Name of interface
+     * @param  string $version Version
+     * @return string Fully qualified interface name
+     */
     protected function getLocalInterface($prefix, $version = '')
     {
         $fqin = $this->getLocal($prefix, $version);
@@ -127,8 +131,9 @@ class Boots
     }
 
     /**
-     * Extract the manifest.
-     * @since 2.0.0
+     * Extract the manifest as an array.
+     * @param  string $abspath Framework directory path
+     * @return array Manifest array
      */
     protected function extractManifest($abspath)
     {
@@ -138,6 +143,12 @@ class Boots
         return json_decode($jsonContents, true);
     }
 
+    /**
+     * Load the repostiory class and interface.
+     * @param  string $prefix  Name of class and interface
+     * @param  string $version Version
+     * @return string Fully qualified class name
+     */
     protected function loadRepository($prefix = 'Repository', $version = '')
     {
         $this->getLocalInterface("{$prefix}Interface");
@@ -145,13 +156,23 @@ class Boots
         return $this->repositoryClass;
     }
 
+    /**
+     * Setup the manifest repository.
+     * @param  array $manifest Manifest array
+     * @return RepositoryInterface Manifest repository
+     */
     protected function setupManifest(array $manifest)
     {
         $this->manifest = new $this->repositoryClass($manifest);
         return $this->manifest;
     }
 
-    protected function setupConfig($config)
+    /**
+     * Setup the configuration repository.
+     * @param  array $config Configuration array
+     * @return RepositoryInterface Configuration repository
+     */
+    protected function setupConfig(array $config)
     {
         $this->config = new $this->repositoryClass($config);
         return $this->config;
@@ -159,20 +180,18 @@ class Boots
 
     /**
      * Instantiate the boots api.
-     * @since 2.0.0
-     * @param  string $version Api version
-     * @return $this Allow chaining
+     * @param  string $version Version
+     * @return Api Boots api instance
      */
     protected function setupApi($version)
     {
         $class = $this->getLocalClass('Api', $version);
         $this->api = new $class($this);
-        return $this;
+        return $this->api;
     }
 
     /**
      * Get the manifest repository.
-     * @since 2.0.0
      * @return RepositoryInterface Manifest repository
      */
     public function getManifest()
@@ -182,7 +201,6 @@ class Boots
 
     /**
      * Get the configuration repository.
-     * @since 2.0.0
      * @return RepositoryInterface Configuration repository
      */
     public function getConfig()
@@ -192,7 +210,6 @@ class Boots
 
     /**
      * Get the type of the application.
-     * @since 2.0.0
      * @return string plugin or theme
      */
     public function getType()
@@ -202,7 +219,6 @@ class Boots
 
     /**
      * Get the boots api version.
-     * @since 2.0.0
      * @return string Version
      */
     public function getVersion()
@@ -211,7 +227,7 @@ class Boots
     }
 
     /**
-     * Get boots directory name.
+     * Get the framework directory name.
      * @return string Directory name
      */
     public function getDirName()
@@ -221,8 +237,7 @@ class Boots
 
     /**
      * Get the versioned boots api instance.
-     * @since 2.0.0
-     * @return API_x_x_x Boots api instance
+     * @return Api Boots api instance
      */
     public function getInstance()
     {
@@ -230,12 +245,8 @@ class Boots
     }
 
     /**
-     * __get Magic Method.
      * Returns an extension instance.
      *
-     * @since  1.0.0
-     * @uses   Boots
-     * @access public
      * @param  string $extension Extension.
      * @return object
      */
