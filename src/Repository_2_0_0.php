@@ -47,6 +47,22 @@ class Repository_2_0_0 implements RepositoryInterface
     }
 
     /**
+     * Recursive setter.
+     * @param  string $key   Key string
+     * @param  mixed  $value Value to set
+     * @return $this
+     */
+    protected function setter($key, $value)
+    {
+        $keys = explode('.', $key);
+        $key = array_shift($keys);
+        if (count($keys) == 0) {
+            return [$key => $value];
+        }
+        return [$key => $this->setter(implode('.', $keys), $value)];
+    }
+
+    /**
      * Resolve a dot notated key from the repository.
      * @param  string  $key   Key to resolve
      * @param  boolean $found Was the key found or not?
@@ -129,21 +145,10 @@ class Repository_2_0_0 implements RepositoryInterface
         return $value;
     }
 
-    protected function setter($key, $value)
-    {
-        $keys = explode('.', $key);
-        $key = array_shift($keys);
-        if (count($keys) == 0) {
-            return [$key => $value];
-        }
-        return [$key => $this->setter(implode('.', $keys), $value)];
-    }
-
     /**
      * Set a value for a given key.
-     * @param string     $key   Key string
-     * @param mixed      $value Value to set
-     * @param array|null $repo  For internal use
+     * @param  string $key   Key string
+     * @param  mixed  $value Value to set
      * @return $this Allow chaining
      */
     public function set($key, $value)
@@ -155,8 +160,8 @@ class Repository_2_0_0 implements RepositoryInterface
 
     /**
      * Set a default value for a given key.
-     * @param string     $key   Key string
-     * @param mixed      $value Value to set
+     * @param  string $key   Key string
+     * @param  mixed  $value Value to set
      * @return $this Allow chaining
      */
     public function preset($key, $value)
