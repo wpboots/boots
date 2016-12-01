@@ -71,12 +71,11 @@ interface RepositoryInterface
 
     /**
      * Append a value onto a key value.
-     * @param  string     $k     Key string
-     * @param  mixed      $value Value to append
-     * @param  array|null $repo  For internal use
+     * @param  string $k     Key string
+     * @param  mixed  $value Value to append
      * @return $this Allow chaining
      */
-    public function append($k, $value, & $repo = null);
+    public function append($key, $value);
 
     /**
      * Add a repository as a delegate.

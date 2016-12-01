@@ -174,36 +174,19 @@ class Repository_2_0_0 implements RepositoryInterface
 
     /**
      * Append a value onto a key value.
-     * @param  string     $k     Key string
-     * @param  mixed      $value Value to append
-     * @param  array|null $repo  For internal use
+     * @param  string $k     Key string
+     * @param  mixed  $value Value to append
      * @return $this Allow chaining
      */
-    public function append($k, $value, & $repo = null)
+    public function append($key, $value)
     {
-        $keys = explode('.', $k);
-        $key = array_shift($keys);
-        $val = $this->get(count($key) == 0 ? $key : $k, []);
-        if (!is_array($val)) {
-            $val = [$val];
+        $oldValue = $this->get($key, []);
+        if (is_array($oldValue)) {
+            $oldValue[] = $value;
+            return $this->set($key, $oldValue);
         }
-        if (is_array($value)) {
-            $val = $value;
-        } else {
-            $val[] = $value;
-        }
-        if (count($keys) == 0) {
-            if (is_null($repo)) {
-                $repo = [$key => $val];
-                $this->repo = array_replace_recursive($this->repo, $repo);
-                return $this;
-            }
-            $repo[$key] = $val;
-            return $this;
-        }
-        $repo[$key] = $this->setter(implode('.', $keys), $val, []);
-        $this->repo = array_replace_recursive($this->repo, $repo);
-        return $this;
+        $newValue = [$oldValue, $value];
+        return $this->set($key, $newValue);
     }
 
     /**
