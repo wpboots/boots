@@ -38,14 +38,14 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     public function it_should_throw_exception_if_type_is_invalid()
     {
         $this->setExpectedException('Boots\Exception\InvalidTypeException');
-        new Boots(null, ['abspath' => __FILE__]);
+        new Boots(null, ['abspath' => $this->abspath]);
     }
 
     /** @test */
     public function it_should_throw_exception_if_id_not_provided()
     {
         $this->setExpectedException('Boots\Exception\InvalidConfigException');
-        new Boots('plugin', ['abspath' => __FILE__]);
+        new Boots('plugin', ['abspath' => $this->abspath]);
     }
 
     /** @test */
@@ -53,7 +53,7 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Boots\Exception\InvalidConfigException');
         new Boots('plugin', [
-            'abspath' => __FILE__,
+            'abspath' => $this->abspath,
             'id' => 'boots_test',
         ]);
     }
@@ -63,7 +63,7 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Boots\Exception\InvalidConfigException');
         new Boots('plugin', [
-            'abspath' => __FILE__,
+            'abspath' => $this->abspath,
             'id' => 'boots_test',
             'nick' => 'Boots Test',
         ]);
@@ -74,7 +74,7 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals('production', $this->boots->getConfig()->get('env'));
         $boots = new Boots('plugin', [
-            'abspath' => __FILE__,
+            'abspath' => $this->abspath,
             'id' => 'boots_test',
             'nick' => 'Boots Test',
             'version' => '0.1.0',
