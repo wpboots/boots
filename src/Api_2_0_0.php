@@ -31,9 +31,16 @@ class Api_2_0_0
      */
     protected $boots;
 
-    public function __construct(Boots $boots)
+    /**
+     * Extension storage
+     * @var array
+     */
+    protected $extensions;
+
+    public function __construct(Boots $boots, array $extensions = [])
     {
         $this->boots = $boots;
+        $this->extensions = $extensions;
         $this->validateConfig();
         $this->makeConfig();
     }
@@ -42,7 +49,7 @@ class Api_2_0_0
     {
         $type = $this->boots->getType();
         if(!in_array($type, ['plugin', 'theme'])) {
-            throw new Exception\InvalidTypeException(
+            throw new Exception\UnkownTypeException(
                 'Only plugin or theme type is acceptable'
             );
         }
@@ -115,5 +122,10 @@ class Api_2_0_0
         $config->set('boots.extend_url', $config->get('boots.url') . '/extend');
         $config->set('php.version', phpversion());
         $config->set('php.version_id', PHP_VERSION_ID);
+    }
+
+    public function __get($extension)
+    {
+        return $this->extend(strip_tags($extension));
     }
 }

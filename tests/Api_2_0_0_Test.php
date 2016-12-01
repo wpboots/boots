@@ -56,7 +56,7 @@ class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_throw_exception_if_type_is_invalid()
     {
-        $this->setExpectedException('Boots\Exception\InvalidTypeException');
+        $this->setExpectedException('Boots\Exception\UnkownTypeException');
         new Boots(null, ['abspath' => $this->abspath]);
     }
 

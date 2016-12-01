@@ -3,10 +3,10 @@
 namespace Boots\Exception;
 
 /**
- * The boots api.
+ * Unkown type exception.
  *
  * @package Boots
- * @subpackage Exception\InvalidTypeException
+ * @subpackage Exception\UnkownTypeException
  * @version 2.0.0
  * @see http://wpboots.com
  * @link https://github.com/wpboots/boots
@@ -20,8 +20,8 @@ if(!defined('ABSPATH')) die(-1);
 
 /**
  * @package Boots
- * @subpackage Exception\InvalidTypeException
+ * @subpackage UnkownTypeException
  */
-class InvalidTypeException extends \Exception
+class UnkownTypeException extends \Exception
 {
 }

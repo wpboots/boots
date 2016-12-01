@@ -3,7 +3,7 @@
 namespace Boots\Exception;
 
 /**
- * The boots api.
+ * Invalid config exception.
  *
  * @package Boots
  * @subpackage Exception\InvalidConfigException
@@ -20,7 +20,7 @@ if(!defined('ABSPATH')) die(-1);
 
 /**
  * @package Boots
- * @subpackage Exception\InvalidConfigException
+ * @subpackage InvalidConfigException
  */
 class InvalidConfigException extends \Exception
 {
