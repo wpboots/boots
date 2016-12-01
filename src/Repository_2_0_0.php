@@ -129,6 +129,16 @@ class Repository_2_0_0 implements RepositoryInterface
         return $value;
     }
 
+    protected function setter($key, $value)
+    {
+        $keys = explode('.', $key);
+        $key = array_shift($keys);
+        if (count($keys) == 0) {
+            return [$key => $value];
+        }
+        return [$key => $this->setter(implode('.', $keys), $value)];
+    }
+
     /**
      * Set a value for a given key.
      * @param string     $key   Key string
@@ -136,21 +146,9 @@ class Repository_2_0_0 implements RepositoryInterface
      * @param array|null $repo  For internal use
      * @return $this Allow chaining
      */
-    public function set($key, $value, & $repo = null)
+    public function set($key, $value)
     {
-        $keys = explode('.', $key);
-        $key = array_shift($keys);
-        if (count($keys) == 0) {
-            if (is_null($repo)) {
-                $repo = [$key => $value];
-                $this->repo = array_replace_recursive($this->repo, $repo);
-                return $this;
-            }
-            $repo[$key] = $value;
-            return $this;
-        }
-        $repo[$key] = [];
-        $this->set(implode('.', $keys), $value, $repo[$key]);
+        $repo = $this->setter($key, $value, null);
         $this->repo = array_replace_recursive($this->repo, $repo);
         return $this;
     }
@@ -198,8 +196,7 @@ class Repository_2_0_0 implements RepositoryInterface
             $repo[$key] = $val;
             return $this;
         }
-        $repo[$key] = [];
-        $this->set(implode('.', $keys), $val, $repo[$key]);
+        $repo[$key] = $this->setter(implode('.', $keys), $val, []);
         $this->repo = array_replace_recursive($this->repo, $repo);
         return $this;
     }

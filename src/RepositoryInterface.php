@@ -57,10 +57,9 @@ interface RepositoryInterface
      * Set a value for a given key.
      * @param string     $key   Key string
      * @param mixed      $value Value to set
-     * @param array|null $repo  For internal use
      * @return $this Allow chaining
      */
-    public function set($key, $value, & $repo = null);
+    public function set($key, $value);
 
     /**
      * Set a default value for a given key.

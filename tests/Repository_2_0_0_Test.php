@@ -120,6 +120,14 @@ class Repository_2_0_0_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $this->repo->get('two.foo', 'foo'));
         $this->assertEquals('baz', $this->repo->get('two.bar'));
         $this->assertEquals('baz', $this->repo->get('two.bar', 'bar'));
+
+        // Three levels deep
+        $this->assertEquals(null, $this->repo->get('a.b.c'));
+        $this->repo->set('a.b.c', 'd');
+        $this->assertEquals(['b' => ['c' => 'd']], $this->repo->get('a'));
+        $this->assertEquals(['c' => 'd'], $this->repo->get('a.b'));
+        $this->assertEquals('d', $this->repo->get('a.b.c'));
+        $this->assertNull($this->repo->get('b'));
     }
 
     /** @test */
@@ -144,7 +152,7 @@ class Repository_2_0_0_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals(['foo', 'bar'], $this->repo->get('foo'));
         $this->repo->append('foo', 'baz');
         $this->assertEquals(['foo', 'bar', 'baz'], $this->repo->get('foo'));
-        
+
         $this->assertEquals('two_one_value', $this->repo->get('two.two_one'));
         $this->repo->append('two.two_one', 'two_one_value2');
         $this->assertEquals(['two_one_value', 'two_one_value2'], $this->repo->get('two.two_one'));
