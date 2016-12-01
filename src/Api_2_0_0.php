@@ -27,13 +27,15 @@ class Api_2_0_0
 {
     /**
      * Boots instance
-     * @var Boots\Boots
+     * @var Boots
      */
     protected $boots;
 
     public function __construct(Boots $boots)
     {
-        $this->setBoots($boots);
+        $this->boots = $boots;
+        $this->validateConfig();
+        $this->makeConfig();
     }
 
     protected function validateConfig()
@@ -113,13 +115,5 @@ class Api_2_0_0
         $config->set('boots.extend_url', $config->get('boots.url') . '/extend');
         $config->set('php.version', phpversion());
         $config->set('php.version_id', PHP_VERSION_ID);
-    }
-
-    public function setBoots(Boots $boots)
-    {
-        $this->boots = $boots;
-        $this->validateConfig();
-        $this->makeConfig();
-        return $this;
     }
 }
