@@ -177,13 +177,6 @@ class Api_2_0_0
                 'Constructor for %s may only have one parameter.', $fqcn
             ));
         }
-        // $reqType = get_class($this->boots);
-        // $param = array_shift($params);
-        // if ($param->getClass()->name != $reqType) {
-        //     throw new \Exception(sprintf(
-        //         'Constructor parameter for %s should be type hinted by %s.', $fqcn, $reqType
-        //     ));
-        // }
         return new $fqcn($this->boots);
     }
 
