@@ -110,6 +110,7 @@ class Install
         $name = $package->getName();
         $version = $package->getPrettyVersion();
         $path = $composer->getInstallationManager()->getInstallPath($package);
+        file_put_contents("{$path}/hello.txt", 'hello!');
         dump($name, $version, $path, static::getRootDirectory(__DIR__));
     }
 }
