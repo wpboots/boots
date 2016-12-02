@@ -32,7 +32,6 @@
         "test": "phpunit tests",
         "post-package-install": "Boots\\Installer\\Install::installExtension",
         "post-package-update": "Boots\\Installer\\Install::updateExtension",
-        "post-install-cmd": "Boots\\Installer\\Install::installBoots",
         "post-create-project-cmd": "Boots\\Installer\\Install::installBoots"
     },
     "extra": {
