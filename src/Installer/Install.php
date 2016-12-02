@@ -30,6 +30,24 @@ use PhpParser\PrettyPrinter\Standard as PhpPrinter;
  */
 class Install
 {
+    /**
+     * Hackish method to get the composer project root directory path.
+     * @param  string $dir Start from this directory
+     * @return string|null Root directory
+     */
+    protected static function getRootDirectory($dir)
+    {
+        $rootDir = null;
+        do {
+            $dir = dirname($dir);
+            if(file_exists($dir . '/composer.json'))
+            {
+                $rootDir = $dir;
+            }
+        } while(is_null($rootDir) && $dir != '/');
+        return $rootDir;
+    }
+
     protected static function mountExtension($version, $path2file, $path2manifest)
     {
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
@@ -91,7 +109,7 @@ class Install
         $package = $composer->getPackage();
         $name = $package->getName();
         $version = $package->getPrettyVersion();
-        $path = $composer->getInstallationManager()->getInstallPath($package);
-        dump($name, $version, $path, $package->getTargetDir());
+        // $path = $composer->getInstallationManager()->getInstallPath($package);
+        dump($name, $version, $path, static::getRootDirectory(__DIR__));
     }
 }
