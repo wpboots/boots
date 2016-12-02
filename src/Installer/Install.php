@@ -87,6 +87,11 @@ class Install
 
     public static function boots(Event $event)
     {
-        //
+        $composer = $event->getComposer();
+        $package = $event->getOperation()->getPackage();
+        $name = $package->getName();
+        $version = $package->getPrettyVersion();
+        $path = $composer->getInstallationManager()->getInstallPath($package);
+        dump($name, $version, $path);
     }
 }
