@@ -109,7 +109,7 @@ class Install
         $package = $composer->getPackage();
         $name = $package->getName();
         $version = $package->getPrettyVersion();
-        // $path = $composer->getInstallationManager()->getInstallPath($package);
+        $path = $composer->getInstallationManager()->getInstallPath($package);
         dump($name, $version, $path, static::getRootDirectory(__DIR__));
     }
 }
