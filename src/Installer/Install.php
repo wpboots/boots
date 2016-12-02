@@ -113,6 +113,7 @@ class Install
             echo 'Could not locate the base directory.';
             exit;
         }
+        dump(file_get_contents("{$path}/boots.json"));
         file_put_contents("{$path}/hello.txt", 'hello!');
         dump($name, $version, $path);
     }
