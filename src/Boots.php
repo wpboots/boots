@@ -124,7 +124,7 @@ class Boots
     protected function getLocalInterface($prefix, $version = '')
     {
         $fqin = $this->getLocal($prefix, $version);
-        if (!class_exists($fqin[0])) {
+        if (!interface_exists($fqin[0])) {
             require_once __DIR__ . "/{$prefix}.php";
         }
         return $fqin[0];
