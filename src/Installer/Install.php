@@ -127,13 +127,13 @@ class Install
             $jsonContents = file_get_contents($path2manifest);
             $mArr = json_decode($jsonContents, true);
             if (array_key_exists('version', $mArr) && !empty($mArr['version'])) {
+                static::writeManifest("{$path}/tests/another-plugin/boots/boots.json", $mArr);
+                static::writeManifest("{$path}/tests/yet-another-plugin/boots/boots.json",$mArr);
                 return;
             }
         }
         $fqcnApi = static::mountFile("{$path}/src/Api.php", $version);
         $fqcnRepo = static::mountFile("{$path}/src/Repository.php", $version);
-        static::writeManifest($path2manifest, [
-            'version' => $version
-        ]);
+        static::writeManifest($path2manifest, ['version' => $version]);
     }
 }
