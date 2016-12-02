@@ -16,7 +16,7 @@ namespace Boots\Installer;
  */
 
 use PhpParser\Error;
-// use Composer\Script\Event;
+use Composer\Script\Event;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use Composer\Installer\PackageEvent;
@@ -85,7 +85,7 @@ class Install
         static::extension($event, $package);
     }
 
-    public static function boots(PackageEvent $event)
+    public static function boots(Event $event)
     {
         //
     }
