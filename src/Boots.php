@@ -78,7 +78,7 @@ class Boots
     {
         $this->type = $type;
         $manifest = $this->extractManifest($config['abspath']);
-        $this->loadRepository('Repository', $manifest['repository']['version']);
+        $this->loadRepository('Repository', $manifest['version']);
         $this->setupManifest($manifest);
         $this->setupConfig($config);
         $this->setupApi($this->getVersion());
@@ -110,7 +110,7 @@ class Boots
     {
         $fqcn = $this->getLocal($prefix, $version);
         if (!class_exists($fqcn[0])) {
-            require_once __DIR__ . "/{$fqcn[1]}.php";
+            require_once __DIR__ . "/{$prefix}.php";
         }
         return $fqcn[0];
     }
@@ -125,7 +125,7 @@ class Boots
     {
         $fqin = $this->getLocal($prefix, $version);
         if (!class_exists($fqin[0])) {
-            require_once __DIR__ . "/{$fqin[1]}.php";
+            require_once __DIR__ . "/{$prefix}.php";
         }
         return $fqin[0];
     }

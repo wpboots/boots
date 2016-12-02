@@ -1,8 +1,8 @@
 <?php
 
-use Boots\Repository_2_0_0 as Repository;
+use Boots\Repository;
 
-class Repository_2_0_0_Test extends PHPUnit_Framework_TestCase
+class RepositoryTest extends PHPUnit_Framework_TestCase
 {
     protected $repo;
 

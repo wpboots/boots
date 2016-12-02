@@ -23,7 +23,7 @@ if(!defined('ABSPATH')) die(-1);
  * @subpackage Api
  * @version 2.0.0
  */
-class Api_2_0_0
+class Api
 {
     /**
      * Boots instance

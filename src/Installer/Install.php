@@ -48,7 +48,7 @@ class Install
         return $rootDir;
     }
 
-    protected static function mountExtension($version, $path2file, $path2manifest)
+    protected static function mountFile($path2file, $version = '')
     {
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         $traverser = new NodeTraverser;
@@ -68,10 +68,13 @@ class Install
         $code = $prettyPrinter->prettyPrintFile($stmts);
         // save file
         file_put_contents($path2file, $code);
-        // save manifest
-        $fqcn = str_replace('\\', '\\\\', $visitor->getFqcn());
-        $manifest = "{\"class\":\"{$fqcn}\", \"version\":\"{$version}\"}";
-        file_put_contents($path2manifest, $manifest);
+        // return fqcn
+        return str_replace('\\', '\\\\', $visitor->getFqcn());
+    }
+
+    protected static function writeManifest($path2manifest, array $data)
+    {
+        file_put_contents($path2manifest, json_encode($data));
     }
 
     protected static function extension(PackageEvent $event, $package)
@@ -83,38 +86,54 @@ class Install
         $composer = $event->getComposer();
         $name = $package->getName();
         $version = $package->getPrettyVersion();
+        $version = str_replace('-', '.', $version);
         $path = $composer->getInstallationManager()->getInstallPath($package);
         $path2file = "{$path}/index.php";
         $path2manifest = "{$path}/boots.json";
         if (!is_file($path2manifest)) {
-            static::mountExtension($version, $path2file, $path2manifest);
+            $fqcn = static::mountFile($path2file, $version);
+            static::writeManifest($path2manifest, [
+                'class' => $fqcn,
+                'version' => $version,
+            ]);
         }
     }
 
-    public static function extensionInstall(PackageEvent $event)
+    public static function installExtension(PackageEvent $event)
     {
         $package = $event->getOperation()->getPackage();
         static::extension($event, $package);
     }
 
-    public static function extensionUpdate(PackageEvent $event)
+    public static function updateExtension(PackageEvent $event)
     {
         $package = $event->getOperation()->getInitialPackage();
         static::extension($event, $package);
     }
 
-    public static function boots(Event $event)
+    public static function installBoots(Event $event)
     {
         $composer = $event->getComposer();
         $package = $composer->getPackage();
         $name = $package->getName();
         $version = $package->getPrettyVersion();
+        $version = str_replace('-', '.', $version);
         if (is_null($path = static::getRootDirectory(__DIR__))) {
             echo 'Could not locate the base directory.';
             exit;
         }
-        dump(file_get_contents("{$path}/boots.json"));
-        file_put_contents("{$path}/hello.txt", 'hello!');
-        dump($name, $version, $path);
+        $path2manifest = "{$path}/boots.json";
+        if (is_file($path2manifest)) {
+            $jsonContents = file_get_contents($path2manifest);
+            $mArr = json_decode($jsonContents, true);
+            if (array_key_exists('version', $mArr) && !empty($mArr['version'])) {
+                return;
+            }
+        }
+        $fqcnApi = static::mountFile("{$path}/src/Api.php", $version);
+        $fqcnRepo = static::mountFile("{$path}/src/Repository.php", $version);
+        static::writeManifest($path2manifest, [
+            'version' => $version
+        ]);
     }
 }

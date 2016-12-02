@@ -2,7 +2,7 @@
 
 use Boots\Boots;
 
-class Api_2_0_0_Test extends PHPUnit_Framework_TestCase
+class ApiTest extends PHPUnit_Framework_TestCase
 {
     protected $boots;
 

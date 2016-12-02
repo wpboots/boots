@@ -26,10 +26,7 @@ class BootsTest extends PHPUnit_Framework_TestCase
     public function it_should_setup_the_manifest_repository()
     {
         $expectedArray = [
-            'version' => '2.0.0',
-            'repository' => [
-                'version' => '2.0.0',
-            ],
+            'version' => '',
         ];
         $this->assertEquals($expectedArray, $this->boots->getManifest()->all());
     }
@@ -53,12 +50,12 @@ class BootsTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_return_the_version_of_the_api()
     {
-        $this->assertEquals('2.0.0', $this->boots->getVersion());
+        $this->assertEquals('', $this->boots->getVersion());
     }
 
     /** @test */
     public function it_should_return_the_api_instance()
     {
-        $this->assertInstanceOf('Boots\Api_2_0_0', $this->boots->getInstance());
+        $this->assertInstanceOf('Boots\Api', $this->boots->getInstance());
     }
 }

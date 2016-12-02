@@ -23,7 +23,7 @@ if(!defined('ABSPATH')) die(-1);
  * @subpackage Repository
  * @version 2.0.0
  */
-class Repository_2_0_0 implements RepositoryInterface
+class Repository implements RepositoryInterface
 {
     /**
      * The repository
