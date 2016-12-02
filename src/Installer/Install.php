@@ -134,6 +134,9 @@ class Install
         }
         $fqcnApi = static::mountFile("{$path}/src/Api.php", $version);
         $fqcnRepo = static::mountFile("{$path}/src/Repository.php", $version);
-        static::writeManifest($path2manifest, ['version' => $version]);
+        $mArr = ['version' => $version];
+        static::writeManifest($path2manifest, $mArr);
+        static::writeManifest("{$path}/tests/another-plugin/boots/boots.json", $mArr);
+        static::writeManifest("{$path}/tests/yet-another-plugin/boots/boots.json",$mArr);
     }
 }
