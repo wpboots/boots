@@ -1,10 +1,10 @@
 {
     "name": "boots/boots",
     "type": "library",
-    "description": "Rapid wordpress plugin and theme development framework",
-    "keywords": ["wordpress","framework","boots"],
+    "description": "A rapid wordpress plugin and theme development framework",
+    "keywords": ["wordpress","plugin","theme","boots","framework"],
     "homepage": "http://wpboots.com",
-    "license": "GPLv2",
+    "license": "MIT",
     "authors": [
         {
             "name": "M. Kamal Khan",
@@ -38,12 +38,5 @@
         "installer-paths": {
             "extend/{$name}": ["type:boots-extension"]
         }
-    },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://packagist.org"
-        },
-        { "packagist": false }
-    ]
+    }
 }
