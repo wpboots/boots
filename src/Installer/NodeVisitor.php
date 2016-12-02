@@ -39,7 +39,9 @@ class NodeVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Stmt\Class_) {
             $this->fqcn = $node->namespacedName->toString();
-            $node->name = "{$this->fqcn}_{$this->version}";
+            $classParts = explode('\\', $this->fqcn);
+            $classname = $classParts[count($classParts)-1];
+            $node->name = "{$classname}_{$this->version}";
         }
     }
 
