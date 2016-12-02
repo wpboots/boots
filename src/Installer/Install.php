@@ -109,8 +109,11 @@ class Install
         $package = $composer->getPackage();
         $name = $package->getName();
         $version = $package->getPrettyVersion();
-        $path = $composer->getInstallationManager()->getInstallPath($package);
+        if (is_null($path = static::getRootDirectory(__DIR__))) {
+            echo 'Could not locate the base directory.';
+            exit;
+        }
         file_put_contents("{$path}/hello.txt", 'hello!');
-        dump($name, $version, $path, static::getRootDirectory(__DIR__));
+        dump($name, $version, $path);
     }
 }
