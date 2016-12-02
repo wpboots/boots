@@ -92,6 +92,6 @@ class Install
         $name = $package->getName();
         $version = $package->getPrettyVersion();
         $path = $composer->getInstallationManager()->getInstallPath($package);
-        dump($name, $version, $path);
+        dump($name, $version, $path, $composer->getConfig()->all());
     }
 }
