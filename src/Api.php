@@ -68,13 +68,13 @@ class Api
      */
     protected function validateConfig()
     {
-        $type = $this->boots->getType();
-        if(!in_array($type, ['plugin', 'theme'])) {
+        $config = $this->boots->getConfig();
+
+        if(!in_array($config->get('type'), ['plugin', 'theme'])) {
             throw new Exception\UnkownTypeException(
                 'Only plugin or theme type is acceptable'
             );
         }
-        $config = $this->boots->getConfig();
         if(!$config->has('abspath')) {
             throw new Exception\InvalidConfigException(
                 'abspath configuration key is required'
@@ -103,10 +103,10 @@ class Api
      */
     protected function makeConfig()
     {
-        $type = $this->boots->getType();
         $config = $this->boots->getConfig();
+        $type = $config->get('type');
         $config->preset('env', 'production');
-        $config->set('app.type', $this->boots->getType());
+        $config->set('app.type', $type);
         $config->set('app.path', dirname($config->get('abspath')));
         if ($type == 'plugin') {
             $pluginDirName = basename($config->get('app.path'));

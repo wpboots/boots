@@ -14,7 +14,8 @@ class BootsTest extends PHPUnit_Framework_TestCase
     {
         $this->appPath = dirname(dirname(dirname(__FILE__)));
         $this->abspath = "{$this->appPath}/index.php";
-        $this->boots = new Boots('plugin', [
+        $this->boots = new Boots([
+            'type' => 'plugin',
             'abspath' => $this->abspath,
             'id' => 'boots_test',
             'nick' => 'Boots Test',
@@ -44,7 +45,7 @@ class BootsTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_return_the_type_of_the_application()
     {
-        $this->assertEquals('plugin', $this->boots->getType());
+        $this->assertEquals('plugin', $this->boots->getConfig()->get('type'));
     }
 
     /** @test */

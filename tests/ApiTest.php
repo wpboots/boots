@@ -42,6 +42,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $this->appName = basename($this->appPath);
         $this->abspath = "{$this->appPath}/index.php";
         $this->config = [
+            'type' => 'plugin',
             'abspath' => $this->abspath,
             'id' => 'boots_test',
             'nick' => 'Boots Test',
@@ -50,13 +51,13 @@ class ApiTest extends PHPUnit_Framework_TestCase
             'icon' => '/icon.png',
         ];
 
-        $this->boots = new Boots('plugin', $this->config);
+        $this->boots = new Boots($this->config);
 
         // Another plugin
         $this->appName2 = 'another-plugin';
         $this->appPath2 = __DIR__ . "/{$this->appName2}";
         $this->abspath2 = "{$this->appPath2}/plugin.php";
-        $this->boots2 = new Boots('plugin', array_replace($this->config, [
+        $this->boots2 = new Boots(array_replace($this->config, [
             'abspath' => $this->abspath2,
             'id' => 'boots_test_2',
             'nick' => 'Boots Test 2',
@@ -66,7 +67,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $this->appName3 = 'yet-another-plugin';
         $this->appPath3 = __DIR__ . "/{$this->appName3}";
         $this->abspath3 = "{$this->appPath3}/plugin.php";
-        $this->boots3 = new Boots('plugin', array_replace($this->config, [
+        $this->boots3 = new Boots(array_replace($this->config, [
             'abspath' => $this->abspath3,
             'id' => 'boots_test_3',
             'nick' => 'Boots Test 3',
@@ -77,21 +78,22 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function it_should_throw_exception_if_type_is_invalid()
     {
         $this->setExpectedException('Boots\Exception\UnkownTypeException');
-        new Boots(null, ['abspath' => $this->abspath]);
+        new Boots(['abspath' => $this->abspath]);
     }
 
     /** @test */
     public function it_should_throw_exception_if_id_not_provided()
     {
         $this->setExpectedException('Boots\Exception\InvalidConfigException');
-        new Boots('plugin', ['abspath' => $this->abspath]);
+        new Boots(['type' => 'plugin', 'abspath' => $this->abspath]);
     }
 
     /** @test */
     public function it_should_throw_exception_if_nick_not_provided()
     {
         $this->setExpectedException('Boots\Exception\InvalidConfigException');
-        new Boots('plugin', [
+        new Boots([
+            'type' => 'plugin',
             'abspath' => $this->abspath,
             'id' => 'boots_test',
         ]);
@@ -101,7 +103,8 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function it_should_throw_exception_if_version_not_provided()
     {
         $this->setExpectedException('Boots\Exception\InvalidConfigException');
-        new Boots('plugin', [
+        new Boots([
+            'type' => 'plugin',
             'abspath' => $this->abspath,
             'id' => 'boots_test',
             'nick' => 'Boots Test',
@@ -112,7 +115,8 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function it_should_set_the_default_env()
     {
         $this->assertEquals('production', $this->boots->getConfig()->get('env'));
-        $boots = new Boots('plugin', [
+        $boots = new Boots([
+            'type' => 'plugin',
             'abspath' => $this->abspath,
             'id' => 'boots_test',
             'nick' => 'Boots Test',
