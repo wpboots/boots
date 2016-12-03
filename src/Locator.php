@@ -44,11 +44,11 @@ class Locator implements Contract\LocatorContract
         $versionedClass = $class . $suffix;
         if (!class_exists($versionedClass)) {
             if (!is_file($filepath)) {
-                throw new Exception\InvalidConfigException('File not found.');
+                throw new Exception\FileNotFoundException('File not found.');
             }
             require_once $filepath;
             if (!class_exists($versionedClass)) {
-                throw new Exception\InvalidConfigException('Class not found.');
+                throw new Exception\ClassNotFoundException('Class not found.');
             }
         }
         return $versionedClass;
