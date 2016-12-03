@@ -28,14 +28,8 @@ if(!defined('ABSPATH')) die(-1);
 class Boots
 {
     /**
-     * Type of application
-     * @var string
-     */
-    protected $type;
-
-    /**
      * Configuration repository
-     * @var array
+     * @var RepositoryInterface
      */
     protected $config;
 
@@ -71,17 +65,15 @@ class Boots
 
     /**
      * Setup and fire up the boots api instance.
-     * @param string $type   Type of application
      * @param array  $config Configuration array
      */
-    public function __construct($type, array $config)
+    public function __construct(array $config)
     {
-        $this->type = $type;
         $manifest = $this->extractManifest($config['abspath']);
-        $this->loadRepository('Repository', $manifest['version']);
-        $this->setupManifest($manifest);
-        $this->setupConfig($config);
-        $this->setupApi($this->getVersion());
+        $this->repositoryClass = $this->loadRepository('Repository', $manifest['version']);
+        $this->config = $this->setupConfig($config);
+        $this->manifest = $this->setupManifest($manifest);
+        $this->api = $this->setupApi($this->manifest->get('version'));
     }
 
     /**
@@ -97,7 +89,7 @@ class Boots
         $nsParts = explode('\\', get_class());
         $name = $prefix . $suffix;
         $nsParts[count($nsParts)-1] = $name;
-        return [implode('\\', $nsParts), $name];
+        return implode('\\', $nsParts);
     }
 
     /**
@@ -109,10 +101,10 @@ class Boots
     protected function getLocalClass($prefix, $version = '')
     {
         $fqcn = $this->getLocal($prefix, $version);
-        if (!class_exists($fqcn[0])) {
+        if (!class_exists($fqcn)) {
             require_once __DIR__ . "/{$prefix}.php";
         }
-        return $fqcn[0];
+        return $fqcn;
     }
 
     /**
@@ -124,10 +116,10 @@ class Boots
     protected function getLocalInterface($prefix, $version = '')
     {
         $fqin = $this->getLocal($prefix, $version);
-        if (!interface_exists($fqin[0])) {
+        if (!interface_exists($fqin)) {
             require_once __DIR__ . "/{$prefix}.php";
         }
-        return $fqin[0];
+        return $fqin;
     }
 
     /**
@@ -152,8 +144,7 @@ class Boots
     protected function loadRepository($prefix = 'Repository', $version = '')
     {
         $this->getLocalInterface("{$prefix}Interface");
-        $this->repositoryClass = $this->getLocalClass($prefix, $version);
-        return $this->repositoryClass;
+        return $this->getLocalClass($prefix, $version);
     }
 
     /**
@@ -163,8 +154,7 @@ class Boots
      */
     protected function setupManifest(array $manifest)
     {
-        $this->manifest = new $this->repositoryClass($manifest);
-        return $this->manifest;
+        return new $this->repositoryClass($manifest);
     }
 
     /**
@@ -174,8 +164,7 @@ class Boots
      */
     protected function setupConfig(array $config)
     {
-        $this->config = new $this->repositoryClass($config);
-        return $this->config;
+        return new $this->repositoryClass($config);
     }
 
     /**
@@ -186,8 +175,7 @@ class Boots
     protected function setupApi($version)
     {
         $class = $this->getLocalClass('Api', $version);
-        $this->api = new $class($this);
-        return $this->api;
+        return new $class($this);
     }
 
     /**
@@ -206,15 +194,6 @@ class Boots
     public function getConfig()
     {
         return $this->config;
-    }
-
-    /**
-     * Get the type of the application.
-     * @return string plugin or theme
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 
     /**
