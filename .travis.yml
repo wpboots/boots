@@ -44,18 +44,18 @@ matrix:
 before_script:
     - export PLUGIN_SLUG=boots
     - export FRAMEWORK_SLUG=$(basename $(pwd))
-    - git clone --depth=50 --branch="$WP_VERSION" git://develop.git.wordpress.org/ /tmp/wordpress
+    - git clone --depth=50 --branch="$WP_VERSION" https://github.com/WordPress/WordPress.git /tmp/wordpress
     - cd ..
-    - mkdir /tmp/wordpress/src/wp-content/plugins/$PLUGIN_SLUG
-    - mv "$FRAMEWORK_SLUG" "/tmp/wordpress/src/wp-content/plugins/$PLUGIN_SLUG/$FRAMEWORK_SLUG"
+    - mkdir /tmp/wordpress/wp-content/plugins/$PLUGIN_SLUG
+    - mv "$FRAMEWORK_SLUG" "/tmp/wordpress/wp-content/plugins/$PLUGIN_SLUG/$FRAMEWORK_SLUG"
     - cd /tmp/wordpress
     - mysql -e "CREATE DATABASE wordpress_tests;" -uroot
     - cp wp-config-sample.php wp-config.php
     - sed -i "s/database_name_here/wordpress_tests/" wp-config.php
     - sed -i "s/username_here/travis/" wp-config.php
     - sed -i "s/password_here//" wp-config.php
-    - cd "/tmp/wordpress/src/wp-content/plugins/$PLUGIN_SLUG/$FRAMEWORK_SLUG"
+    - cd "/tmp/wordpress/wp-content/plugins/$PLUGIN_SLUG/$FRAMEWORK_SLUG"
     - composer install
-    - echo "ABSPATH=/tmp/wordpress/src" > .env
+    - echo "ABSPATH=/tmp/wordpress" > .env
 
 script: phpunit tests
