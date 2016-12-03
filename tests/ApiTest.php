@@ -74,6 +74,12 @@ class ApiTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_should_fail()
+    {
+        $this->assertTrue(false);
+    }
+
+    /** @test */
     public function it_should_throw_exception_if_type_is_invalid()
     {
         $this->setExpectedException('Boots\Exception\UnkownTypeException');
