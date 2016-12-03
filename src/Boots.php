@@ -52,27 +52,11 @@ class Boots
     public function __construct(array $config)
     {
         $manifest = $this->extractManifest($config['abspath']);
-        $repoClass = $this->loadRepository($manifest['version']);
-        $apiClass = $this->loadApi($manifest['version']);
+        $repoClass = $this->getLocalClass('Repository', $manifest['version']);
         $this->config = new $repoClass($config);
         $this->manifest = new $repoClass($manifest);
+        $apiClass = $this->getLocalClass('Api', $manifest['version']);
         $this->api = new $apiClass($this);
-    }
-
-    /**
-     * Get a local class or interface.
-     * @param  string $prefix  Name of class or interface
-     * @param  string $version Version
-     * @return string Fully qualified class or interface name
-     */
-    protected function getLocal($prefix, $version)
-    {
-        $suffix = str_replace('.', '_', $version);
-        $suffix = empty($suffix) ? '' : "_{$suffix}";
-        $nsParts = explode('\\', get_class());
-        $name = $prefix . $suffix;
-        $nsParts[count($nsParts)-1] = $name;
-        return implode('\\', $nsParts);
     }
 
     /**
@@ -83,26 +67,13 @@ class Boots
      */
     protected function getLocalClass($prefix, $version = '')
     {
-        $fqcn = $this->getLocal($prefix, $version);
+        $suffix = str_replace('.', '_', $version);
+        $suffix = empty($suffix) ? '' : "_{$suffix}";
+        $fqcn = 'Boots\\' . $prefix . $suffix;
         if (!class_exists($fqcn)) {
             require_once __DIR__ . "/{$prefix}.php";
         }
         return $fqcn;
-    }
-
-    /**
-     * Get a local interface.
-     * @param  string $prefix  Name of interface
-     * @param  string $version Version
-     * @return string Fully qualified interface name
-     */
-    protected function getLocalInterface($prefix, $version = '')
-    {
-        $fqin = $this->getLocal($prefix, $version);
-        if (!interface_exists($fqin)) {
-            require_once __DIR__ . "/{$prefix}.php";
-        }
-        return $fqin;
     }
 
     /**
@@ -115,27 +86,6 @@ class Boots
         $jsonFile = dirname($abspath) . '/boots/boots.json';
         $jsonContents = file_get_contents($jsonFile);
         return json_decode($jsonContents, true);
-    }
-
-    /**
-     * Load the repostiory class and interface.
-     * @param  string $version Version
-     * @return string Fully qualified class name
-     */
-    protected function loadRepository($version)
-    {
-        $this->getLocalInterface('RepositoryInterface');
-        return $this->getLocalClass('Repository', $version);
-    }
-
-    /**
-     * Load the api class.
-     * @param  string $version Version
-     * @return string Fully qualified class name
-     */
-    protected function loadApi($version)
-    {
-        return $this->getLocalClass('Api', $version);
     }
 
     /**
