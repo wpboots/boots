@@ -40,18 +40,6 @@ class Boots
     protected $manifest;
 
     /**
-     * Boots directory name
-     * @var string
-     */
-    protected $bootsDir = 'boots';
-
-    /**
-     * Manifest file name
-     * @var string
-     */
-    protected $manifestFile = 'boots.json';
-
-    /**
      * Repository class
      * @var string
      */
@@ -129,8 +117,7 @@ class Boots
      */
     protected function extractManifest($abspath)
     {
-        $path = "{$this->bootsDir}/{$this->manifestFile}";
-        $jsonFile = dirname($abspath) . '/' . $path;
+        $jsonFile = dirname($abspath) . '/boots/boots.json';
         $jsonContents = file_get_contents($jsonFile);
         return json_decode($jsonContents, true);
     }
@@ -203,15 +190,6 @@ class Boots
     public function getVersion()
     {
         return $this->manifest->get('version');
-    }
-
-    /**
-     * Get the framework directory name.
-     * @return string Directory name
-     */
-    public function getDirName()
-    {
-        return $this->bootsDir;
     }
 
     /**

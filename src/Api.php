@@ -141,9 +141,9 @@ class Api
         $config->set('wp.theme.parent_url',  get_template_directory_uri());
         $config->set('wp.using_child_theme', $config->get('wp.theme.path') != $config->get('wp.theme.parent_path'));
         $config->set('boots.version', $this->boots->getVersion());
-        $config->set('boots.path', dirname($config->get('abspath')) . '/' . $this->boots->getDirName());
+        $config->set('boots.path', dirname($config->get('abspath')) . '/boots');
         $config->set('boots.extend_path', $config->get('boots.path') . '/extend');
-        $config->set('boots.url', $config->get('app.url') . '/' . $this->boots->getDirName());
+        $config->set('boots.url', $config->get('app.url') . '/boots');
         $config->set('boots.extend_url', $config->get('boots.url') . '/extend');
         $config->set('php.version', phpversion());
         $config->set('php.version_id', PHP_VERSION_ID);
