@@ -2,7 +2,7 @@
     "name": "boots/boots",
     "type": "library",
     "description": "A rapid wordpress plugin and theme development framework",
-    "keywords": ["wordpress","plugin","theme","boots","framework"],
+    "keywords": ["wordpress","rapid","plugin","theme","boots","framework"],
     "homepage": "http://wpboots.com",
     "license": "MIT",
     "authors": [
