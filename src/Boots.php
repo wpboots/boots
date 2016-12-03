@@ -59,8 +59,8 @@ class Boots
     {
         $manifest = $this->extractManifest($config['abspath']);
         $this->repositoryClass = $this->loadRepository('Repository', $manifest['version']);
-        $this->config = $this->setupConfig($config);
-        $this->manifest = $this->setupManifest($manifest);
+        $this->config = new $this->repositoryClass($config);
+        $this->manifest = new $this->repositoryClass($manifest);
         $this->api = $this->setupApi($this->manifest->get('version'));
     }
 
@@ -132,26 +132,6 @@ class Boots
     {
         $this->getLocalInterface("{$prefix}Interface");
         return $this->getLocalClass($prefix, $version);
-    }
-
-    /**
-     * Setup the manifest repository.
-     * @param  array $manifest Manifest array
-     * @return RepositoryInterface Manifest repository
-     */
-    protected function setupManifest(array $manifest)
-    {
-        return new $this->repositoryClass($manifest);
-    }
-
-    /**
-     * Setup the configuration repository.
-     * @param  array $config Configuration array
-     * @return RepositoryInterface Configuration repository
-     */
-    protected function setupConfig(array $config)
-    {
-        return new $this->repositoryClass($config);
     }
 
     /**
