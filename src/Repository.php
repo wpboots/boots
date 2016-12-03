@@ -23,7 +23,7 @@ if(!defined('ABSPATH')) die(-1);
  * @subpackage Repository
  * @version 2.0.0
  */
-class Repository implements RepositoryInterface
+class Repository implements Contract\RepositoryContract
 {
     /**
      * The repository
@@ -191,10 +191,10 @@ class Repository implements RepositoryInterface
 
     /**
      * Add a repository as a delegate.
-     * @param  RepositoryInterface $repository Repository interface
+     * @param  Contract\RepositoryContract $repository Repository interface
      * @return $this Allow chaining
      */
-    public function delegate(RepositoryInterface $repository)
+    public function delegate(Contract\RepositoryContract $repository)
     {
         $this->delegates[] = $repository;
         return $this;

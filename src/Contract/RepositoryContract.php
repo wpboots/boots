@@ -1,12 +1,12 @@
 <?php
 
-namespace Boots;
+namespace Boots\Contract;
 
 /**
- * Boots repository interface.
+ * Boots repository contract.
  *
  * @package Boots
- * @subpackage RepositoryInterface
+ * @subpackage RepositoryContract
  * @version 2.0.0
  * @see http://wpboots.com
  * @link https://github.com/wpboots/boots
@@ -20,10 +20,10 @@ if(!defined('ABSPATH')) die(-1);
 
 /**
  * @package Boots
- * @subpackage RepositoryInterface
+ * @subpackage RepositoryContract
  * @version 2.0.0
  */
-interface RepositoryInterface
+interface RepositoryContract
 {
     /**
      * Get the entire repository as an array.
@@ -79,8 +79,8 @@ interface RepositoryInterface
 
     /**
      * Add a repository as a delegate.
-     * @param  RepositoryInterface $repository Repository interface
+     * @param  RepositoryContract $repository Repository interface
      * @return $this Allow chaining
      */
-    public function delegate(RepositoryInterface $repository);
+    public function delegate(RepositoryContract $repository);
 }
