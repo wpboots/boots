@@ -74,12 +74,6 @@ class ApiTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_should_fail()
-    {
-        $this->assertTrue(false);
-    }
-
-    /** @test */
     public function it_should_throw_exception_if_type_is_invalid()
     {
         $this->setExpectedException('Boots\Exception\UnkownTypeException');
@@ -163,7 +157,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_set_the_wp_path()
     {
-        $this->assertEquals(rtrim(getenv('ABSPATH'), '/'), $this->boots->getConfig()->get('wp.path'));
+        $this->assertEquals(rtrim(ABSPATH, '/'), $this->boots->getConfig()->get('wp.path'));
     }
 
     /** @test */

@@ -1,13 +1,14 @@
 <?php
 
-define('WP_USE_THEMES', false);
-
 require __DIR__ . '/../vendor/autoload.php';
 
-if (!getenv('ABSPATH')) {
-    $dotenv = new Dotenv\Dotenv(__DIR__ . '/..');
-    $dotenv->load();
-    $dotenv->required('ABSPATH');
-}
+$dotenv = new Dotenv\Dotenv(__DIR__ . '/..');
+$dotenv->load();
 
-require rtrim(getenv('ABSPATH'), '/') . '/wp-load.php';
+if (getenv('CI_TEST')) {
+    require rtrim(getenv('CI_TEST'), '/') . '/tests/phpunit/includes/bootstrap.php';
+} else {
+    define('WP_USE_THEMES', false);
+    $dotenv->required('ABSPATH');
+    require rtrim(getenv('ABSPATH'), '/') . '/wp-load.php';
+}
