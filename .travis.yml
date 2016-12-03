@@ -57,4 +57,4 @@ before_script:
     - cd "/tmp/wordpress/src/wp-content/plugins/$PLUGIN_SLUG/$FRAMEWORK_SLUG"
     - composer install
 
-script: ABSPATH=/tmp/wordpress phpunit tests
+script: ABSPATH=/tmp/wordpress/src phpunit tests
