@@ -52,10 +52,11 @@ class Boots
     public function __construct(array $config)
     {
         $manifest = $this->extractManifest($config['abspath']);
-        $repoClass = $this->loadRepository('Repository', $manifest['version']);
+        $repoClass = $this->loadRepository($manifest['version']);
+        $apiClass = $this->loadApi($manifest['version']);
         $this->config = new $repoClass($config);
         $this->manifest = new $repoClass($manifest);
-        $this->api = $this->setupApi($this->manifest->get('version'));
+        $this->api = new $apiClass($this);
     }
 
     /**
@@ -118,25 +119,23 @@ class Boots
 
     /**
      * Load the repostiory class and interface.
-     * @param  string $prefix  Name of class and interface
      * @param  string $version Version
      * @return string Fully qualified class name
      */
-    protected function loadRepository($prefix = 'Repository', $version = '')
+    protected function loadRepository($version)
     {
-        $this->getLocalInterface("{$prefix}Interface");
-        return $this->getLocalClass($prefix, $version);
+        $this->getLocalInterface('RepositoryInterface');
+        return $this->getLocalClass('Repository', $version);
     }
 
     /**
-     * Instantiate the boots api.
+     * Load the api class.
      * @param  string $version Version
-     * @return Api Boots api instance
+     * @return string Fully qualified class name
      */
-    protected function setupApi($version)
+    protected function loadApi($version)
     {
-        $class = $this->getLocalClass('Api', $version);
-        return new $class($this);
+        return $this->getLocalClass('Api', $version);
     }
 
     /**
