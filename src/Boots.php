@@ -40,12 +40,6 @@ class Boots
     protected $manifest;
 
     /**
-     * Repository class
-     * @var string
-     */
-    protected $repositoryClass;
-
-    /**
      * Boots api instance
      * @var Api
      */
@@ -58,9 +52,9 @@ class Boots
     public function __construct(array $config)
     {
         $manifest = $this->extractManifest($config['abspath']);
-        $this->repositoryClass = $this->loadRepository('Repository', $manifest['version']);
-        $this->config = new $this->repositoryClass($config);
-        $this->manifest = new $this->repositoryClass($manifest);
+        $repoClass = $this->loadRepository('Repository', $manifest['version']);
+        $this->config = new $repoClass($config);
+        $this->manifest = new $repoClass($manifest);
         $this->api = $this->setupApi($this->manifest->get('version'));
     }
 
