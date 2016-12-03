@@ -11,11 +11,11 @@ A rapid wordpress plugin and theme development framework.
 
 ## Install
 
-Install instructions here...
+Install instructions here.
 
 ## Usage
 
-Usage instructions here...
+Usage instructions here.
 
 ## Test
 Make sure you are inside a **blank wordpress plugin directory** before proceeding.
