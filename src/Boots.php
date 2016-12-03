@@ -184,15 +184,6 @@ class Boots
     }
 
     /**
-     * Get the boots api version.
-     * @return string Version
-     */
-    public function getVersion()
-    {
-        return $this->manifest->get('version');
-    }
-
-    /**
      * Get the versioned boots api instance.
      * @return Api Boots api instance
      */

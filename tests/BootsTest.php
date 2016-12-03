@@ -51,7 +51,7 @@ class BootsTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_return_the_version_of_the_api()
     {
-        $this->assertEquals('', $this->boots->getVersion());
+        $this->assertEquals('', $this->boots->getManifest()->get('version'));
     }
 
     /** @test */

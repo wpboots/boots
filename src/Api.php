@@ -103,6 +103,7 @@ class Api
      */
     protected function makeConfig()
     {
+        $manifest = $this->boots->getManifest();
         $config = $this->boots->getConfig();
         $type = $config->get('type');
         $config->preset('env', 'production');
@@ -140,7 +141,7 @@ class Api
         $config->set('wp.theme.parent_path',  get_template_directory());
         $config->set('wp.theme.parent_url',  get_template_directory_uri());
         $config->set('wp.using_child_theme', $config->get('wp.theme.path') != $config->get('wp.theme.parent_path'));
-        $config->set('boots.version', $this->boots->getVersion());
+        $config->set('boots.version', $manifest->get('version'));
         $config->set('boots.path', dirname($config->get('abspath')) . '/boots');
         $config->set('boots.extend_path', $config->get('boots.path') . '/extend');
         $config->set('boots.url', $config->get('app.url') . '/boots');

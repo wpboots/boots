@@ -265,7 +265,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_set_the_boots_version()
     {
-        $this->assertEquals($this->boots->getVersion(), $this->boots->getConfig()->get('boots.version'));
+        $this->assertEquals($this->boots->getManifest()->get('version'), $this->boots->getConfig()->get('boots.version'));
     }
 
     /** @test */
