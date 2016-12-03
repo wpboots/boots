@@ -13,7 +13,6 @@ php:
 # WordPress version used in first build configuration.
 env:
     - WP_VERSION=master
-    - ABSPATH=/tmp/wordpress/src
 
 # Next we define our matrix of additional build configurations to test against.
 # The versions listed above will automatically create our first configuration,
@@ -57,5 +56,6 @@ before_script:
     - sed -i "s/password_here//" wp-config.php
     - cd "/tmp/wordpress/src/wp-content/plugins/$PLUGIN_SLUG/$FRAMEWORK_SLUG"
     - composer install
+    - echo "ABSPATH=/tmp/wordpress/src" > .env
 
 script: phpunit tests
