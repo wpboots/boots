@@ -80,7 +80,7 @@ class Dispenser implements Contract\DispenserContract
         $path2manifest = $dirpath . '/' . ($this->manifestFile ?: "{$token}.json");
         if (!is_file($path2manifest)) {
             throw new Exception\FileNotFoundException(sprintf(
-                '%s is required to load the %s extensions.', $path2manifest, $token
+                '%s is required to load the %s extension.', $path2manifest, $token
             ));
         }
         $manifestContent = file_get_contents($path2manifest);
