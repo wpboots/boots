@@ -83,4 +83,12 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->container->add($foobarClass, new $foobarClass('bar'));
         $this->assertInstanceOf($class, $this->container->get($class));
     }
+
+    // callables
+
+    // shared
+
+    // delegates
+
+    // exceptions
 }

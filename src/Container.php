@@ -42,6 +42,13 @@ class Container implements Contract\ContainerContract
         $this->repository = $repository;
     }
 
+    /**
+     * Resolve a class.
+     * @throws \Boots\Exception\BindingResolutionException
+     *         If class can not be resolved.
+     * @param  string $class Fully qualified class name
+     * @return Object        Resolved instance
+     */
     protected function resolve($class)
     {
         $reflectedClass = new \ReflectionClass($class);
