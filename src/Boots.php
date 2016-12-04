@@ -71,7 +71,7 @@ class Boots
         $boots = new static;
         $manifest = $boots->extractManifest($config['abspath']);
         $version = $manifest['version'];
-        $locator = new Locator;
+        $locator = $this->getLocator($version);
         $repoClass = $locator->locate(__DIR__ . '/Repository.php', 'Boots\Repository', $version);
         $boots->config = new $repoClass($config);
         $boots->manifest = new $repoClass($manifest);
@@ -81,13 +81,13 @@ class Boots
     }
 
     /**
-     * Get a local class.
-     * @param  string $prefix  Name of class
+     * Get the locator class.
      * @param  string $version Version
      * @return string Fully qualified class name
      */
-    protected function getLocalClass($prefix, $version = '')
+    protected function getLocator($version = '')
     {
+        $prefix = 'Locator';
         $suffix = str_replace('.', '_', $version);
         $suffix = empty($suffix) ? '' : "_{$suffix}";
         $fqcn = 'Boots\\' . $prefix . $suffix;
