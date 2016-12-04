@@ -89,7 +89,7 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     {
         $this->dispenser->manifestAt('foo.json');
         $manifest = $this->dispenser->dispense('manifest');
-        $this->assertEquals('Boots\Test\Dispenser\Manifest', get_class($manifest));
+        $this->assertInstanceOf('Boots\Test\Dispenser\Manifest', $manifest);
     }
 
     /** @test */
