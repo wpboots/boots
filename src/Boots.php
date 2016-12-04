@@ -53,7 +53,8 @@ class Boots
     {
         $manifest = $this->extractManifest($config['abspath']);
         $version = $manifest['version'];
-        $locator = new Locator;
+        $locatorCLass = $this->getLocator($version);
+        $locator = new $locatorCLass;
         $repoClass = $locator->locate(__DIR__ . '/Repository.php', 'Boots\Repository', $version);
         $this->config = new $repoClass($config);
         $this->manifest = new $repoClass($manifest);
@@ -72,6 +73,7 @@ class Boots
         $manifest = $boots->extractManifest($config['abspath']);
         $version = $manifest['version'];
         $locator = $this->getLocator($version);
+        $locator = new $locatorCLass;
         $repoClass = $locator->locate(__DIR__ . '/Repository.php', 'Boots\Repository', $version);
         $boots->config = new $repoClass($config);
         $boots->manifest = new $repoClass($manifest);
