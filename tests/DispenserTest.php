@@ -19,7 +19,14 @@ class DispenserTest extends PHPUnit_Framework_TestCase
                         'class' => 'Boots\Test\Dispenser\Chocolate',
                         'version' => '',
                     ]),
-                ]
+                ],
+                'kitkat' => [ // versioned chocolate
+                    'kitkat.php' => '<?php namespace Boots\Test\Dispenser; class KitKat_1_2 {}',
+                    'kitkat.json' => json_encode([
+                        'class' => 'Boots\Test\Dispenser\KitKat',
+                        'version' => '1.2',
+                    ]),
+                ],
             ],
         ]);
 
@@ -38,5 +45,12 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     {
         $chocolate = $this->dispenser->dispense('chocolate');
         $this->assertEquals('Boots\Test\Dispenser\Chocolate', get_class($chocolate));
+    }
+
+    /** @test */
+    public function it_should_dispense_a_versioned_service()
+    {
+        $kitkat = $this->dispenser->dispense('kitkat');
+        $this->assertEquals('Boots\Test\Dispenser\KitKat_1_2', get_class($kitkat));
     }
 }
