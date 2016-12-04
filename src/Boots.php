@@ -83,7 +83,7 @@ class Boots
     /**
      * Get the locator instance.
      * @param  string $version Version
-     * @return string Fully qualified class name
+     * @return Contract\LocatorContract Locator instance
      */
     protected function getLocator($version = '')
     {
