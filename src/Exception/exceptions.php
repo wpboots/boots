@@ -18,3 +18,6 @@ if (!class_exists('Boots\Exception\ClassNotFoundException')) {
 if (!class_exists('Boots\Exception\NotFoundException')) {
     require_once __DIR__ . '/NotFoundException.php';
 }
+if (!class_exists('Boots\Exception\BindingResolutionException')) {
+    require_once __DIR__ . '/BindingResolutionException.php';
+}

@@ -42,20 +42,60 @@ class Container implements Contract\ContainerContract
         $this->repository = $repository;
     }
 
-    /**
-     * Resolve an entry by key.
-     * @throws  \Boots\Exception\NotFoundException
-     *          If an entry can not be resolved
-     * @param   string $key Identifier
-     * @return  mixed  Entry
-     */
-    public function get($key)
+    protected function resolve($class)
     {
-        //
+        $reflectedClass = new \ReflectionClass($class);
+        $constructor = $reflectedClass->getConstructor();
+        if (is_null($constructor)) {
+            return new $class;
+        }
+        $params = $constructor->getParameters();
+        $values = [];
+        foreach ($params as $param) {
+            if (!is_null($paramClass = $param->getClass())) {
+                $values[] = $this->get($paramClass->getName());
+                continue;
+            }
+            $values[] = $this->get($param->getName());
+        }
+        return $reflectedClass->newInstanceArgs($values);
     }
 
     /**
-     * Check whether an entry for a key exists.
+     * Add an entry.
+     * @param  string $key   Identifier
+     * @param  mixed  $value Value
+     * @return $this  Allow chaining
+     */
+    public function add($key, $value)
+    {
+        $this->repository->set($key, $value);
+    }
+
+    /**
+     * Resolve an entity by key.
+     * @throws \Boots\Exception\NotFoundException
+     *         If an entry is not found.
+     * @throws \Boots\Exception\BindingResolutionException
+     *         If an entity can not be resolved.
+     * @param  string $key Identifier
+     * @return mixed  Entity
+     */
+    public function get($key)
+    {
+        if ($this->repository->has($key)) {
+            return $this->repository->get($key);
+        }
+        if (class_exists($key)) {
+            return $this->resolve($key);
+        }
+        throw new Exception\NotFoundException(sprintf(
+            'Failed to resolve %s from the container.', $key
+        ));
+    }
+
+    /**
+     * Check whether an entity for a key exists.
      * @param  string  $key Identifier
      * @return boolean Exists or not
      */

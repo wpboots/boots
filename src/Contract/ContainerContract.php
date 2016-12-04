@@ -28,16 +28,18 @@ if (!defined('ABSPATH')) {
 interface ContainerContract
 {
     /**
-     * Resolve an entry by key.
-     * @throws  \Boots\Exception\NotFoundException
-     *          If an entry can not be resolved
-     * @param   string $key Identifier
-     * @return  mixed  Entry
+     * Resolve an entity by key.
+     * @throws \Boots\Exception\NotFoundException
+     *         If an entry is not found.
+     * @throws \Boots\Exception\BindingResolutionException
+     *         If an entity can not be resolved.
+     * @param  string $key Identifier
+     * @return mixed  Entity
      */
     public function get($key);
 
     /**
-     * Check whether an entry for a key exists.
+     * Check whether an entity for a key exists.
      * @param  string  $key Identifier
      * @return boolean Exists or not
      */
