@@ -6,7 +6,9 @@ require_once __DIR__ . '/src/Exception/exceptions.php';
 // Require interfaces
 require_once __DIR__ . '/src/Contract/contracts.php';
 
-
+if (!class_exists('Boots\Locator')) {
+    require_once __DIR__ . '/src/Locator.php';
+}
 if (!class_exists('Boots\Boots')) {
     require_once __DIR__ . '/src/Boots.php';
 }

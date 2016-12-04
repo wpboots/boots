@@ -47,15 +47,17 @@ class Boots
 
     /**
      * Setup and fire up the boots api instance.
-     * @param array  $config Configuration array
+     * @param array $config Configuration array
      */
     public function __construct(array $config)
     {
         $manifest = $this->extractManifest($config['abspath']);
-        $repoClass = $this->getLocalClass('Repository', $manifest['version']);
+        $version = $manifest['version'];
+        $locator = new Locator;
+        $repoClass = $locator->locate(__DIR__ . '/Repository.php', 'Boots\Repository', $version);
         $this->config = new $repoClass($config);
         $this->manifest = new $repoClass($manifest);
-        $apiClass = $this->getLocalClass('Api', $manifest['version']);
+        $apiClass = $locator->locate(__DIR__ . '/Api.php', 'Boots\Api', $version);
         $this->api = new $apiClass($this);
     }
 
