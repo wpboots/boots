@@ -35,7 +35,7 @@ interface LocatorContract
      * @param  string $filepath Path to file where class exists
      * @param  string $class    Fully qualified class name
      * @param  string $version  Version
-     * @return string           Version fully qualified class name
+     * @return string           Versioned fully qualified class name
      */
     public function locate($filepath, $class, $version = '');
 }
