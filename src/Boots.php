@@ -53,8 +53,7 @@ class Boots
     {
         $manifest = $this->extractManifest($config['abspath']);
         $version = $manifest['version'];
-        $locatorCLass = $this->getLocator($version);
-        $locator = new $locatorCLass;
+        $locator = $this->getLocator($version);
         $repoClass = $locator->locate(__DIR__ . '/Repository.php', 'Boots\Repository', $version);
         $this->config = new $repoClass($config);
         $this->manifest = new $repoClass($manifest);
@@ -73,7 +72,6 @@ class Boots
         $manifest = $boots->extractManifest($config['abspath']);
         $version = $manifest['version'];
         $locator = $this->getLocator($version);
-        $locator = new $locatorCLass;
         $repoClass = $locator->locate(__DIR__ . '/Repository.php', 'Boots\Repository', $version);
         $boots->config = new $repoClass($config);
         $boots->manifest = new $repoClass($manifest);
@@ -83,7 +81,7 @@ class Boots
     }
 
     /**
-     * Get the locator class.
+     * Get the locator instance.
      * @param  string $version Version
      * @return string Fully qualified class name
      */
@@ -96,7 +94,7 @@ class Boots
         if (!class_exists($fqcn)) {
             require_once __DIR__ . "/{$prefix}.php";
         }
-        return $fqcn;
+        return new $fqcn;
     }
 
     /**
