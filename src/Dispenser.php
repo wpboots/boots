@@ -86,11 +86,9 @@ class Dispenser implements Contract\DispenserContract
         if ($this->repository->has($token)) {
             return $this->repository->get($token);
         }
-        $extension = $this->locate($token);
-        if ($extension) {
-            $extension = new $extension;
-            $this->repository->set($token, $extension);
-        }
+        $class = $this->locate($token);
+        $extension = new $class;
+        $this->repository->set($token, $extension);
         return $extension;
     }
 }
