@@ -45,4 +45,12 @@ class LocatorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Test\Foo\Bar_1_0', $fqcn);
         $this->assertTrue(!class_exists('Test\Foo\Bar_1_0_'));
     }
+
+    /** @test */
+    public function it_should_throw_FileNotFoundException_if_file_does_not_exist_when_class_does_not_exist()
+    {
+        $this->setExpectedException('Boots\Exception\FileNotFoundException');
+        $filepath = vfsStream::url('boots/FileNotFound.php');
+        $this->locator->locate($filepath, 'Test\File\Not\Found');
+    }
 }
