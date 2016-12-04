@@ -61,4 +61,11 @@ class DispenserTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException('Boots\Exception\FileNotFoundException');
         $this->dispenser->dispense('no-manifest');
     }
+
+    /** @test */
+    public function it_should_throw_FileNotFoundException_if_index_file_does_not_exist()
+    {
+        $this->setExpectedException('Boots\Exception\FileNotFoundException');
+        $this->dispenser->dispense('no-file');
+    }
 }
