@@ -13,7 +13,12 @@ class LocatorTest extends PHPUnit_Framework_TestCase
             'TestLocatorBar.php' => '<?php namespace Boots\Test\Locator; class Bar {}',
             'TestLocatorBar_1_0.php' => '<?php namespace Boots\Test\Locator; class Bar_1_0 {}',
             'TestLocatorBar_1_0_.php' => '<?php namespace Boots\Test\Locator; class Bar_1_0_ {}',
-            'TestLocatorBar_404.php' => '<?php namespace Boots\Test\Locator; class WrongClass {}',
+            'TestLocatorBar_404.php' => '<?php namespace Boots\Test\Locator; class Baz {}',
+            // Fluent api access
+            'TestLocatorFluent.php' => '<?php namespace Boots\Test\Locator; class Fluent {}',
+            'TestLocatorFluent_1_0.php' => '<?php namespace Boots\Test\Locator; class Fluent_1_0 {}',
+            'TestLocatorFluent_1_0_.php' => '<?php namespace Boots\Test\Locator; class Fluent_1_0_ {}',
+            'TestLocatorFluent_404.php' => '<?php namespace Boots\Test\Locator; class BazFluent {}',
         ]);
 
         $this->locator = new Locator;
@@ -31,6 +36,11 @@ class LocatorTest extends PHPUnit_Framework_TestCase
         $filepath = vfsStream::url('boots/TestLocatorBar.php');
         $fqcn = $this->locator->locate($filepath, 'Boots\Test\Locator\Bar');
         $this->assertEquals('Boots\Test\Locator\Bar', $fqcn);
+
+        // Fluent api access
+        $filepath = vfsStream::url('boots/TestLocatorFluent.php');
+        $fqcn = $this->locator->file($filepath)->find('Boots\Test\Locator\Fluent');
+        $this->assertEquals('Boots\Test\Locator\Fluent', $fqcn);
     }
 
     /** @test */
@@ -39,6 +49,11 @@ class LocatorTest extends PHPUnit_Framework_TestCase
         $filepath = vfsStream::url('boots/TestLocatorBar_1_0.php');
         $fqcn = $this->locator->locate($filepath, 'Boots\Test\Locator\Bar', '1.0');
         $this->assertEquals('Boots\Test\Locator\Bar_1_0', $fqcn);
+
+        // Fluent api access
+        $filepath = vfsStream::url('boots/TestLocatorFluent_1_0.php');
+        $fqcn = $this->locator->file($filepath)->version('1.0')->find('Boots\Test\Locator\Fluent');
+        $this->assertEquals('Boots\Test\Locator\Fluent_1_0', $fqcn);
     }
 
     /** @test */
@@ -51,6 +66,15 @@ class LocatorTest extends PHPUnit_Framework_TestCase
         $fqcn = $this->locator->locate($filepath, 'Boots\Test\Locator\Bar', '1.0');
         $this->assertEquals('Boots\Test\Locator\Bar_1_0', $fqcn);
         $this->assertTrue(!class_exists('Boots\Test\Locator\Bar_1_0_'));
+
+        // Fluent api access
+        $filepath = vfsStream::url('boots/TestLocatorFluent_1_0.php');
+        $this->locator->file($filepath)->version('1.0')->find('Boots\Test\Locator\Fluent');
+
+        $filepath = vfsStream::url('boots/TestLocatorFluent_1_0_.php');
+        $fqcn = $this->locator->file($filepath)->version('1.0')->find('Boots\Test\Locator\Fluent');
+        $this->assertEquals('Boots\Test\Locator\Fluent_1_0', $fqcn);
+        $this->assertTrue(!class_exists('Boots\Test\Locator\Fluent_1_0_'));
     }
 
     /** @test */
@@ -62,10 +86,26 @@ class LocatorTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_should_throw_FileNotFoundException_if_file_does_not_exist_when_class_does_not_exist_via_fluent_api_access()
+    {
+        $this->setExpectedException('Boots\Exception\FileNotFoundException');
+        $filepath = vfsStream::url('boots/FileNotFound.php');
+        $this->locator->file($filepath)->find('Boots\Test\File\Not\Found');
+    }
+
+    /** @test */
     public function it_should_throw_ClassNotFoundException_if_class_does_not_exist_after_loading_file()
     {
         $this->setExpectedException('Boots\Exception\ClassNotFoundException');
         $filepath = vfsStream::url('boots/TestLocatorBar_404.php');
         $this->locator->locate($filepath, 'Boots\Test\Locator\Bar\Baz');
+    }
+
+    /** @test */
+    public function it_should_throw_ClassNotFoundException_if_class_does_not_exist_after_loading_file_via_fluent_api_access()
+    {
+        $this->setExpectedException('Boots\Exception\ClassNotFoundException');
+        $filepath = vfsStream::url('boots/TestLocatorFluent_404.php');
+        $this->locator->file($filepath)->find('Boots\Test\Locator\Bar\Baz');
     }
 }

@@ -26,6 +26,18 @@ if(!defined('ABSPATH')) die(-1);
 class Locator implements Contract\LocatorContract
 {
     /**
+     * Filepath holder for fluent api access.
+     * @var string
+     */
+    protected $filepath;
+
+    /**
+     * Version holder for fluent api access.
+     * @var string
+     */
+    protected $version;
+
+    /**
      * Locate a versioned class.
      * @throws Exception\FileNotFoundException
      *         If file does not exist.
@@ -56,5 +68,42 @@ class Locator implements Contract\LocatorContract
             }
         }
         return $versionedClass;
+    }
+
+    /**
+     * Store filepath for fluent api access.
+     * @param  string $filepath Path to file where class exists
+     * @return $this            Allow chaining
+     */
+    public function file($filepath)
+    {
+        $this->filepath = $filepath;
+        return $this;
+    }
+
+    /**
+     * Store version for fluent api access.
+     * @param  string $version Version
+     * @return $this           Allow chaining
+     */
+    public function version($version)
+    {
+        $this->version = $version;
+        return $this;
+    }
+
+    /**
+     * Locate a version class for fluent api access.
+     * @throws Exception\FileNotFoundException
+     *         If file does not exist.
+     * @throws Exception\ClassNotFoundException
+     *         If version class does not exist
+     *         even after loading the file.
+     * @param  string $class Fully qualified class name
+     * @return string        Versioned fully qualified class name
+     */
+    public function find($class)
+    {
+        return $this->locate($this->filepath, $class, $this->version);
     }
 }

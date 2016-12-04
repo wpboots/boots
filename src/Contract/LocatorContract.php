@@ -38,4 +38,30 @@ interface LocatorContract
      * @return string           Versioned fully qualified class name
      */
     public function locate($filepath, $class, $version = '');
+
+    /**
+     * Store filepath for fluent api access.
+     * @param  string $filepath Path to file where class exists
+     * @return $this            Allow chaining
+     */
+    public function file($filepath);
+
+    /**
+     * Store version for fluent api access.
+     * @param  string $version Version
+     * @return $this           Allow chaining
+     */
+    public function version($version);
+
+    /**
+     * Locate a version class for fluent api access.
+     * @throws Exception\FileNotFoundException
+     *         If file does not exist.
+     * @throws Exception\ClassNotFoundException
+     *         If version class does not exist
+     *         even after loading the file.
+     * @param  string $class Fully qualified class name
+     * @return string        Versioned fully qualified class name
+     */
+    public function find($class);
 }
