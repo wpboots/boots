@@ -26,7 +26,8 @@
         "phpunit/phpunit": "^4.8",
         "vlucas/phpdotenv": "^2.4",
         "nikic/php-parser": "^2.1",
-        "oomphinc/composer-installers-extender": "^1.1"
+        "oomphinc/composer-installers-extender": "^1.1",
+        "mikey179/vfsStream": "^1.6"
     },
     "scripts": {
         "test": "phpunit tests",
