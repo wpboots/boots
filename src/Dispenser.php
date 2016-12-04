@@ -59,7 +59,7 @@ class Dispenser implements Contract\DispenserContract
 
     /**
      * Construct the instance.
-     * @param string                      $directory  Extensions directory path
+     * @param string                      $directory  Path to extensions directory
      * @param Contract\LocatorContract    $locator    Class locator instance
      * @param Contract\RepositoryContract $repository Repository instance
      */
@@ -73,6 +73,11 @@ class Dispenser implements Contract\DispenserContract
         $this->repository = $repository;
     }
 
+    /**
+     * Locate the extension class.
+     * @param  string $token Extension key
+     * @return string        Extension class
+     */
     protected function locate($token)
     {
         $dirpath = "{$this->directory}/{$token}";
@@ -88,12 +93,22 @@ class Dispenser implements Contract\DispenserContract
         return $this->locator->locate($filepath, $mArr['class'], $mArr['version']);
     }
 
+    /**
+     * Modify the index file name to look for.
+     * @param  string $name Index file name
+     * @return $this        Allow chaining
+     */
     public function indexAt($name)
     {
         $this->indexFile = $name;
         return $this;
     }
 
+    /**
+     * Modify the manifest file name to look for.
+     * @param  string $name Manifest file name
+     * @return $this        Allow chaining
+     */
     public function manifestAt($name)
     {
         $this->manifestFile = $name;
