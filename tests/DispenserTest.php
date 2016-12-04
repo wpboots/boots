@@ -1,6 +1,8 @@
 <?php
 
+use Boots\Locator;
 use Boots\Dispenser;
+use Boots\Repository;
 use org\bovigo\vfs\vfsStream;
 
 class DispenserTest extends PHPUnit_Framework_TestCase
@@ -12,13 +14,17 @@ class DispenserTest extends PHPUnit_Framework_TestCase
         vfsStream::setup('boots', null, [
             'dispenser' => [
                 'chocolate' => [
-                    'chocolate.php' => '<?php namespace Boots\Test\Dispenser; class Chocolate {}'
+                    'chocolate.php' => '<?php namespace Boots\Test\Dispenser; class Chocolate {}',
+                    'chocolate.json' => json_encode([
+                        'class' => 'Boots\Test\Dispenser\Chocolate',
+                        'version' => '',
+                    ]),
                 ]
             ],
         ]);
 
         $directory = vfsStream::url('boots/dispenser');
-        $this->dispenser = new Dispenser($directory);
+        $this->dispenser = new Dispenser($directory, new Locator, new Repository);
     }
 
     /** @test */
@@ -31,6 +37,6 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     public function it_should_dispense_a_service()
     {
         $chocolate = $this->dispenser->dispense('chocolate');
-        $this->assertInstanceOf('Boots\Test\Dispenser\Chocolate', $chocolate);
+        $this->assertEquals('Boots\Test\Dispenser\Chocolate', get_class($chocolate));
     }
 }
