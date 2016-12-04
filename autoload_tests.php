@@ -1,8 +1,8 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
-$dotenv = new Dotenv\Dotenv(__DIR__ . '/..');
+$dotenv = new Dotenv\Dotenv(__DIR__);
 $dotenv->load();
 
 if (getenv('CI_TEST')) {
@@ -12,3 +12,5 @@ if (getenv('CI_TEST')) {
     $dotenv->required('ABSPATH');
     require rtrim(getenv('ABSPATH'), '/') . '/wp-load.php';
 }
+
+require __DIR__ . '/autoload.php';
