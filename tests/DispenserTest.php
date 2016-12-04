@@ -27,6 +27,7 @@ class DispenserTest extends PHPUnit_Framework_TestCase
                         'version' => '1.2',
                     ]),
                 ],
+                'no-manifest' => ['no-manifest.php' => ''],
             ],
         ]);
 
@@ -52,5 +53,12 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     {
         $kitkat = $this->dispenser->dispense('kitkat');
         $this->assertEquals('Boots\Test\Dispenser\KitKat_1_2', get_class($kitkat));
+    }
+
+    /** @test */
+    public function it_should_throw_FileNotFoundException_if_manifest_file_does_not_exist()
+    {
+        $this->setExpectedException('Boots\Exception\FileNotFoundException');
+        $this->dispenser->dispense('no-manifest');
     }
 }
