@@ -43,7 +43,7 @@ class Dispenser implements Contract\DispenserContract
      * Dispenser storage.
      * @var Contract\RepositoryContract
      */
-    protected $dispenser;
+    protected $repository;
 
     /**
      * Name of the index file.
