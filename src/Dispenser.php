@@ -88,14 +88,16 @@ class Dispenser implements Contract\DispenserContract
         return $this->locator->locate($filepath, $mArr['class'], $mArr['version']);
     }
 
-    public function setIndexFile($name)
+    public function indexAt($name)
     {
         $this->indexFile = $name;
+        return $this;
     }
 
-    public function setManifestFile($name)
+    public function manifestAt($name)
     {
         $this->manifestFile = $name;
+        return $this;
     }
 
     /**

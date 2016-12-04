@@ -79,7 +79,7 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_dispense_a_service_with_a_custom_index_file()
     {
-        $this->dispenser->setIndexFile('foo.php');
+        $this->dispenser->indexAt('foo.php');
         $index = $this->dispenser->dispense('index');
         $this->assertEquals('Boots\Test\Dispenser\Index', get_class($index));
     }
@@ -87,7 +87,7 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_dispense_a_service_with_a_custom_manifest_file()
     {
-        $this->dispenser->setManifestFile('foo.json');
+        $this->dispenser->manifestAt('foo.json');
         $manifest = $this->dispenser->dispense('manifest');
         $this->assertEquals('Boots\Test\Dispenser\Manifest', get_class($manifest));
     }
