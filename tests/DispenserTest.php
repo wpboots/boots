@@ -35,6 +35,13 @@ class DispenserTest extends PHPUnit_Framework_TestCase
                         'version' => '',
                     ]),
                 ],
+                'index' => [
+                    'foo.php' => '<?php namespace Boots\Test\Dispenser; class Index {}',
+                    'index.json' => json_encode([
+                        'class' => 'Boots\Test\Dispenser\Index',
+                        'version' => '',
+                    ]),
+                ],
             ],
         ]);
 
@@ -60,6 +67,14 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     {
         $kitkat = $this->dispenser->dispense('kitkat');
         $this->assertEquals('Boots\Test\Dispenser\KitKat_1_2', get_class($kitkat));
+    }
+
+    /** @test */
+    public function it_should_dispense_a_service_with_a_custom_index_file()
+    {
+        $this->dispenser->setIndexFile('foo.php');
+        $index = $this->dispenser->dispense('index');
+        $this->assertEquals('Boots\Test\Dispenser\Index', get_class($index));
     }
 
     /** @test */

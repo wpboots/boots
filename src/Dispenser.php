@@ -46,6 +46,12 @@ class Dispenser implements Contract\DispenserContract
     protected $dispenser;
 
     /**
+     * Name of the index file.
+     * @var string
+     */
+    protected $indexFile;
+
+    /**
      * Construct the instance.
      * @param string                      $directory  Extensions directory path
      * @param Contract\LocatorContract    $locator    Class locator instance
@@ -64,7 +70,7 @@ class Dispenser implements Contract\DispenserContract
     protected function locate($token)
     {
         $dirpath = "{$this->directory}/{$token}";
-        $filepath = "{$dirpath}/{$token}.php";
+        $filepath = $dirpath . '/' . ($this->indexFile ?: "{$token}.php");
         $path2manifest = "{$dirpath}/{$token}.json";
         if (!is_file($path2manifest)) {
             throw new Exception\FileNotFoundException(sprintf(
@@ -74,6 +80,11 @@ class Dispenser implements Contract\DispenserContract
         $manifestContent = file_get_contents($path2manifest);
         $mArr = json_decode($manifestContent, true);
         return $this->locator->locate($filepath, $mArr['class'], $mArr['version']);
+    }
+
+    public function setIndexFile($name)
+    {
+        $this->indexFile = $name;
     }
 
     /**
