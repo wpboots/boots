@@ -62,6 +62,25 @@ class Boots
     }
 
     /**
+     * Factory for setting up the object.
+     * @param  array $config Configuration
+     * @return Boots Factory generated instance
+     */
+    public static function factory(array $config)
+    {
+        $boots = new static;
+        $manifest = $boots->extractManifest($config['abspath']);
+        $version = $manifest['version'];
+        $locator = new Locator;
+        $repoClass = $locator->locate(__DIR__ . '/Repository.php', 'Boots\Repository', $version);
+        $boots->config = new $repoClass($config);
+        $boots->manifest = new $repoClass($manifest);
+        $apiClass = $locator->locate(__DIR__ . '/Api.php', 'Boots\Api', $version);
+        $boots->api = new $apiClass($this);
+        return $boots;
+    }
+
+    /**
      * Get a local class.
      * @param  string $prefix  Name of class
      * @param  string $version Version
