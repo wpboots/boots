@@ -28,6 +28,12 @@ class RepositoryTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_should_be_an_implementation_of_a_contract()
+    {
+        $this->assertInstanceOf('Boots\Contract\RepositoryContract', $this->repo);
+    }
+
+    /** @test */
     public function it_should_be_instantiable_with_an_empty_array_by_default()
     {
         $repo = new Repository;
