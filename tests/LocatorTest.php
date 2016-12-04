@@ -20,6 +20,12 @@ class LocatorTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_should_be_an_implementation_of_a_contract()
+    {
+        $this->assertInstanceOf('Boots\Contract\LocatorContract', $this->locator);
+    }
+
+    /** @test */
     public function it_should_load_a_class_from_a_file_if_class_does_not_exist()
     {
         $filepath = vfsStream::url('boots/TestLocatorBar.php');
