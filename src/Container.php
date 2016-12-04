@@ -87,10 +87,25 @@ class Container implements Contract\ContainerContract
             return $this->repository->get($key);
         }
         if (class_exists($key)) {
-            return $this->resolve($key);
+            try {
+                $entity = $this->resolve($key);
+            } catch (\Exception $e) {
+                if ($e instanceof Exception\BindingResolutionException) {
+                    throw $e;
+                }
+                throw new Exception\BindingResolutionException(sprintf(
+                    'Failed to resolve class %s from the container.', $key
+                ));
+            }
+            return $entity;
+        }
+        if (interface_exists($key)) {
+            throw new Exception\BindingResolutionException(sprintf(
+                'Failed to resolve interface %s from the container.', $key
+            ));
         }
         throw new Exception\NotFoundException(sprintf(
-            'Failed to resolve %s from the container.', $key
+            '%s is not managed by the container.', $key
         ));
     }
 
