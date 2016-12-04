@@ -27,10 +27,17 @@
         "vlucas/phpdotenv": "^2.4",
         "nikic/php-parser": "^2.1",
         "oomphinc/composer-installers-extender": "^1.1",
-        "mikey179/vfsStream": "^1.6"
+        "mikey179/vfsStream": "^1.6",
+        "squizlabs/php_codesniffer": "^2.7"
     },
     "scripts": {
         "test": "phpunit tests",
+        "test-coverage": "phpunit tests --coverage-text",
+        "test-coverage-html": "phpunit tests --coverage-html coverage",
+        "test-coverage-clover": "phpunit tests --coverage-clover clover.xml",
+        "cs-check": "phpcs src",
+        "cs-fix": "phpcbf src",
+        "check": ["@cs-check", "@test"],
         "post-package-install": "Boots\\Installer\\Install::installExtension",
         "post-package-update": "Boots\\Installer\\Install::updateExtension",
         "post-create-project-cmd": "Boots\\Installer\\Install::installBoots"
