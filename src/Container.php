@@ -62,17 +62,6 @@ class Container implements Contract\ContainerContract
     }
 
     /**
-     * Add an entry.
-     * @param  string $key   Identifier
-     * @param  mixed  $value Value
-     * @return $this  Allow chaining
-     */
-    public function add($key, $value)
-    {
-        $this->repository->set($key, $value);
-    }
-
-    /**
      * Resolve an entity by key.
      * @throws \Boots\Exception\NotFoundException
      *         If an entry is not found.
@@ -117,5 +106,16 @@ class Container implements Contract\ContainerContract
     public function has($key)
     {
         return $this->repository->has($key);
+    }
+
+    /**
+     * Add an entry.
+     * @param  string $key   Identifier
+     * @param  mixed  $value Value
+     * @return $this  Allow chaining
+     */
+    public function add($key, $value)
+    {
+        $this->repository->set($key, $value);
     }
 }
