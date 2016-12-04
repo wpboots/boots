@@ -28,6 +28,13 @@ class DispenserTest extends PHPUnit_Framework_TestCase
                     ]),
                 ],
                 'no-manifest' => ['no-manifest.php' => ''],
+                'no-class' => [ // class not found
+                    'no-class.php' => '<?php ',
+                    'no-class.json' => json_encode([
+                        'class' => 'Boots\Test\Dispenser\Nope',
+                        'version' => '',
+                    ]),
+                ],
             ],
         ]);
 
@@ -67,5 +74,12 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Boots\Exception\FileNotFoundException');
         $this->dispenser->dispense('no-file');
+    }
+
+    /** @test */
+    public function it_should_throw_ClassNotFoundException_if_class_does_not_exist_after_loading_file()
+    {
+        $this->setExpectedException('Boots\Exception\ClassNotFoundException');
+        $this->dispenser->dispense('no-class');
     }
 }
