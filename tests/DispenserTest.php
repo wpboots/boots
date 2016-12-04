@@ -35,10 +35,17 @@ class DispenserTest extends PHPUnit_Framework_TestCase
                         'version' => '',
                     ]),
                 ],
-                'index' => [
+                'index' => [ // custom index file name
                     'foo.php' => '<?php namespace Boots\Test\Dispenser; class Index {}',
                     'index.json' => json_encode([
                         'class' => 'Boots\Test\Dispenser\Index',
+                        'version' => '',
+                    ]),
+                ],
+                'manifest' => [ // custom manifest file name
+                    'manifest.php' => '<?php namespace Boots\Test\Dispenser; class Manifest {}',
+                    'foo.json' => json_encode([
+                        'class' => 'Boots\Test\Dispenser\Manifest',
                         'version' => '',
                     ]),
                 ],
@@ -75,6 +82,14 @@ class DispenserTest extends PHPUnit_Framework_TestCase
         $this->dispenser->setIndexFile('foo.php');
         $index = $this->dispenser->dispense('index');
         $this->assertEquals('Boots\Test\Dispenser\Index', get_class($index));
+    }
+
+    /** @test */
+    public function it_should_dispense_a_service_with_a_custom_manifest_file()
+    {
+        $this->dispenser->setManifestFile('foo.json');
+        $manifest = $this->dispenser->dispense('manifest');
+        $this->assertEquals('Boots\Test\Dispenser\Manifest', get_class($manifest));
     }
 
     /** @test */

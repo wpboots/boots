@@ -52,6 +52,12 @@ class Dispenser implements Contract\DispenserContract
     protected $indexFile;
 
     /**
+     * Name of the manifest file.
+     * @var string
+     */
+    protected $manifestFile;
+
+    /**
      * Construct the instance.
      * @param string                      $directory  Extensions directory path
      * @param Contract\LocatorContract    $locator    Class locator instance
@@ -71,7 +77,7 @@ class Dispenser implements Contract\DispenserContract
     {
         $dirpath = "{$this->directory}/{$token}";
         $filepath = $dirpath . '/' . ($this->indexFile ?: "{$token}.php");
-        $path2manifest = "{$dirpath}/{$token}.json";
+        $path2manifest = $dirpath . '/' . ($this->manifestFile ?: "{$token}.json");
         if (!is_file($path2manifest)) {
             throw new Exception\FileNotFoundException(sprintf(
                 '%s is required to load the %s extensions.', $path2manifest, $token
@@ -85,6 +91,11 @@ class Dispenser implements Contract\DispenserContract
     public function setIndexFile($name)
     {
         $this->indexFile = $name;
+    }
+
+    public function setManifestFile($name)
+    {
+        $this->manifestFile = $name;
     }
 
     /**
