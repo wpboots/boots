@@ -13,6 +13,7 @@ class LocatorTest extends PHPUnit_Framework_TestCase
             'TestFooBar.php' => '<?php namespace Test\Foo; class Bar {}',
             'TestFooBar_1_0.php' => '<?php namespace Test\Foo; class Bar_1_0 {}',
             'TestFooBar_1_0_.php' => '<?php namespace Test\Foo; class Bar_1_0_ {}',
+            'TestFooBar_404.php' => '<?php namespace Test\Foo; class WrongClass {}',
         ]);
 
         $this->locator = new Locator;
@@ -52,5 +53,13 @@ class LocatorTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException('Boots\Exception\FileNotFoundException');
         $filepath = vfsStream::url('boots/FileNotFound.php');
         $this->locator->locate($filepath, 'Test\File\Not\Found');
+    }
+
+    /** @test */
+    public function it_should_throw_ClassNotFoundException_if_class_does_not_exist_after_loading_file()
+    {
+        $this->setExpectedException('Boots\Exception\ClassNotFoundException');
+        $filepath = vfsStream::url('boots/TestFooBar_404.php');
+        $this->locator->locate($filepath, 'Test\Foo\Bar\Baz');
     }
 }
