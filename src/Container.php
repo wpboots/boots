@@ -1,0 +1,66 @@
+<?php
+
+namespace Boots;
+
+/**
+ * Boots container.
+ *
+ * @package Boots
+ * @subpackage Container
+ * @version 2.0.0
+ * @see http://wpboots.com
+ * @link https://github.com/wpboots/boots
+ * @author Kamal Khan <shout@bhittani.com> https://bhittani.com
+ * @license https://github.com/wpboots/boots/blob/master/LICENSE
+ * @copyright Copyright (c) 2014-2016, Kamal Khan
+ */
+
+// Die if accessing this script directly.
+if (!defined('ABSPATH')) {
+    die(-1);
+}
+
+/**
+ * @package Boots
+ * @subpackage Container
+ * @version 2.0.0
+ */
+class Container implements Contract\ContainerContract
+{
+    /**
+     * Container storage.
+     * @var Contract\RepositoryContract
+     */
+    protected $repository;
+
+    /**
+     * Construct the instance.
+     * @param Contract\RepositoryContract $repository Repository instance
+     */
+    public function __construct(Contract\RepositoryContract $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
+     * Resolve an entry by key.
+     * @throws  \Boots\Exception\NotFoundException
+     *          If an entry can not be resolved
+     * @param   string $key Identifier
+     * @return  mixed  Entry
+     */
+    public function get($key)
+    {
+        //
+    }
+
+    /**
+     * Check whether an entry for a key exists.
+     * @param  string  $key Identifier
+     * @return boolean Exists or not
+     */
+    public function has($key)
+    {
+        return $this->repository->has($key);
+    }
+}

@@ -9,3 +9,6 @@ if (!class_exists('Boots\Contract\RepositoryContract')) {
 if (!class_exists('Boots\Contract\DispenserContract')) {
     require_once __DIR__ . '/DispenserContract.php';
 }
+if (!class_exists('Boots\Contract\ContainerContract')) {
+    require_once __DIR__ . '/ContainerContract.php';
+}

@@ -24,3 +24,6 @@ if (!class_exists('Boots\Dispenser')) {
 if (!class_exists('Boots\Repository')) {
     require_once __DIR__ . '/src/Repository.php';
 }
+if (!class_exists('Boots\Container')) {
+    require_once __DIR__ . '/src/Container.php';
+}

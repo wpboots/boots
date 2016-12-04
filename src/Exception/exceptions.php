@@ -15,3 +15,6 @@ if (!class_exists('Boots\Exception\FileNotFoundException')) {
 if (!class_exists('Boots\Exception\ClassNotFoundException')) {
     require_once __DIR__ . '/ClassNotFoundException.php';
 }
+if (!class_exists('Boots\Exception\NotFoundException')) {
+    require_once __DIR__ . '/NotFoundException.php';
+}
