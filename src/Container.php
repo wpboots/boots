@@ -33,16 +33,14 @@ class Container implements Contract\ContainerContract
      */
     protected $container = [];
 
-    protected function resolveParameters(\ReflectionFunction $callable)
+    protected function resolveBindings(array $bindings)
     {
-        $params = $callable->getParameters();
         $args = [];
-        foreach ($params as $param) {
-            if (!is_null($paramClass = $param->getClass())) {
-                $args[] = $this->get($paramClass->getName());
-                continue;
-            }
-            $args[] = $this->get($param->getName());
+        foreach ($bindings as $binding) {
+            $key = is_null($bindingClass = $binding->getClass())
+                ? $binding->getName()
+                : $bindingClass->getName();
+            $args[] = $this->get($key);
         }
         return $args;
     }
@@ -54,23 +52,22 @@ class Container implements Contract\ContainerContract
      * @param  string $class Fully qualified class name
      * @return Object        Resolved instance
      */
-    protected function resolve($class)
+    protected function resolveClass($class)
     {
         $reflectedClass = new \ReflectionClass($class);
         $constructor = $reflectedClass->getConstructor();
         if (is_null($constructor)) {
             return new $class;
         }
-        $params = $constructor->getParameters();
-        $values = [];
-        foreach ($params as $param) {
-            if (!is_null($paramClass = $param->getClass())) {
-                $values[] = $this->get($paramClass->getName());
-                continue;
-            }
-            $values[] = $this->get($param->getName());
-        }
-        return $reflectedClass->newInstanceArgs($values);
+        $args = $this->resolveBindings($constructor->getParameters());
+        return $reflectedClass->newInstanceArgs($args);
+    }
+
+    protected function resolveCallable(callable $callable)
+    {
+        $reflectedFunction = new \ReflectionFunction($callable);
+        $args = $this->resolveBindings($reflectedFunction->getParameters());
+        return call_user_func_array($callable, $args);
     }
 
     /**
@@ -86,15 +83,13 @@ class Container implements Contract\ContainerContract
     {
         if ($this->has($key)) {
             if (is_callable($entity = $this->container[$key])) {
-                $reflectedCallable = new \ReflectionFunction($entity);
-                $args = $this->resolveParameters($reflectedCallable);
-                return call_user_func_array($entity, $args);
+                return $this->resolveCallable($entity);
             }
             return $entity;
         }
         if (class_exists($key)) {
             try {
-                $entity = $this->resolve($key);
+                $entity = $this->resolveClass($key);
             } catch (\Exception $e) {
                 if ($e instanceof Exception\BindingResolutionException) {
                     throw $e;
