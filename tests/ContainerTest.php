@@ -83,7 +83,20 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf($class, $this->container->get($class));
     }
 
-    // callables
+    /** @test */
+    public function it_should_resolve_a_callable()
+    {
+        $this->container->add('a', function () {
+            return 'b';
+        });
+        $this->assertEquals('b', $this->container->get('a'));
+
+        $foobarClass = 'Boots\Test\Container\Foobar';
+        $this->container->add($foobarClass, function () use ($foobarClass) {
+            return new $foobarClass('baz');
+        });
+        $this->assertInstanceOf($foobarClass, $this->container->get($foobarClass));
+    }
 
     // shared
 

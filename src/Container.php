@@ -71,7 +71,11 @@ class Container implements Contract\ContainerContract
     public function get($key)
     {
         if ($this->has($key)) {
-            return $this->container[$key];
+            $entity = $this->container[$key];
+            if (is_callable($entity)) {
+                return call_user_func($entity);
+            }
+            return $entity;
         }
         if (class_exists($key)) {
             try {
