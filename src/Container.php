@@ -33,6 +33,20 @@ class Container implements Contract\ContainerContract
      */
     protected $container = [];
 
+    protected function resolveParameters(\ReflectionFunction $callable)
+    {
+        $params = $callable->getParameters();
+        $args = [];
+        foreach ($params as $param) {
+            if (!is_null($paramClass = $param->getClass())) {
+                $args[] = $this->get($paramClass->getName());
+                continue;
+            }
+            $args[] = $this->get($param->getName());
+        }
+        return $args;
+    }
+
     /**
      * Resolve a class.
      * @throws \Boots\Exception\BindingResolutionException
@@ -71,9 +85,10 @@ class Container implements Contract\ContainerContract
     public function get($key)
     {
         if ($this->has($key)) {
-            $entity = $this->container[$key];
-            if (is_callable($entity)) {
-                return call_user_func($entity);
+            if (is_callable($entity = $this->container[$key])) {
+                $reflectedCallable = new \ReflectionFunction($entity);
+                $args = $this->resolveParameters($reflectedCallable);
+                return call_user_func_array($entity, $args);
             }
             return $entity;
         }

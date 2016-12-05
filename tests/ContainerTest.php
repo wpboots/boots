@@ -98,6 +98,15 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf($foobarClass, $this->container->get($foobarClass));
     }
 
+    /** @test */
+    public function it_should_resolve_a_callable_with_params()
+    {
+        $this->container->add('callable', function (Boots\Test\Container\WithTwoParams $w2) {
+            return 'it works!';
+        });
+        $this->assertEquals('it works!', $this->container->get('callable'));
+    }
+
     // shared
 
     // delegates
