@@ -29,17 +29,17 @@ class Container implements Contract\ContainerContract
 {
     /**
      * Container storage.
-     * @var Contract\RepositoryContract
+     * @var array
      */
-    protected $repository;
+    protected $container;
 
     /**
      * Construct the instance.
-     * @param Contract\RepositoryContract $repository Repository instance
+     * @param array Default entities
      */
-    public function __construct(Contract\RepositoryContract $repository)
+    public function __construct(array $entities = [])
     {
-        $this->repository = $repository;
+        $this->container = $entities;
     }
 
     /**
@@ -79,8 +79,8 @@ class Container implements Contract\ContainerContract
      */
     public function get($key)
     {
-        if ($this->repository->has($key)) {
-            return $this->repository->get($key);
+        if ($this->has($key)) {
+            return $this->container[$key];
         }
         if (class_exists($key)) {
             try {
@@ -112,7 +112,7 @@ class Container implements Contract\ContainerContract
      */
     public function has($key)
     {
-        return $this->repository->has($key);
+        return array_key_exists($key, $this->container);
     }
 
     /**
@@ -123,6 +123,7 @@ class Container implements Contract\ContainerContract
      */
     public function add($key, $value)
     {
-        $this->repository->set($key, $value);
+        $this->container[$key] = $value;
+        return $this;
     }
 }

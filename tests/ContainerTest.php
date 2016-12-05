@@ -1,7 +1,6 @@
 <?php
 
 use Boots\Container;
-use Boots\Repository;
 use org\bovigo\vfs\vfsStream;
 
 class ContainerTest extends PHPUnit_Framework_TestCase
@@ -45,7 +44,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         require_once vfsStream::url('boots/container/WithTwoParams.php');
         require_once vfsStream::url('boots/container/WithManagedParams.php');
 
-        $this->container = new Container(new Repository);
+        $this->container = new Container;
     }
 
     /** @test */
