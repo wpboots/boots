@@ -31,16 +31,7 @@ class Container implements Contract\ContainerContract
      * Container storage.
      * @var array
      */
-    protected $container;
-
-    /**
-     * Construct the instance.
-     * @param array Default entities
-     */
-    public function __construct(array $entities = [])
-    {
-        $this->container = $entities;
-    }
+    protected $container = [];
 
     /**
      * Resolve a class.
