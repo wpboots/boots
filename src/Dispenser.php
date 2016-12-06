@@ -59,14 +59,14 @@ class Dispenser implements Contract\DispenserContract
 
     /**
      * Construct the instance.
-     * @param string                      $directory  Path to extensions directory
-     * @param Contract\LocatorContract    $locator    Class locator instance
+     * @param string                        $directory  Path to extensions directory
+     * @param null|Contract\LocatorContract $locator    Class locator instance
      */
     public function __construct(
         $directory,
-        Contract\LocatorContract $locator
+        Contract\LocatorContract $locator = null
     ) {
-        $this->locator = $locator;
+        $this->locator = $locator ?: new Locator;
         $this->directory = $directory;
     }
 

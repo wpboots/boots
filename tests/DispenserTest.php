@@ -62,6 +62,12 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_should_be_constructable_without_providing_a_locator()
+    {
+        $this->assertNotNull(new Dispenser(''));
+    }
+
+    /** @test */
     public function it_should_dispense_a_service()
     {
         $chocolate = $this->dispenser->dispense('chocolate');
