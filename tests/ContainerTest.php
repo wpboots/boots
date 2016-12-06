@@ -105,7 +105,6 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->container->add('foo', 'bar');
         $this->assertInstanceOf($foobarClass, $this->container->get($foobarClass));
 
-        $this->container->add($foobarClass, new $foobarClass('bar'));
         $class = 'Boots\Test\Container\WithManagedParams';
         $this->assertInstanceOf($class, $this->container->get($class));
     }
@@ -148,7 +147,29 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('invoke + params', $this->container->get('invocableWithParams'));
     }
 
-    // shared
+    /** @test */
+    public function it_should_allow_singletons()
+    {
+        $w0Class = 'Boots\Test\Container\WithZeroParams';
+
+        $this->container->share('shared', function () use ($w0Class) {
+            return new $w0Class;
+        });
+        $resolvedShared1 = $this->container->get('shared');
+        $this->assertInstanceOf($w0Class, $resolvedShared1);
+        $resolvedShared2 = $this->container->get('shared');
+        $this->assertInstanceOf($w0Class, $resolvedShared2);
+        $this->assertSame($resolvedShared1, $resolvedShared2);
+
+        $this->container->add('shared', function () use ($w0Class) {
+            return new $w0Class;
+        });
+        $resolvedShared1 = $this->container->get('shared');
+        $this->assertInstanceOf($w0Class, $resolvedShared1);
+        $resolvedShared2 = $this->container->get('shared');
+        $this->assertInstanceOf($w0Class, $resolvedShared2);
+        $this->assertNotSame($resolvedShared1, $resolvedShared2);
+    }
 
     // delegates
 

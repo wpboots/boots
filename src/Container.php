@@ -34,6 +34,12 @@ class Container implements Contract\ContainerContract
     protected $container = [];
 
     /**
+     * Shared entity keys.
+     * @var array
+     */
+    protected $shared = [];
+
+    /**
      * Resolve parameter bindings from the container.
      * @param  array $bindings Parameter bindings
      * @return array           Binding values
@@ -104,10 +110,12 @@ class Container implements Contract\ContainerContract
                 } catch (\Exception $e) {
                     throw new Exception\BindingResolutionException(sprintf(
                         'Failed to resolve callable %s while resolving %s from the container.',
-                        get_class($callable), $key
+                        get_class($entity), $key
                     ), 1, $e);
                 }
-                return $entity;
+            }
+            if (in_array($key, $this->shared)) {
+                $this->container[$key] = $entity;
             }
             return $entity;
         }
@@ -150,6 +158,22 @@ class Container implements Contract\ContainerContract
     public function add($key, $value)
     {
         $this->container[$key] = $value;
+        $this->shared = array_diff($this->shared, [$key]);
+        return $this;
+    }
+
+    /**
+     * Add a shared entry.
+     * @param  string $key   Identifier
+     * @param  mixed  $value Value
+     * @return $this  Allow chaining
+     */
+    public function share($key, $value)
+    {
+        $this->container[$key] = $value;
+        if (!in_array($key, $this->shared)) {
+            $this->shared[] = $key;
+        }
         return $this;
     }
 }
