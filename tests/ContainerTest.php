@@ -51,6 +51,22 @@ class ContainerTest extends PHPUnit_Framework_TestCase
                                 return "invoke + params";
                             }
                         }',
+                'Contract.php' =>
+                    '<?php namespace Boots\Test\Container;
+                        interface Contract {
+                            public function contract();
+                        }',
+                'Concrete.php' =>
+                    '<?php namespace Boots\Test\Container;
+                        class Concrete implements Contract {
+                            public function __construct(WithZeroParams $w0, WithOneParam $w1) {}
+                            public function contract() {}
+                        }',
+                'ContractParam.php' =>
+                    '<?php namespace Boots\Test\Container;
+                        class ContractParam {
+                            public function __construct(Contract $concrete) {}
+                        }',
                 //
             ],
         ]);
@@ -63,6 +79,9 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         require_once vfsStream::url('boots/container/WithManagedParams.php');
         require_once vfsStream::url('boots/container/Invocable.php');
         require_once vfsStream::url('boots/container/InvocableWithParams.php');
+        require_once vfsStream::url('boots/container/Contract.php');
+        require_once vfsStream::url('boots/container/Concrete.php');
+        require_once vfsStream::url('boots/container/ContractParam.php');
 
         $this->container = new Container;
     }
@@ -145,6 +164,19 @@ class ContainerTest extends PHPUnit_Framework_TestCase
     {
         $this->container->add('invocableWithParams', new Boots\Test\Container\InvocableWithParams);
         $this->assertEquals('invoke + params', $this->container->get('invocableWithParams'));
+    }
+
+    /** @test */
+    public function it_should_resolve_an_interface()
+    {
+        $contractInterface = 'Boots\Test\Container\Contract';
+        $concreteClass = 'Boots\Test\Container\Concrete';
+        $concrete = $this->container->get($concreteClass);
+        $this->assertInstanceOf($contractInterface, $concrete);
+        $this->container->add($contractInterface, $concrete);
+        $contractParamClass = 'Boots\Test\Container\ContractParam';
+        $contractParam = $this->container->get($contractParamClass);
+        $this->assertInstanceOf($contractParamClass, $contractParam);
     }
 
     /** @test */
