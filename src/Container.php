@@ -114,9 +114,8 @@ class Container implements Contract\ContainerContract
      * @param  boolean $found Whether the entity was found or not
      * @return mixed          Entity or null if not found
      */
-    protected function find($key, & $found)
+    protected function find($key, & $found = false)
     {
-        $found = false;
         if (array_key_exists($key, $this->container)) {
             $found = true;
             return $this->container[$key];
@@ -185,7 +184,7 @@ class Container implements Contract\ContainerContract
     public function has($key)
     {
         $this->find($key, $has);
-        return $has;
+        return (bool) $has;
     }
 
     /**
