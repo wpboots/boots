@@ -2,7 +2,6 @@
 
 use Boots\Locator;
 use Boots\Dispenser;
-use Boots\Repository;
 use org\bovigo\vfs\vfsStream;
 
 class DispenserTest extends PHPUnit_Framework_TestCase
@@ -53,7 +52,7 @@ class DispenserTest extends PHPUnit_Framework_TestCase
         ]);
 
         $directory = vfsStream::url('boots/dispenser');
-        $this->dispenser = new Dispenser($directory, new Locator, new Repository);
+        $this->dispenser = new Dispenser($directory, new Locator);
     }
 
     /** @test */

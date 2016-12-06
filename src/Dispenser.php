@@ -41,9 +41,9 @@ class Dispenser implements Contract\DispenserContract
 
     /**
      * Dispenser storage.
-     * @var Contract\RepositoryContract
+     * @var array
      */
-    protected $repository;
+    protected $dispenser = [];
 
     /**
      * Name of the index file.
@@ -61,16 +61,13 @@ class Dispenser implements Contract\DispenserContract
      * Construct the instance.
      * @param string                      $directory  Path to extensions directory
      * @param Contract\LocatorContract    $locator    Class locator instance
-     * @param Contract\RepositoryContract $repository Repository instance
      */
     public function __construct(
         $directory,
-        Contract\LocatorContract $locator,
-        Contract\RepositoryContract $repository
+        Contract\LocatorContract $locator
     ) {
         $this->locator = $locator;
         $this->directory = $directory;
-        $this->repository = $repository;
     }
 
     /**
@@ -122,12 +119,12 @@ class Dispenser implements Contract\DispenserContract
      */
     public function dispense($token)
     {
-        if ($this->repository->has($token)) {
-            return $this->repository->get($token);
+        if (array_key_exists($token, $this->dispenser)) {
+            return $this->dispenser[$token];
         }
         $class = $this->locate($token);
         $extension = new $class;
-        $this->repository->set($token, $extension);
+        $this->dispenser[$token] = $extension;
         return $extension;
     }
 }
