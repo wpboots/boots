@@ -44,7 +44,7 @@ class Container implements Contract\ContainerContract
      * @param  array $bindings Parameter bindings
      * @return array           Binding values
      */
-    protected function resolveBindings(array $bindings)
+    protected function resolve(array $bindings)
     {
         $args = [];
         foreach ($bindings as $binding) {
@@ -68,7 +68,7 @@ class Container implements Contract\ContainerContract
         if (is_null($constructor)) {
             return new $class;
         }
-        $args = $this->resolveBindings($constructor->getParameters());
+        $args = $this->resolve($constructor->getParameters());
         return $reflectedClass->newInstanceArgs($args);
     }
 
@@ -88,7 +88,7 @@ class Container implements Contract\ContainerContract
             }
             $reflectedFunction = $reflectedClass->getMethod('__invoke');
         }
-        $args = $this->resolveBindings($reflectedFunction->getParameters());
+        $args = $this->resolve($reflectedFunction->getParameters());
         return call_user_func_array($callable, $args);
     }
 
@@ -113,9 +113,9 @@ class Container implements Contract\ContainerContract
                         get_class($entity), $key
                     ), 1, $e);
                 }
-            }
-            if (in_array($key, $this->shared)) {
-                $this->container[$key] = $entity;
+                if (in_array($key, $this->shared)) {
+                    $this->container[$key] = $entity;
+                }
             }
             return $entity;
         }
