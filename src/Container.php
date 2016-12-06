@@ -33,6 +33,11 @@ class Container implements Contract\ContainerContract
      */
     protected $container = [];
 
+    /**
+     * Resolve parameter bindings from the container.
+     * @param  array $bindings Parameter bindings
+     * @return array           Binding values
+     */
     protected function resolveBindings(array $bindings)
     {
         $args = [];
@@ -47,8 +52,6 @@ class Container implements Contract\ContainerContract
 
     /**
      * Resolve a class.
-     * @throws \Boots\Exception\BindingResolutionException
-     *         If class can not be resolved.
      * @param  string $class Fully qualified class name
      * @return Object        Resolved instance
      */
@@ -63,6 +66,11 @@ class Container implements Contract\ContainerContract
         return $reflectedClass->newInstanceArgs($args);
     }
 
+    /**
+     * Resolve a callable.
+     * @param  callable $callable PHP Callable
+     * @return mixed              Resolved value
+     */
     protected function resolveCallable(callable $callable)
     {
         if ($callable instanceof \Closure) {
@@ -91,7 +99,15 @@ class Container implements Contract\ContainerContract
     {
         if ($this->has($key)) {
             if (is_callable($entity = $this->container[$key])) {
-                return $this->resolveCallable($entity);
+                try {
+                    $entity = $this->resolveCallable($entity);
+                } catch (\Exception $e) {
+                    throw new Exception\BindingResolutionException(sprintf(
+                        'Failed to resolve callable %s while resolving %s from the container.',
+                        get_class($callable), $key
+                    ), 1, $e);
+                }
+                return $entity;
             }
             return $entity;
         }
@@ -99,12 +115,9 @@ class Container implements Contract\ContainerContract
             try {
                 $entity = $this->resolveClass($key);
             } catch (\Exception $e) {
-                if ($e instanceof Exception\BindingResolutionException) {
-                    throw $e;
-                }
                 throw new Exception\BindingResolutionException(sprintf(
                     'Failed to resolve class %s from the container.', $key
-                ));
+                ), 1, $e);
             }
             return $entity;
         }
