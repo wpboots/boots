@@ -184,7 +184,8 @@ class Container implements Contract\ContainerContract
      */
     public function has($key)
     {
-        return array_key_exists($key, $this->container);
+        $this->find($key, $has);
+        return $has;
     }
 
     /**

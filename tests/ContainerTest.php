@@ -262,5 +262,17 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('beep', $this->container->get('delegation'));
     }
 
+    /** @test */
+    public function it_should_tell_whether_a_key_is_being_managed()
+    {
+        $delegate = new Container;
+        $delegate->add('delegation', 'boop');
+        $this->container->delegate($delegate);
+        $this->container->add('foo', 'bar');
+        $this->assertTrue($this->container->has('foo'));
+        $this->assertTrue($this->container->has('delegation'));
+        $this->assertFalse($this->container->has('hello'));
+    }
+
     // exceptions
 }
