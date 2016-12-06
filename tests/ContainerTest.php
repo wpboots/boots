@@ -253,7 +253,14 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->assertNotSame($contractParam1->concrete, $contractParam2->concrete);
     }
 
-    // delegates
+    /** @test */
+    public function it_should_support_delegations()
+    {
+        $delegate = new Container;
+        $delegate->add('delegation', 'beep');
+        $this->container->delegate($delegate);
+        $this->assertEquals('beep', $this->container->get('delegation'));
+    }
 
     // exceptions
 }

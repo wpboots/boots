@@ -40,6 +40,12 @@ class Container implements Contract\ContainerContract
     protected $shared = [];
 
     /**
+     * Container delegates
+     * @var array
+     */
+    protected $delegates = [];
+
+    /**
      * Resolve parameter bindings from the container.
      * @throws \Boots\Exception\BindingResolutionException
      *         If a parameter can not be resolved.
@@ -103,6 +109,27 @@ class Container implements Contract\ContainerContract
     }
 
     /**
+     * Find an entity including within delegates.
+     * @param  string  $key   Identifier
+     * @param  boolean $found Whether the entity was found or not
+     * @return mixed          Entity or null if not found
+     */
+    protected function find($key, & $found)
+    {
+        $found = false;
+        if (array_key_exists($key, $this->container)) {
+            $found = true;
+            return $this->container[$key];
+        }
+        foreach ($this->delegates as $delegate) {
+            $entity = $delegate->find($key, $found);
+            if ($found) {
+                return $entity;
+            }
+        }
+    }
+
+    /**
      * Resolve an entity by key.
      * @throws \Boots\Exception\NotFoundException
      *         If an entry is not found.
@@ -113,8 +140,9 @@ class Container implements Contract\ContainerContract
      */
     public function get($key)
     {
-        if ($this->has($key)) {
-            if (is_callable($entity = $this->container[$key])) {
+        $entity = $this->find($key, $found);
+        if ($found) {
+            if (is_callable($entity)) {
                 try {
                     $entity = $this->resolveCallable($entity);
                 } catch (\Exception $e) {
@@ -184,6 +212,12 @@ class Container implements Contract\ContainerContract
         if (!in_array($key, $this->shared)) {
             $this->shared[] = $key;
         }
+        return $this;
+    }
+
+    public function delegate(Contract\ContainerContract $container)
+    {
+        $this->delegates[] = $container;
         return $this;
     }
 }
