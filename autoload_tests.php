@@ -14,16 +14,3 @@ if (getenv('CI_TEST')) {
 }
 
 require __DIR__ . '/autoload.php';
-
-if (!class_exists('Boots\Locator')) {
-    require_once __DIR__ . '/src/Locator.php';
-}
-if (!class_exists('Boots\Dispenser')) {
-    require_once __DIR__ . '/src/Dispenser.php';
-}
-if (!class_exists('Boots\Repository')) {
-    require_once __DIR__ . '/src/Repository.php';
-}
-if (!class_exists('Boots\Container')) {
-    require_once __DIR__ . '/src/Container.php';
-}
