@@ -65,7 +65,10 @@ class ContainerTest extends PHPUnit_Framework_TestCase
                 'ContractParam.php' =>
                     '<?php namespace Boots\Test\Container;
                         class ContractParam {
-                            public function __construct(Contract $concrete) {}
+                            public $concrete;
+                            public function __construct(Contract $concrete) {
+                                $this->concrete = $concrete;
+                            }
                         }',
                 //
             ],
@@ -201,6 +204,32 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $resolvedShared2 = $this->container->get('shared');
         $this->assertInstanceOf($w0Class, $resolvedShared2);
         $this->assertNotSame($resolvedShared1, $resolvedShared2);
+    }
+
+    /** @test */
+    public function it_should_allow_singleton_interfaces()
+    {
+        $contractInterface = 'Boots\Test\Container\Contract';
+        $concreteClass = 'Boots\Test\Container\Concrete';
+        $this->container->share($contractInterface, function () use ($concreteClass) {
+            return $this->container->get($concreteClass);
+        });
+        $contractParamClass = 'Boots\Test\Container\ContractParam';
+        $contractParam1 = $this->container->get($contractParamClass);
+        $this->assertInstanceOf($contractParamClass, $contractParam1);
+        $contractParam2 = $this->container->get($contractParamClass);
+        $this->assertInstanceOf($contractParamClass, $contractParam2);
+        $this->assertSame($contractParam1->concrete, $contractParam2->concrete);
+
+        $this->container->add($contractInterface, function () use ($concreteClass) {
+            return $this->container->get($concreteClass);
+        });
+        $contractParamClass = 'Boots\Test\Container\ContractParam';
+        $contractParam1 = $this->container->get($contractParamClass);
+        $this->assertInstanceOf($contractParamClass, $contractParam1);
+        $contractParam2 = $this->container->get($contractParamClass);
+        $this->assertInstanceOf($contractParamClass, $contractParam2);
+        $this->assertNotSame($contractParam1->concrete, $contractParam2->concrete);
     }
 
     // delegates
