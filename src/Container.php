@@ -41,8 +41,10 @@ class Container implements Contract\ContainerContract
 
     /**
      * Resolve parameter bindings from the container.
-     * @param  array $bindings Parameter bindings
-     * @return array           Binding values
+     * @throws \Boots\Exception\BindingResolutionException
+     *         If a parameter can not be resolved.
+     * @param  array $bindings ReflectionParameter's
+     * @return array           Resolved binding values
      */
     protected function resolve(array $bindings)
     {
@@ -51,7 +53,15 @@ class Container implements Contract\ContainerContract
             $key = is_null($bindingClass = $binding->getClass())
                 ? $binding->getName()
                 : $bindingClass->getName();
-            $args[] = $this->get($key);
+            try {
+                $arg = $this->get($key);
+            } catch (\Exception $e) {
+                if (!$binding->isDefaultValueAvailable()) {
+                    throw $e;
+                }
+                $arg = $binding->getDefaultValue();
+            }
+            $args[] = $arg;
         }
         return $args;
     }

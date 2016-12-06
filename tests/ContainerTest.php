@@ -39,6 +39,14 @@ class ContainerTest extends PHPUnit_Framework_TestCase
                         class WithManagedParams {
                             public function __construct(Foobar $foo, WithOneParam $w1) {}
                         }',
+                'WithOptionalParams.php' =>
+                    '<?php namespace Boots\Test\Container;
+                        class WithOptionalParams {
+                            public $a;
+                            public function __construct(WithTwoParams $w2, $a = "b") {
+                                $this->a = $a;
+                            }
+                        }',
                 'Invocable.php' =>
                     '<?php namespace Boots\Test\Container;
                         class Invocable {
@@ -80,6 +88,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         require_once vfsStream::url('boots/container/WithOneParam.php');
         require_once vfsStream::url('boots/container/WithTwoParams.php');
         require_once vfsStream::url('boots/container/WithManagedParams.php');
+        require_once vfsStream::url('boots/container/WithOptionalParams.php');
         require_once vfsStream::url('boots/container/Invocable.php');
         require_once vfsStream::url('boots/container/InvocableWithParams.php');
         require_once vfsStream::url('boots/container/Contract.php');
@@ -129,6 +138,18 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
         $class = 'Boots\Test\Container\WithManagedParams';
         $this->assertInstanceOf($class, $this->container->get($class));
+    }
+
+    /** @test */
+    public function it_should_resolve_a_class_if_constructor_has_optional_params()
+    {
+        $class = 'Boots\Test\Container\WithOptionalParams';
+        $this->assertInstanceOf($class, $this->container->get($class));
+
+        $this->container->add('a', 'c');
+        $WithOptionalParams = $this->container->get($class);
+        $this->assertInstanceOf($class, $WithOptionalParams);
+        $this->assertEquals('c', $WithOptionalParams->a);
     }
 
     /** @test */
