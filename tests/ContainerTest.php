@@ -274,5 +274,17 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->container->has('hello'));
     }
 
-    // exceptions
+    /** @test */
+    public function it_should_throw_NotFoundException_if_key_is_not_being_managed()
+    {
+        $this->setExpectedException('Boots\Exception\NotFoundException');
+        $this->container->get('baz');
+    }
+
+    /** @test */
+    public function it_should_throw_BindingResolutionException_if_key_can_not_be_resolved()
+    {
+        $this->setExpectedException('Boots\Exception\BindingResolutionException');
+        $this->container->get('Boots\Test\Container\Foobar');
+    }
 }
