@@ -16,9 +16,14 @@ class ContainerTest extends PHPUnit_Framework_TestCase
                         class Foobar {
                             public function __construct($foo) {}
                         }',
+                'WithoutConstructor.php' =>
+                    '<?php namespace Boots\Test\Container;
+                        class WithoutConstructor {}',
                 'WithZeroParams.php' =>
                     '<?php namespace Boots\Test\Container;
-                        class WithZeroParams {}',
+                        class WithZeroParams {
+                            public function __construct() {}
+                        }',
                 'WithOneParam.php' =>
                     '<?php namespace Boots\Test\Container;
                         class WithOneParam {
@@ -51,6 +56,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         ]);
 
         require_once vfsStream::url('boots/container/Foobar.php');
+        require_once vfsStream::url('boots/container/WithoutConstructor.php');
         require_once vfsStream::url('boots/container/WithZeroParams.php');
         require_once vfsStream::url('boots/container/WithOneParam.php');
         require_once vfsStream::url('boots/container/WithTwoParams.php');
@@ -77,6 +83,9 @@ class ContainerTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_resolve_an_unbinded_object_if_class_constructor_is_not_defined_or_has_no_params()
     {
+        $class = 'Boots\Test\Container\WithoutConstructor';
+        $this->assertInstanceOf($class, $this->container->get($class));
+
         $class = 'Boots\Test\Container\WithZeroParams';
         $this->assertInstanceOf($class, $this->container->get($class));
     }
@@ -91,9 +100,13 @@ class ContainerTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_resolve_an_object_if_class_constructor_params_are_being_managed()
     {
-        $class = 'Boots\Test\Container\WithManagedParams';
         $foobarClass = 'Boots\Test\Container\Foobar';
+
+        $this->container->add('foo', 'bar');
+        $this->assertInstanceOf($foobarClass, $this->container->get($foobarClass));
+
         $this->container->add($foobarClass, new $foobarClass('bar'));
+        $class = 'Boots\Test\Container\WithManagedParams';
         $this->assertInstanceOf($class, $this->container->get($class));
     }
 
