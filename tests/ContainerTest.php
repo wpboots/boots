@@ -34,6 +34,18 @@ class ContainerTest extends PHPUnit_Framework_TestCase
                         class WithManagedParams {
                             public function __construct(Foobar $foo, WithOneParam $w1) {}
                         }',
+                'Invocable.php' =>
+                    '<?php namespace Boots\Test\Container;
+                        class Invocable {
+                            public function __invoke() { return "invoke"; }
+                        }',
+                'InvocableWithParams.php' =>
+                    '<?php namespace Boots\Test\Container;
+                        class InvocableWithParams {
+                            public function __invoke(WithZeroParams $w0, WithOneParam $w1) {
+                                return "invoke + params";
+                            }
+                        }',
                 //
             ],
         ]);
@@ -43,6 +55,8 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         require_once vfsStream::url('boots/container/WithOneParam.php');
         require_once vfsStream::url('boots/container/WithTwoParams.php');
         require_once vfsStream::url('boots/container/WithManagedParams.php');
+        require_once vfsStream::url('boots/container/Invocable.php');
+        require_once vfsStream::url('boots/container/InvocableWithParams.php');
 
         $this->container = new Container;
     }
@@ -105,6 +119,20 @@ class ContainerTest extends PHPUnit_Framework_TestCase
             return 'it works!';
         });
         $this->assertEquals('it works!', $this->container->get('callable'));
+    }
+
+    /** @test */
+    public function it_should_resolve_an_invocable()
+    {
+        $this->container->add('invocable', new Boots\Test\Container\Invocable);
+        $this->assertEquals('invoke', $this->container->get('invocable'));
+    }
+
+    /** @test */
+    public function it_should_resolve_an_invocable_with_params()
+    {
+        $this->container->add('invocableWithParams', new Boots\Test\Container\InvocableWithParams);
+        $this->assertEquals('invoke + params', $this->container->get('invocableWithParams'));
     }
 
     // shared

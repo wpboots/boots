@@ -65,7 +65,15 @@ class Container implements Contract\ContainerContract
 
     protected function resolveCallable(callable $callable)
     {
-        $reflectedFunction = new \ReflectionFunction($callable);
+        if ($callable instanceof \Closure) {
+            $reflectedFunction = new \ReflectionFunction($callable);
+        } else {
+            $reflectedClass = new \ReflectionClass($callable);
+            if (!$reflectedClass->hasMethod('__invoke')) {
+                return $callable;
+            }
+            $reflectedFunction = $reflectedClass->getMethod('__invoke');
+        }
         $args = $this->resolveBindings($reflectedFunction->getParameters());
         return call_user_func_array($callable, $args);
     }
