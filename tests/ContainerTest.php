@@ -105,6 +105,12 @@ class ContainerTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_should_be_an_implementation_of_ArrayAccess()
+    {
+        $this->assertInstanceOf('ArrayAccess', $this->container);
+    }
+
+    /** @test */
     public function it_should_add_and_retrieve_an_entity()
     {
         $this->container->add('foo', 'bar');
@@ -272,6 +278,34 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->container->has('foo'));
         $this->assertTrue($this->container->has('delegation'));
         $this->assertFalse($this->container->has('hello'));
+    }
+
+    /** @test */
+    public function it_should_conform_to_ArrayAccess()
+    {
+        $zombie = new Container;
+        $zombie['world'] = 'hi';
+        $delegation = new Container;
+        $delegation['world'] = 'hello';
+        $delegation->delegate($zombie);
+        $this->container->delegate($delegation);
+        $this->container->delegate($zombie);
+        $this->container['hello'] = 'world';
+        $this->container[] = 'foo';
+        $this->assertEquals('world', $this->container['hello']);
+        $this->assertEquals('hello', $this->container['world']);
+        $this->assertEquals('foo', $this->container[0]);
+        $this->assertTrue(isset($this->container['world']));
+        $this->assertFalse(isset($this->container['beep']));
+        // Should we also unset deeply in delegations?
+        // Not unsetting from all delegations allows some fancy logic.
+        // For e.g. Stack pop
+        // while (isset($this->container['foo'])) {
+        //     // some operation on $this->container['foo']
+        //     unset($this->container['foo']);
+        // }
+        unset($this->container['world']);
+        $this->assertFalse(isset($this->container['world']));
     }
 
     /** @test */

@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
  * @subpackage Container
  * @version 2.0.0
  */
-class Container implements Contract\ContainerContract
+class Container implements Contract\ContainerContract, \ArrayAccess
 {
     /**
      * Container storage.
@@ -114,18 +114,29 @@ class Container implements Contract\ContainerContract
      * @param  boolean $found Whether the entity was found or not
      * @return mixed          Entity or null if not found
      */
-    protected function find($key, & $found = false)
+    protected function find($key, & $found = false, $unset = false)
     {
         if (array_key_exists($key, $this->container)) {
             $found = true;
+            if ($unset) {
+                unset($this->container[$key]);
+                return null;
+            }
             return $this->container[$key];
         }
+        $delegateFound = false;
         foreach ($this->delegates as $delegate) {
-            $entity = $delegate->find($key, $found);
+            $entity = $delegate->find($key, $found, $unset);
             if ($found) {
-                return $entity;
+                // To use as stack pop
+                // return $entity;
+                if (!$unset) {
+                    return $entity;
+                }
+                $delegateFound = true;
             }
         }
+        $found = $delegateFound;
     }
 
     /**
@@ -219,5 +230,25 @@ class Container implements Contract\ContainerContract
     {
         $this->delegates[] = $container;
         return $this;
+    }
+
+    public function offsetSet($offset, $value) {
+        if (is_null($offset)) {
+            $this->container[] = $value;
+        } else {
+            $this->container[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset) {
+        return $this->has($offset);
+    }
+
+    public function offsetUnset($offset) {
+        $this->find($offset, $found, true);
+    }
+
+    public function offsetGet($offset) {
+        return $this->get($offset);
     }
 }
