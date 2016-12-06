@@ -226,28 +226,55 @@ class Container implements Contract\ContainerContract, \ArrayAccess
         return $this;
     }
 
+    /**
+     * Add a delegation.
+     * @param  Contract\ContainerContract $container Container
+     * @return $this Allow chaining
+     */
     public function delegate(Contract\ContainerContract $container)
     {
         $this->delegates[] = $container;
         return $this;
     }
 
+    /**
+     * ArrayAccess: Alias of add.
+     * @param  string $offset Identifier
+     * @param  mixed $value   Value
+     * @return $this          Allow chaining
+     */
     public function offsetSet($offset, $value) {
         if (is_null($offset)) {
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
         }
+        return $this;
     }
 
+    /**
+     * ArrayAccess: alias of has.
+     * @param  string $offset Identifier
+     * @return boolean        Exists or not
+     */
     public function offsetExists($offset) {
         return $this->has($offset);
     }
 
+    /**
+     * ArrayAccess: unset a key binding.
+     * @param  string $offset Identifier
+     * @return void
+     */
     public function offsetUnset($offset) {
         $this->find($offset, $found, true);
     }
 
+    /**
+     * ArrayAccess: alias of get.
+     * @param  string $offset Identifier
+     * @return mixed          Entity
+     */
     public function offsetGet($offset) {
         return $this->get($offset);
     }
