@@ -3,41 +3,32 @@
 namespace Boots;
 
 /**
- * Boots dispenser.
+ * This file is part of the Boots framework.
  *
- * @package Boots
+ * @package    Boots
  * @subpackage Dispenser
- * @version 2.0.0
- * @see http://wpboots.com
- * @link https://github.com/wpboots/boots
- * @author Kamal Khan <shout@bhittani.com> https://bhittani.com
- * @license https://github.com/wpboots/boots/blob/master/LICENSE
- * @copyright Copyright (c) 2014-2016, Kamal Khan
+ * @author     Kamal Khan <shout@bhittani.com>
+ * @version    2.x
+ * @see        http://wpboots.com
+ * @link       https://github.com/wpboots/boots
+ * @copyright  2014-2016 Kamal Khan
+ * @license    https://github.com/wpboots/boots/blob/master/LICENSE
  */
 
-// Die if accessing this script directly.
-if (!defined('ABSPATH')) {
-    die(-1);
-}
+use Boots\Contract\ContainerContract;
+use Boots\Contract\DispenserContract;
 
 /**
  * @package Boots
  * @subpackage Dispenser
- * @version 2.0.0
  */
-class Dispenser implements Contract\DispenserContract
+class Dispenser implements DispenserContract
 {
     /**
-     * Directory path containing the services/extensions.
-     * @var string
+     * Container instance.
+     * @var ContainerContract
      */
-    protected $directory;
-
-    /**
-     * Class locator.
-     * @var Contract\LocatorContract
-     */
-    protected $locator;
+    protected $container;
 
     /**
      * Dispenser storage.
@@ -46,83 +37,137 @@ class Dispenser implements Contract\DispenserContract
     protected $dispenser = [];
 
     /**
-     * Name of the index file.
-     * @var string
+     * Entities manifest
+     * @var array
      */
-    protected $indexFile;
-
-    /**
-     * Name of the manifest file.
-     * @var string
-     */
-    protected $manifestFile;
+    protected $entities = [];
 
     /**
      * Construct the instance.
-     * @param string                        $directory  Path to extensions directory
-     * @param null|Contract\LocatorContract $locator    Class locator instance
+     * @param  string $directory Path to extensions directory
+     * @param  array  $entities  Entities manifest
+     * @return void
      */
-    public function __construct($directory, Contract\LocatorContract $locator = null)
+    public function __construct($directory, array $entities = [])
     {
-        $this->directory = $directory;
-        $this->locator = $locator ?: new Locator;
+        $this->entities = $entities;
+        $this->directory = rtrim($directory, '/');
+        $this->registerAutoloaders();
     }
 
     /**
-     * Locate the extension class.
-     * @param  string $token Extension key
-     * @return string        Extension class
+     * Convert a string from camelCased into snake-cased.
+     * @see http://php.net/manual/en/function.preg-replace.php#111695
+     * @param  string $str Camel cased string
+     * @return string Snake cased string
      */
-    protected function locate($token)
+    protected function camelToSnakeCase($str)
     {
-        $dirpath = "{$this->directory}/{$token}";
-        $filepath = $dirpath . '/' . ($this->indexFile ?: "{$token}.php");
-        $path2manifest = $dirpath . '/' . ($this->manifestFile ?: "{$token}.json");
-        if (!is_file($path2manifest)) {
-            throw new Exception\FileNotFoundException(sprintf(
-                '%s is required to load the %s extension.', $path2manifest, $token
-            ));
-        }
-        $manifestContent = file_get_contents($path2manifest);
-        $mArr = json_decode($manifestContent, true);
-        return $this->locator->locate($filepath, $mArr['class'], $mArr['version']);
+        $re = '/(?<!^)([A-Z][a-z]|(?<=[a-z])[^a-z]|(?<=[A-Z])[0-9_])/';
+        return strtolower(preg_replace($re, '-$1', $str));
     }
 
     /**
-     * Modify the index file name to look for.
-     * @param  string $name Index file name
-     * @return $this        Allow chaining
+     * Psr-4 autoloader.
+     * @param  array $psr4 Psr-4 mappings
+     * @return $this Allow chaining
      */
-    public function indexAt($name)
+    protected function autoloadPsr4(array $psr4)
     {
-        $this->indexFile = $name;
+        spl_autoload_register(function ($class) use ($psr4) {
+            foreach ($psr4 as $dir => $mappings) {
+                $version = $mappings['version'];
+                foreach ($mappings['maps'] as $prefix => $subDir) {
+                    $baseDir = "{$this->directory}/{$dir}/{$subDir}";
+                    $baseDir = rtrim($baseDir, '/') . '/';
+                    $len = strlen($prefix);
+                    if (strncmp($prefix, $class, $len) !== 0) {
+                        continue;
+                    }
+                    $relativeClass = substr($class, $len);
+                    $suffix = str_replace('.', '_', $version);
+                    $suffix = empty($suffix) ? '' : "_{$suffix}";
+                    $search = '/'.preg_quote($suffix).'$/';
+                    $relativeClass = preg_replace($search, '', $relativeClass);
+                    $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
+                    if (file_exists($file)) {
+                        require $file;
+                    }
+                }
+            }
+        });
+
         return $this;
     }
 
     /**
-     * Modify the manifest file name to look for.
-     * @param  string $name Manifest file name
-     * @return $this        Allow chaining
+     * Register the autoloaders.
+     * @return $this Allow chaining
      */
-    public function manifestAt($name)
+    protected function registerAutoloaders()
     {
-        $this->manifestFile = $name;
+        $psr4 = [];
+        foreach ($this->entities as $entity => $meta) {
+            if (array_key_exists('autoload', $meta)
+                && array_key_exists('psr-4', $meta['autoload'])
+            ) {
+                $maps = $meta['autoload']['psr-4'];
+                $version = array_key_exists('version', $meta) ? $meta['version'] : '';
+                $psr4[$entity] = [
+                    'maps' => $maps,
+                    'version' => $version
+                ];
+            }
+        }
+
+        $this->autoloadPsr4($psr4);
         return $this;
     }
 
     /**
-     * Dispense an extension by key.
-     * @param  string $token Extension key
-     * @return mixed  Extension
+     * Set the container instance.
+     * @param  ContainerContract $container Container instance
+     * @return $this Allow chaining
      */
-    public function dispense($token)
+    public function setContainer(ContainerContract $container)
     {
-        if (array_key_exists($token, $this->dispenser)) {
-            return $this->dispenser[$token];
+        $this->container = $container;
+        return $this;
+    }
+
+    /**
+     * Dispense an entity by key.
+     * @param  string $key Identifier
+     * @return mixed Entity
+     */
+    public function dispense($key)
+    {
+        $key = $this->camelToSnakeCase($key);
+        if (array_key_exists($key, $this->dispenser)) {
+            return $this->dispenser[$key];
         }
-        $class = $this->locate($token);
-        $extension = new $class;
-        $this->dispenser[$token] = $extension;
+        if (!array_key_exists($key, $this->entities)) {
+            // TODO: throw
+            return null;
+        }
+        $entity = $this->entities[$key];
+        if (!array_key_exists('class', $entity)) {
+            // TODO: throw
+            return null;
+        }
+        $class = $entity['class'];
+        $version = '';
+        if (array_key_exists('version', $entity)) {
+            $version = $entity['version'];
+        }
+        $suffix = str_replace('.', '_', $version);
+        $class .= empty($suffix) ? '' : "_{$suffix}";
+        if (is_null($this->container)) {
+            $extension = new $class;
+        } else {
+            $extension = $this->container->get($class);
+        }
+        $this->dispenser[$key] = $extension;
         return $extension;
     }
 }
