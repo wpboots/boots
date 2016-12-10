@@ -55,13 +55,20 @@ class Dispenser implements DispenserContract
         $this->registerAutoloaders();
     }
 
+    protected function strToCamelCase($str)
+    {
+        return str_replace(' ', '', lcfirst(ucwords(
+            str_replace(['-', '_'], ' ', $str)
+        )));
+    }
+
     /**
-     * Convert a string from camelCased into snake-cased.
+     * Cast a string to kebab-case.
      * @see http://php.net/manual/en/function.preg-replace.php#111695
-     * @param  string $str Camel cased string
-     * @return string Snake cased string
+     * @param  string $str String to cast
+     * @return string kebab-cased
      */
-    protected function camelToSnakeCase($str)
+    protected function strToKebabCase($str)
     {
         $re = '/(?<!^)([A-Z][a-z]|(?<=[a-z])[^a-z]|(?<=[A-Z])[0-9_])/';
         return strtolower(preg_replace($re, '-$1', $str));
@@ -142,7 +149,8 @@ class Dispenser implements DispenserContract
      */
     public function dispense($key)
     {
-        $key = $this->camelToSnakeCase($key);
+        $key = $this->strToCamelCase($key);
+        $key = $this->strToKebabCase($key);
         if (array_key_exists($key, $this->dispenser)) {
             return $this->dispenser[$key];
         }

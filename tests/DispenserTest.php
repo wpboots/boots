@@ -109,8 +109,25 @@ class DispenserTest extends PHPUnit_Framework_TestCase
     public function it_should_dispense_a_versioned_entity_that_may_be_psr4_autoloaded()
     {
         $this->assertInstanceOf(
-            'Boots\Test\Dispenser\Chocolate\Chocolate',
-            $this->dispenser->dispense('chocolate')
+            'Boots\Test\Dispenser\Apple\Apple_1_2',
+            $this->dispenser->dispense('appleJuice')
+        );
+    }
+
+    /** @test */
+    public function it_should_dispense_a_kebab_snake_or_camel_cased_entity_that_may_be_psr4_autoloaded()
+    {
+        $this->assertInstanceOf(
+            'Boots\Test\Dispenser\Apple\Apple_1_2',
+            $this->dispenser->dispense('apple_juice')
+        );
+        $this->assertInstanceOf(
+            'Boots\Test\Dispenser\Apple\Apple_1_2',
+            $this->dispenser->dispense('apple-juice')
+        );
+        $this->assertInstanceOf(
+            'Boots\Test\Dispenser\Apple\Apple_1_2',
+            $this->dispenser->dispense('appleJuice')
         );
     }
 
