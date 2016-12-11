@@ -3,147 +3,126 @@
 namespace Boots;
 
 /**
- * A wrapper class for the Boots API.
- * By using this approach, any version updates
- * will not enforce developers to modify the usage.
+ * This file is part of the Boots framework.
  *
- * @package Boots
+ * @package    Boots
  * @subpackage Boots
- * @version 2.0.0
- * @see http://wpboots.com
- * @link https://github.com/wpboots/boots
- * @author Kamal Khan <shout@bhittani.com> https://bhittani.com
- * @license https://github.com/wpboots/boots/blob/master/LICENSE
- * @copyright Copyright (c) 2014-2016, Kamal Khan
+ * @author     Kamal Khan <shout@bhittani.com>
+ * @version    2.x
+ * @see        http://wpboots.com
+ * @link       https://github.com/wpboots/boots
+ * @copyright  2014-2016 Kamal Khan
+ * @license    https://github.com/wpboots/boots/blob/master/LICENSE
  */
 
-// Die if accessing this script directly.
-if(!defined('ABSPATH')) die(-1);
+use Boots\Container;
+use Boots\Dispenser;
+use Boots\Repository;
+use Boots\Contract\ContainerContract;
+use Boots\Contract\DispenserContract;
+use Boots\Contract\RepositoryContract;
 
 /**
  * @package Boots
  * @subpackage Boots
- * @version 2.0.0
  */
-class Boots
+class Boots extends Container
 {
     /**
-     * Configuration repository
-     * @var RepositoryInterface
+     * Version of the framework.
+     * @var string
+     */
+    protected $version;
+
+    /**
+     * Configuration repository.
+     * @var RepositoryContract
      */
     protected $config;
 
     /**
-     * Manifest repository
-     * @var RepositoryInterface
+     * Extension dispenser.
+     * @var DispenserContract
      */
-    protected $manifest;
+    protected $dispenser;
 
     /**
-     * Boots api instance
-     * @var Api
+     * Construct the instance.
+     * @param string                  $version   Framework version
+     * @param DispenserContract       $dispenser Dispenser instance
+     * @param RepositoryContract|null $config    Configuration repository instance
+     * @param ContainerContract|null  $container Container instance
      */
-    protected $api;
+    public function __construct(
+        $version,
+        DispenserContract $dispenser,
+        RepositoryContract $config = null,
+        ContainerContract $container = null
+    ) {
+        $this->version = $version;
+        $this->dispenser = $dispenser;
+        $this->config = $config ?: new Repository;
 
-    /**
-     * Setup and fire up the boots api instance.
-     * @param array $config Configuration array
-     */
-    public function __construct(array $config)
-    {
-        $manifest = $this->extractManifest($config['abspath']);
-        $version = $manifest['version'];
-        $locator = $this->getLocator($version);
-        $repoClass = $locator->locate(__DIR__ . '/Repository.php', 'Boots\Repository', $version);
-        $this->config = new $repoClass($config);
-        $this->manifest = new $repoClass($manifest);
-        $apiClass = $locator->locate(__DIR__ . '/Api.php', 'Boots\Api', $version);
-        $this->api = new $apiClass($this);
-    }
-
-    /**
-     * Factory for setting up the object.
-     * @param  array $config Configuration
-     * @return Boots Factory generated instance
-     */
-    public static function factory(array $config)
-    {
-        $boots = new static;
-        $manifest = $boots->extractManifest($config['abspath']);
-        $version = $manifest['version'];
-        $locator = $this->getLocator($version);
-        $repoClass = $locator->locate(__DIR__ . '/Repository.php', 'Boots\Repository', $version);
-        $boots->config = new $repoClass($config);
-        $boots->manifest = new $repoClass($manifest);
-        $apiClass = $locator->locate(__DIR__ . '/Api.php', 'Boots\Api', $version);
-        $boots->api = new $apiClass($this);
-        return $boots;
-    }
-
-    /**
-     * Get the locator instance.
-     * @param  string $version Version
-     * @return Contract\LocatorContract Locator instance
-     */
-    protected function getLocator($version = '')
-    {
-        $prefix = 'Locator';
-        $suffix = str_replace('.', '_', $version);
-        $suffix = empty($suffix) ? '' : "_{$suffix}";
-        $fqcn = 'Boots\\' . $prefix . $suffix;
-        if (!class_exists($fqcn)) {
-            require_once __DIR__ . "/{$prefix}.php";
+        $this->share(get_class(), $this);
+        if (!is_null($container)) {
+            $this->delegate($container);
         }
-        return new $fqcn;
     }
 
     /**
-     * Extract the manifest as an array.
-     * @param  string $abspath Framework directory path
-     * @return array Manifest array
+     * Factory to create an instance.
+     * @param  string $appDir Base application directory
+     * @param  array  $config Configuration array
+     * @return Boots          The instance
      */
-    protected function extractManifest($abspath)
+    public static function create($appDir, array $config = [])
     {
-        $jsonFile = dirname($abspath) . '/boots/boots.json';
-        $jsonContents = file_get_contents($jsonFile);
-        return json_decode($jsonContents, true);
+        $appDir = rtrim($appDir, '/') . '/';
+        $baseDir = $appDir . '/boots';
+        $extendDir = $baseDir . '/extend';
+        $manifest = require $baseDir . '/boots.php';
+        $version = $manifest['version'];
+        $repository = new Repository($config);
+        $dispenser = new Dispenser($extendDir, $manifest['extensions']);
+        $instance = new static($version, $repository, $dispenser);
+        $dispenser->setContainer($instance);
+        return $instance;
     }
 
     /**
-     * Get the manifest repository.
-     * @return RepositoryInterface Manifest repository
+     * Get the version of the framework.
+     * @return string Version
      */
-    public function getManifest()
+    public function version()
     {
-        return $this->manifest;
+        return $this->version;
     }
 
     /**
-     * Get the configuration repository.
-     * @return RepositoryInterface Configuration repository
+     * Set or get a configuration key.
+     * @param  string $key   Identifier to get or set
+     * @param  mixed  $value Value to set
+     * @return mixed         Repository instance or key value
      */
-    public function getConfig()
+    public function config($key = null, $value = null)
     {
-        return $this->config;
+        if (is_null($key)) {
+            return $this->config;
+        }
+        if (is_null($value)) {
+            return $this->config->get($key);
+        }
+        $this->config->set($key, $value);
+        return $value;
     }
 
     /**
-     * Get the versioned boots api instance.
-     * @return Api Boots api instance
-     */
-    public function getInstance()
-    {
-        return $this->api;
-    }
-
-    /**
-     * Returns an extension instance.
-     *
-     * @param  string $extension Extension.
-     * @return object
+     * Get an extension by indentifier.
+     * @param  string $extension Identifier
+     * @return object            The extension instance
      */
     public function __get($extension)
     {
-        return $this->api->$extension;
+        return $this->dispenser->dispense($extension);
     }
 }
