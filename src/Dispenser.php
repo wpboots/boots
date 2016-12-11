@@ -46,6 +46,12 @@ class Dispenser implements DispenserContract
     protected $entities = [];
 
     /**
+     * Psr4 mappings.
+     * @var array
+     */
+    protected $psr4 = [];
+
+    /**
      * Construct the instance.
      * @param  string $directory Path to extensions directory
      * @param  array  $entities  Entities manifest
