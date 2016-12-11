@@ -27,16 +27,9 @@ interface RepositoryContract
 {
     /**
      * Get the entire repository as an array.
-     * @param  boolean $withDelegates Include delegates?
      * @return array   Repository array with preferable delegates
      */
-    public function all($withDelegates = false);
-
-    /**
-     * Get the entire repository array with delegates.
-     * @return array Repository array with delegates
-     */
-    public function everything();
+    public function all();
 
     /**
      * Check to see if the given key exists in the repository.
@@ -76,11 +69,4 @@ interface RepositoryContract
      * @return $this Allow chaining
      */
     public function append($key, $value);
-
-    /**
-     * Add a repository as a delegate.
-     * @param  RepositoryContract $repository Repository interface
-     * @return $this Allow chaining
-     */
-    public function delegate(RepositoryContract $repository);
 }
