@@ -7,10 +7,8 @@ $prefix = 'Boots\\';
 $base_dir = __DIR__ . '/src/';
 
 // project-specific version
-$version = json_decode(
-    file_get_contents(__DIR__ . '/boots.json'),
-    true
-)['version'];
+$manifest = require __DIR__ . '/boots.php';
+$version = $manifest['version'];
 
 // Register autoloader
 // @see http://www.php-fig.org/psr/psr-4/examples/
