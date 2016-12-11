@@ -77,14 +77,14 @@ class Boots extends Container
      */
     public static function create($appDir, array $config = [])
     {
-        $appDir = rtrim($appDir, '/') . '/';
+        $appDir = rtrim($appDir, '/');
         $baseDir = $appDir . '/boots';
         $extendDir = $baseDir . '/extend';
         $manifest = require $baseDir . '/boots.php';
         $version = $manifest['version'];
         $repository = new Repository($config);
         $dispenser = new Dispenser($extendDir, $manifest['extensions']);
-        $instance = new static($version, $repository, $dispenser);
+        $instance = new static($version, $dispenser, $repository);
         $dispenser->setContainer($instance);
         return $instance;
     }
