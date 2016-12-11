@@ -75,35 +75,12 @@ class Dispenser implements DispenserContract
     }
 
     /**
-     * Psr-4 autoloader.
-     * @param  array $psr4 Psr-4 mappings
+     * Register psr-4 spl autoloader.
      * @return $this Allow chaining
      */
-    protected function autoloadPsr4(array $psr4)
+    protected function autoloadPsr4()
     {
-        spl_autoload_register(function ($class) use ($psr4) {
-            foreach ($psr4 as $dir => $mappings) {
-                $version = $mappings['version'];
-                foreach ($mappings['maps'] as $prefix => $subDir) {
-                    $baseDir = "{$this->directory}/{$dir}/{$subDir}";
-                    $baseDir = rtrim($baseDir, '/') . '/';
-                    $len = strlen($prefix);
-                    if (strncmp($prefix, $class, $len) !== 0) {
-                        continue;
-                    }
-                    $relativeClass = substr($class, $len);
-                    $suffix = str_replace('.', '_', $version);
-                    $suffix = empty($suffix) ? '' : "_{$suffix}";
-                    $search = '/'.preg_quote($suffix).'$/';
-                    $relativeClass = preg_replace($search, '', $relativeClass);
-                    $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
-                    if (file_exists($file)) {
-                        require $file;
-                    }
-                }
-            }
-        });
-
+        spl_autoload_register([$this, 'loadPsr4Class']);
         return $this;
     }
 
@@ -111,7 +88,7 @@ class Dispenser implements DispenserContract
      * Register the autoloaders.
      * @return $this Allow chaining
      */
-    protected function registerAutoloaders()
+    public function registerAutoloaders()
     {
         $psr4 = [];
         foreach ($this->entities as $entity => $meta) {
@@ -127,8 +104,50 @@ class Dispenser implements DispenserContract
             }
         }
 
-        $this->autoloadPsr4($psr4);
+        $this->psr4 = $psr4;
+        $this->autoloadPsr4();
         return $this;
+    }
+
+    /**
+     * Unregister the autoloaders.
+     * @return $this Allow chaining
+     */
+    public function unregisterAutoloaders()
+    {
+        spl_autoload_unregister([$this, 'loadPsr4Class']);
+        return $this;
+    }
+
+    /**
+     * Psr-4 class autoloader.
+     * @param  string $class Class
+     * @return boolean Loaded
+     */
+    public function loadPsr4Class($class)
+    {
+        foreach ($this->psr4 as $dir => $mappings) {
+            $version = $mappings['version'];
+            foreach ($mappings['maps'] as $prefix => $subDir) {
+                $baseDir = "{$this->directory}/{$dir}/{$subDir}";
+                $baseDir = rtrim($baseDir, '/') . '/';
+                $len = strlen($prefix);
+                if (strncmp($prefix, $class, $len) !== 0) {
+                    continue;
+                }
+                $relativeClass = substr($class, $len);
+                $suffix = str_replace('.', '_', $version);
+                $suffix = empty($suffix) ? '' : "_{$suffix}";
+                $search = '/'.preg_quote($suffix).'$/';
+                $relativeClass = preg_replace($search, '', $relativeClass);
+                $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
+                if (file_exists($file)) {
+                    require $file;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
