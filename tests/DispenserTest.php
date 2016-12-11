@@ -80,6 +80,8 @@ class DispenserTest extends PHPUnit_Framework_TestCase
                     ],
                 ],
             ],
+            'no-main-class' => [],
+            'main-class-na' => ['class' => 'Boots\\Test\Dispenser\\MainClassNa'],
         ];
 
         $this->container = new Container;
@@ -140,5 +142,26 @@ class DispenserTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Boots\Test\Dispenser\Ioc\Ioc', $ioc);
         $this->assertInstanceOf('Boots\Test\Dispenser\Ioc\Binding', $ioc->binding);
         $this->assertEquals('foo', $ioc->ioc);
+    }
+
+    /** @test */
+    public function it_should_throw_NotFoundException_if_extension_key_is_not_found_in_manifest()
+    {
+        $this->setExpectedException('Boots\Exception\NotFoundException');
+        $this->dispenser->dispense('na');
+    }
+
+    /** @test */
+    public function it_should_throw_InvalidExtensionException_if_extension_class_is_not_set_in_manifest()
+    {
+        $this->setExpectedException('Boots\Exception\InvalidExtensionException');
+        $this->dispenser->dispense('no-main-class');
+    }
+
+    /** @test */
+    public function it_should_throw_ClassNotFoundException_if_extension_class_is_not_found()
+    {
+        $this->setExpectedException('Boots\Exception\ClassNotFoundException');
+        $this->dispenser->dispense('main-class-na');
     }
 }

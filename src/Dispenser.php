@@ -17,6 +17,9 @@ namespace Boots;
 
 use Boots\Contract\ContainerContract;
 use Boots\Contract\DispenserContract;
+use Boots\Exception\NotFoundException;
+use Boots\Exception\ClassNotFoundException;
+use Boots\Exception\InvalidExtensionException;
 
 /**
  * @package Boots
@@ -174,13 +177,17 @@ class Dispenser implements DispenserContract
             return $this->dispenser[$key];
         }
         if (!array_key_exists($key, $this->entities)) {
-            // TODO: throw
-            return null;
+            throw new NotFoundException(sprintf(
+                'Could not find the %s extension.',
+                $key
+            ));
         }
         $entity = $this->entities[$key];
         if (!array_key_exists('class', $entity)) {
-            // TODO: throw
-            return null;
+            throw new InvalidExtensionException(sprintf(
+                'Could not determine the main class for the %s extension.',
+                $key
+            ));
         }
         $class = $entity['class'];
         $version = '';
@@ -189,6 +196,13 @@ class Dispenser implements DispenserContract
         }
         $suffix = str_replace('.', '_', $version);
         $class .= empty($suffix) ? '' : "_{$suffix}";
+        if (!class_exists($class)) {
+            throw new ClassNotFoundException(sprintf(
+                'Could not locate the class %s for the %s extension.',
+                $class,
+                $key
+            ));
+        }
         if (is_null($this->container)) {
             $extension = new $class;
         } else {
