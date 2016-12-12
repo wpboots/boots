@@ -42,7 +42,6 @@ class Boots extends Container
 
     /**
      * Construct the instance.
-     * @param string                  $version   Framework version
      * @param DispenserContract       $dispenser Dispenser instance
      * @param RepositoryContract|null $config    Configuration repository instance
      * @param ContainerContract|null  $container Container instance
