@@ -15,9 +15,7 @@ namespace Boots;
  * @license    https://github.com/wpboots/boots/blob/master/LICENSE
  */
 
-use Boots\Container;
-use Boots\Dispenser;
-use Boots\Repository;
+use Boots\Contract\EventContract;
 use Boots\Contract\ContainerContract;
 use Boots\Contract\DispenserContract;
 use Boots\Contract\RepositoryContract;
@@ -33,6 +31,12 @@ class Boots extends Container
      * @var RepositoryContract
      */
     protected $config;
+
+    /**
+     * Event dispatcher.
+     * @var EventContract
+     */
+    protected $dispatcher;
 
     /**
      * Extension dispenser.
@@ -54,15 +58,19 @@ class Boots extends Container
     public function __construct(
         DispenserContract $dispenser,
         RepositoryContract $config = null,
+        EventContract $dispatcher = null,
         ContainerContract $container = null
     ) {
         $this->dispenser = $dispenser;
         $this->config = $config ?: new Repository;
-
-        $this->share(get_class(), $this);
+        $this->dispatcher = new Event;
+        if (!is_null($dispatcher)) {
+            $this->dispatcher->delegate($dispatcher);
+        }
         if (!is_null($container)) {
             $this->delegate($container);
         }
+        $this->share(get_class(), $this);
     }
 
     /**
@@ -104,6 +112,29 @@ class Boots extends Container
         }
         $this->config->set($key, $value);
         return $value;
+    }
+
+    /**
+     * Add an event listener. Proxy to Event::add().
+     * @param  string   $key    Identifier
+     * @param  callable $action Action
+     * @return $this            Allow chaining
+     */
+    public function on($key, callable $action)
+    {
+        $this->dispatcher->add($key, $action);
+        return $this;
+    }
+
+    /**
+     * Emit an event. Proxy to Event::fire().
+     * @param  string $key    Identifier
+     * @param  array  $params Action parameters
+     * @return array          Results of all actions
+     */
+    public function fire($key, array $params = [])
+    {
+        return $this->dispatcher->fire($key, $params);
     }
 
     /**

@@ -71,6 +71,15 @@ class BootsTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function fire_and_on_should_be_proxied_to_the_event_dispatcher()
+    {
+        $this->boots->on('foo', function ($event, $bar) {
+            return $bar;
+        });
+        $this->assertEquals(['bar'], $this->boots->fire('foo', ['bar']));
+    }
+
+    /** @test */
     public function config_method_with_one_arg_should_return_the_value_for_that_key()
     {
         $this->assertEquals('baz', $this->boots->config('foo.bar'));
