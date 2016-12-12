@@ -41,6 +41,11 @@ class Boots extends Container
     protected $dispenser;
 
     /**
+     * Name of the framework.
+     */
+    const NAME = 'boots';
+
+    /**
      * Construct the instance.
      * @param DispenserContract       $dispenser Dispenser instance
      * @param RepositoryContract|null $config    Configuration repository instance
@@ -69,17 +74,17 @@ class Boots extends Container
     public static function create($appDir, array $config = [])
     {
         $appDir = rtrim($appDir, '/');
-        $baseDir = $appDir . '/boots';
+        $baseDir = $appDir . '/' . static::NAME;
         $extendDir = $baseDir . '/extend';
-        $manifest = require $baseDir . '/boots.php';
+        $manifest = require $baseDir . '/' . static::NAME . '.php';
         $repository = new Repository($config);
         $dispenser = new Dispenser($extendDir, $manifest['extensions']);
         $instance = new static($dispenser, $repository);
         $dispenser->setContainer($instance);
         $instance->config('app.path', $appDir);
-        $instance->config('boots.path', $baseDir);
-        $instance->config('boots.extend_path', $extendDir);
-        $instance->config('boots.version', $manifest['version']);
+        $instance->config(static::NAME . '.path', $baseDir);
+        $instance->config(static::NAME . '.extend_path', $extendDir);
+        $instance->config(static::NAME . '.version', $manifest['version']);
         return $instance;
     }
 
