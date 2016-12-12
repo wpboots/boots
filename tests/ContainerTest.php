@@ -37,7 +37,10 @@ class ContainerTest extends PHPUnit_Framework_TestCase
                 'WithManagedParams.php' =>
                     '<?php namespace Boots\Test\Container;
                         class WithManagedParams {
-                            public function __construct(Foobar $foo, WithOneParam $w1) {}
+                            public $foo;
+                            public function __construct(Foobar $foo, WithOneParam $w1) {
+                                $this->foo = $foo;
+                            }
                         }',
                 'WithOptionalParams.php' =>
                     '<?php namespace Boots\Test\Container;
@@ -159,6 +162,18 @@ class ContainerTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_should_resolve_a_class_if_constructor_has_custom_params_and_params_are_passed()
+    {
+        $foobarClass = 'Boots\Test\Container\Foobar';
+        $this->assertInstanceOf($foobarClass, $this->container->get($foobarClass, ['foo' => 'bar']));
+
+        $class = 'Boots\Test\Container\WithManagedParams';
+        $obj = $this->container->get($class, ['foo' => 'bar']);
+        $this->assertInstanceOf($class, $obj);
+        $this->assertInstanceOf($foobarClass, $obj->foo);
+    }
+
+    /** @test */
     public function it_should_resolve_a_callable()
     {
         $this->container->add('a', function () {
@@ -180,6 +195,15 @@ class ContainerTest extends PHPUnit_Framework_TestCase
             return 'it works!';
         });
         $this->assertEquals('it works!', $this->container->get('callable'));
+    }
+
+    /** @test */
+    public function it_should_resolve_a_callable_with_custom_params_passed()
+    {
+        $this->container->add('custom', function ($beep) {
+            return $beep;
+        });
+        $this->assertEquals('boop', $this->container->get('custom', ['beep' => 'boop']));
     }
 
     /** @test */

@@ -50,22 +50,27 @@ class Container implements Contract\ContainerContract, \ArrayAccess
      * @throws \Boots\Exception\BindingResolutionException
      *         If a parameter can not be resolved.
      * @param  array $bindings ReflectionParameter's
+     * @param  array $params   Additional passed parameter values
      * @return array           Resolved binding values
      */
-    protected function resolve(array $bindings)
+    protected function resolve(array $bindings, array $params = [])
     {
         $args = [];
         foreach ($bindings as $binding) {
             $key = is_null($bindingClass = $binding->getClass())
                 ? $binding->getName()
                 : $bindingClass->getName();
-            try {
-                $arg = $this->get($key);
-            } catch (\Exception $e) {
-                if (!$binding->isDefaultValueAvailable()) {
-                    throw $e;
+            if (array_key_exists($key, $params)) {
+                $arg = $params[$key];
+            } else {
+                try {
+                    $arg = $this->get($key, $params);
+                } catch (\Exception $e) {
+                    if (!$binding->isDefaultValueAvailable()) {
+                        throw $e;
+                    }
+                    $arg = $binding->getDefaultValue();
                 }
-                $arg = $binding->getDefaultValue();
             }
             $args[] = $arg;
         }
@@ -74,26 +79,28 @@ class Container implements Contract\ContainerContract, \ArrayAccess
 
     /**
      * Resolve a class.
-     * @param  string $class Fully qualified class name
-     * @return Object        Resolved instance
+     * @param  string $class  Fully qualified class name
+     * @param  array  $params Additional passed parameter values
+     * @return Object         Resolved instance
      */
-    protected function resolveClass($class)
+    protected function resolveClass($class, array $params = [])
     {
         $reflectedClass = new \ReflectionClass($class);
         $constructor = $reflectedClass->getConstructor();
         if (is_null($constructor)) {
             return new $class;
         }
-        $args = $this->resolve($constructor->getParameters());
+        $args = $this->resolve($constructor->getParameters(), $params);
         return $reflectedClass->newInstanceArgs($args);
     }
 
     /**
      * Resolve a callable.
      * @param  callable $callable PHP Callable
+     * @param  array    $params   Additional passed parameter values
      * @return mixed              Resolved value
      */
-    protected function resolveCallable(callable $callable)
+    protected function resolveCallable(callable $callable, array $params = [])
     {
         if ($callable instanceof \Closure) {
             $reflectedFunction = new \ReflectionFunction($callable);
@@ -104,7 +111,7 @@ class Container implements Contract\ContainerContract, \ArrayAccess
             }
             $reflectedFunction = $reflectedClass->getMethod('__invoke');
         }
-        $args = $this->resolve($reflectedFunction->getParameters());
+        $args = $this->resolve($reflectedFunction->getParameters(), $params);
         return call_user_func_array($callable, $args);
     }
 
@@ -145,16 +152,17 @@ class Container implements Contract\ContainerContract, \ArrayAccess
      *         If an entry is not found.
      * @throws \Boots\Exception\BindingResolutionException
      *         If an entity can not be resolved.
-     * @param  string $key Identifier
+     * @param  string $key    Identifier
+     * @param  array  $params Additional passed parameter values
      * @return mixed  Entity
      */
-    public function get($key)
+    public function get($key, array $params = [])
     {
         $entity = $this->find($key, $found);
         if ($found) {
             if (is_callable($entity)) {
                 try {
-                    $entity = $this->resolveCallable($entity);
+                    $entity = $this->resolveCallable($entity, $params);
                 } catch (\Exception $e) {
                     throw new Exception\BindingResolutionException(sprintf(
                         'Failed to resolve callable %s while resolving %s from the container.',
@@ -169,7 +177,7 @@ class Container implements Contract\ContainerContract, \ArrayAccess
         }
         if (class_exists($key)) {
             try {
-                $entity = $this->resolveClass($key);
+                $entity = $this->resolveClass($key, $params);
             } catch (\Exception $e) {
                 throw new Exception\BindingResolutionException(sprintf(
                     'Failed to resolve class %s from the container.', $key
