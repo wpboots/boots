@@ -137,6 +137,14 @@ class BootsTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function extensions_should_be_set_when_constructed_via_factory()
+    {
+        $acme = $this->boots->config('extensions.acme');
+        $this->assertEquals('x.y.z', $acme['version']);
+        $this->assertEquals(vfsStream::url('boots/boots-app/boots/extend/acme'), $acme['path']);
+    }
+
+    /** @test */
     public function __get_magic_method_should_return_an_extension()
     {
         $acme = $this->boots->acme;

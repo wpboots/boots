@@ -86,14 +86,20 @@ class Boots extends Container
         $baseDir = $appDir . '/' . static::NAME;
         $extendDir = $baseDir . '/extend';
         $manifest = require $baseDir . '/' . static::NAME . '.php';
+        $version = $manifest['version'];
+        $extensions = $manifest['extensions'];
         $repository = new Repository($config);
-        $dispenser = new Dispenser($extendDir, $manifest['extensions']);
+        $dispenser = new Dispenser($extendDir, $extensions);
         $instance = new static($dispenser, $repository);
         $dispenser->setContainer($instance);
         $instance->config('app.path', $appDir);
         $instance->config(static::NAME . '.path', $baseDir);
         $instance->config(static::NAME . '.extend_path', $extendDir);
-        $instance->config(static::NAME . '.version', $manifest['version']);
+        $instance->config(static::NAME . '.version', $version);
+        $instance->config('extensions', $extensions);
+        foreach (array_keys($extensions) as $ext) {
+            $instance->config("extensions.{$ext}.path", "{$extendDir}/$ext");
+        }
         return $instance;
     }
 
