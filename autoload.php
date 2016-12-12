@@ -8,11 +8,12 @@ $base_dir = __DIR__ . '/src/';
 
 // project-specific version
 $manifest = require __DIR__ . '/boots.php';
-$version = $manifest['version'];
+$suffix = str_replace('.', '_', $manifest['version']);
+$suffix = empty($suffix) ? '' : "_{$suffix}";
 
 // Register autoloader
 // @see http://www.php-fig.org/psr/psr-4/examples/
-spl_autoload_register(function ($class) use ($base_dir, $prefix, $version) {
+spl_autoload_register(function ($class) use ($base_dir, $prefix, $suffix) {
     // does the class use the namespace prefix?
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
@@ -21,9 +22,7 @@ spl_autoload_register(function ($class) use ($base_dir, $prefix, $version) {
     }
     // get the relative class name
     $relative_class = substr($class, $len);
-    // strip off the version
-    $suffix = str_replace('.', '_', $version);
-    $suffix = empty($suffix) ? '' : "_{$suffix}";
+    // strip off the version suffix
     $search = '/'.preg_quote($suffix).'$/';
     $relative_class = preg_replace($search, '', $relative_class);
     // replace the namespace prefix with the base directory, replace namespace
@@ -35,3 +34,5 @@ spl_autoload_register(function ($class) use ($base_dir, $prefix, $version) {
         require $file;
     }
 });
+
+return "Boots\\Boots{$suffix}";

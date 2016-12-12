@@ -4,4 +4,6 @@ return [
 
     'version' => '',
 
+    'extensions' => [],
+
 ];
