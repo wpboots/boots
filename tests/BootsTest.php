@@ -18,8 +18,7 @@ class BootsTest extends PHPUnit_Framework_TestCase
     {
         $this->dispenser = \Mockery::mock('Boots\Contract\DispenserContract');
         $this->config = \Mockery::mock('Boots\Contract\RepositoryContract');
-        $this->boots = new Boots('x.x.x', $this->dispenser, $this->config);
-
+        $this->boots = new Boots($this->dispenser, $this->config);
 
         vfsStream::setup('boots', null, [
             'boots-app' => [
@@ -77,14 +76,6 @@ class BootsTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function version_method_should_return_the_framework_version()
-    {
-        $this->assertEquals('x.x.x', $this->boots->version());
-
-        $this->assertEquals('1.2.3', $this->factory->version());
-    }
-
-    /** @test */
     public function config_method_with_one_arg_should_return_the_value_for_that_key()
     {
         $this->config->shouldReceive('get')->with('foo')->once()->andReturn('bar');
@@ -110,9 +101,40 @@ class BootsTest extends PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('Boots\Contract\RepositoryContract', $this->boots->config());
 
-        $config = $this->factory->config();
-        $this->assertInstanceOf('Boots\Contract\RepositoryContract', $config);
-        $this->assertEquals(['foo' => ['bar' => 'baz']], $config->all());
+        $this->assertInstanceOf('Boots\Contract\RepositoryContract', $this->factory->config());
+    }
+
+    /** @test */
+    public function version_should_be_set_when_constructed_via_factory()
+    {
+        $this->assertEquals('1.2.3', $this->factory->config('boots.version'));
+    }
+
+    /** @test */
+    public function path_should_be_set_when_constructed_via_factory()
+    {
+        $this->assertEquals(
+            vfsStream::url('boots/boots-app/boots'),
+            $this->factory->config('boots.path')
+        );
+    }
+
+    /** @test */
+    public function extend_path_should_be_set_when_constructed_via_factory()
+    {
+        $this->assertEquals(
+            vfsStream::url('boots/boots-app/boots/extend'),
+            $this->factory->config('boots.extend_path')
+        );
+    }
+
+    /** @test */
+    public function app_path_should_be_set_when_constructed_via_factory()
+    {
+        $this->assertEquals(
+            vfsStream::url('boots/boots-app'),
+            $this->factory->config('app.path')
+        );
     }
 
     /** @test */

@@ -29,12 +29,6 @@ use Boots\Contract\RepositoryContract;
 class Boots extends Container
 {
     /**
-     * Version of the framework.
-     * @var string
-     */
-    protected $version;
-
-    /**
      * Configuration repository.
      * @var RepositoryContract
      */
@@ -54,12 +48,10 @@ class Boots extends Container
      * @param ContainerContract|null  $container Container instance
      */
     public function __construct(
-        $version,
         DispenserContract $dispenser,
         RepositoryContract $config = null,
         ContainerContract $container = null
     ) {
-        $this->version = $version;
         $this->dispenser = $dispenser;
         $this->config = $config ?: new Repository;
 
@@ -81,21 +73,15 @@ class Boots extends Container
         $baseDir = $appDir . '/boots';
         $extendDir = $baseDir . '/extend';
         $manifest = require $baseDir . '/boots.php';
-        $version = $manifest['version'];
         $repository = new Repository($config);
         $dispenser = new Dispenser($extendDir, $manifest['extensions']);
-        $instance = new static($version, $dispenser, $repository);
+        $instance = new static($dispenser, $repository);
         $dispenser->setContainer($instance);
+        $instance->config('app.path', $appDir);
+        $instance->config('boots.path', $baseDir);
+        $instance->config('boots.extend_path', $extendDir);
+        $instance->config('boots.version', $manifest['version']);
         return $instance;
-    }
-
-    /**
-     * Get the version of the framework.
-     * @return string Version
-     */
-    public function version()
-    {
-        return $this->version;
     }
 
     /**
