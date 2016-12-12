@@ -59,7 +59,12 @@ class BootsTest extends PHPUnit_Framework_TestCase
     public function instance_of_boots_should_bind_itself_onto_the_container()
     {
         $boots = new Boots(new Dispenser(''));
+
         $entity = $boots->get('Boots\Boots');
+        $this->assertInstanceOf('Boots\Boots', $entity);
+        $this->assertSame($boots, $entity);
+
+        $entity = $boots->get('boots');
         $this->assertInstanceOf('Boots\Boots', $entity);
         $this->assertSame($boots, $entity);
     }

@@ -71,6 +71,7 @@ class Boots extends Container
             $this->delegate($container);
         }
         $this->share('boots', $this);
+        $this->share(get_class(), $this);
     }
 
     /**
