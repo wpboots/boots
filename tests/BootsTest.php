@@ -49,10 +49,13 @@ class BootsTest extends PHPUnit_Framework_TestCase
             ],
         ]);
 
-        $this->boots = Boots::create(
-            vfsStream::url('boots/boots-app'),
-            ['foo' => ['bar' => 'baz']]
-        );
+        $this->boots = Boots::create(vfsStream::url('boots/boots-app'), [
+            'foo' => ['bar' => 'baz'],
+            'type' => 'plugin',
+            'id' => 'foo',
+            'nick' => 'Foo',
+            'version' => 'a.b.c',
+        ]);
     }
 
     /** @test */

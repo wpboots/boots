@@ -100,6 +100,7 @@ class Boots extends Container
         foreach (array_keys($extensions) as $ext) {
             $instance->config("extensions.{$ext}.path", "{$extendDir}/$ext");
         }
+        new WordPress($instance);
         return $instance;
     }
 
