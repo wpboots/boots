@@ -3,20 +3,17 @@
 namespace Boots\Exception;
 
 /**
- * Binding resolution exception.
+ * This file is part of the Boots framework.
  *
- * @package Boots
+ * @package    Boots
  * @subpackage Exception\BindingResolutionException
- * @version 2.0.0
- * @see http://wpboots.com
- * @link https://github.com/wpboots/boots
- * @author Kamal Khan <shout@bhittani.com> https://bhittani.com
- * @license https://github.com/wpboots/boots/blob/master/LICENSE
- * @copyright Copyright (c) 2014-2016, Kamal Khan
+ * @author     Kamal Khan <shout@bhittani.com>
+ * @version    2.x
+ * @see        http://wpboots.com
+ * @link       https://github.com/wpboots/boots
+ * @copyright  2014-2016 Kamal Khan
+ * @license    https://github.com/wpboots/boots/blob/master/LICENSE
  */
-
-// Die if accessing this script directly.
-if(!defined('ABSPATH')) die(-1);
 
 /**
  * @package Boots
