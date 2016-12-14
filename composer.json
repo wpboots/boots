@@ -14,7 +14,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Boots\\Mounter\\": "src/Mounter/"
+            "Boots\\Mounter\\": "mounter/"
         }
     },
     "minimum-stability": "dev",
