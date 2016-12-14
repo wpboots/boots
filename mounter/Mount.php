@@ -15,8 +15,12 @@ namespace Boots\Mounter;
  * @license    https://github.com/wpboots/boots/blob/master/LICENSE
  */
 
-use Bhittani\PhpParser;
+use PhpParser\Error;
 use Composer\Script\Event;
+use PhpParser\NodeTraverser;
+use PhpParser\ParserFactory;
+use PhpParser\PrettyPrinter\Standard;
+use Bhittani\PhpParser\AppendSuffixVisitor;
 
 /**
  * @package Boots
@@ -32,6 +36,23 @@ class Mount
         )))));
     }
 
+    protected static function mount($dir, $suffix, array $regexes = [])
+    {
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $traverser = new NodeTraverser;
+        $prettyPrinter = new Standard;
+        $traverser->addVisitor(new AppendSuffixVisitor($suffix, $regexes));
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
+        $files = new \RegexIterator($files, '/\.php$/');
+        foreach ($files as $file) {
+            $code = file_get_contents($file);
+            $stmts = $parser->parse($code);
+            $stmts = $traverser->traverse($stmts);
+            $code = $prettyPrinter->prettyPrintFile($stmts);
+            file_put_contents($file, $code);
+        }
+    }
+
     public static function mountBoots(Event $event)
     {
         $composer = $event->getComposer();
@@ -39,8 +60,10 @@ class Mount
         $name = $package->getPrettyName();
         $version = $package->getPrettyVersion();
         $sanitizedVersion = static::sanitize($version);
-        $installPath = $composer->getInstallationManager()->getInstallPath($package);
-
-        dump($name);
+        $baseDir = dirname($composer->getConfig()->getConfigSource()->getName());
+        // $composer->getConfig()->getConfigSource()->addConfigSetting('foo', 'bar');
+        $suffix = str_replace('.', '_', $sanitizedVersion);
+        $suffix = empty($suffix) ? '' : "_{$suffix}";
+        static::mount("{$baseDir}/temp", $suffix);
     }
 }
