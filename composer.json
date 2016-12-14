@@ -14,7 +14,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Boots\\Installer\\": "install/"
+            "Boots\\Mounter\\": "src/Mounter/"
         }
     },
     "minimum-stability": "dev",
@@ -39,8 +39,8 @@
         "cs-check": "phpcs --standard=PSR2 src",
         "cs-fix": "phpcbf --standard=PSR2 src",
         "check": ["@cs-check", "@test"],
-        "post-package-install": "Boots\\Installer\\Install::installExtension",
-        "post-package-update": "Boots\\Installer\\Install::updateExtension",
-        "post-create-project-cmd": "Boots\\Installer\\Install::installBoots"
+        "post-update-cmd": "Boots\\Mounter\\Mount::mountExtensions",
+        "post-install-cmd": "Boots\\Mounter\\Mount::mountExtensions",
+        "post-create-project-cmd": "Boots\\Mounter\\Mount::mountBoots"
     }
 }
