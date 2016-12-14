@@ -41,6 +41,6 @@
         "check": ["@cs-check", "@test"],
         "post-update-cmd": "Boots\\Mounter\\Mount::mountExtensions",
         "post-install-cmd": "Boots\\Mounter\\Mount::mountExtensions",
-        "post-create-project-cmd": "Boots\\Mounter\\Mount::mountBoots"
+        "post-create-project-cmd": "Boots\\Mounter\\mount::mountBoots"
     }
 }
