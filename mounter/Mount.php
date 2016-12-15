@@ -124,6 +124,7 @@ class Mount
 
     public static function mountBoots(Event $event)
     {
+        $event->getIo()->write('<info>Mounting the framework</info>');
         $composer = $event->getComposer();
         $package = $composer->getPackage();
         $name = $package->getPrettyName();
@@ -135,10 +136,13 @@ class Mount
         $config = static::readConfig($configFile);
         $config['version'] = $sanitizedVersion;
         static::writeConfig($configFile, $config);
+        $event->getIo()->write('<comment>All done</comment>');
+        $event->getIo()->write('<info>Go ahead, build something awesome!</info>');
     }
 
     public static function mountExtensions(Event $event)
     {
+        $event->getIo()->write('<comment>Mounting extensions</comment>');
         $composer = $event->getComposer();
         $baseDir = dirname($composer->getConfig()->getConfigSource()->getName());
         $extendDir = "{$baseDir}/extend";
@@ -182,8 +186,12 @@ class Mount
             $manifest['autoload'] = $autoload;
             $manifest['mounted'] = array_key_exists('mounted', $manifest) ? $manifest['mounted'] : false;
             $extensions[$extension] = $manifest;
+            // $event->getIo()->write(sprintf('<comment>Mounted</comment> <info>%s</info>', $extension));
         }
         $config['extensions'] = $extensions;
         static::writeConfig($configFile, $config);
+        $total = count($extensions);
+        $info = "{$total} extension" . ($total == 1 ? '' : 's');
+        $event->getIo()->write(sprintf('<info>%s mounted</info>', $info));
     }
 }
