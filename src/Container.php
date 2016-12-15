@@ -160,7 +160,8 @@ class Container implements Contract\ContainerContract, \ArrayAccess
                 } catch (\Exception $e) {
                     throw new Exception\BindingResolutionException(sprintf(
                         'Failed to resolve callable %s while resolving %s from the container.',
-                        get_class($entity), $key
+                        get_class($entity),
+                        $key
                     ), 1, $e);
                 }
                 if (in_array($key, $this->shared)) {
@@ -174,18 +175,21 @@ class Container implements Contract\ContainerContract, \ArrayAccess
                 $entity = $this->resolveClass($key, $params);
             } catch (\Exception $e) {
                 throw new Exception\BindingResolutionException(sprintf(
-                    'Failed to resolve class %s from the container.', $key
+                    'Failed to resolve class %s from the container.',
+                    $key
                 ), 1, $e);
             }
             return $entity;
         }
         if (interface_exists($key)) {
             throw new Exception\BindingResolutionException(sprintf(
-                'Failed to resolve interface %s from the container.', $key
+                'Failed to resolve interface %s from the container.',
+                $key
             ));
         }
         throw new Exception\NotFoundException(sprintf(
-            '%s is not managed by the container.', $key
+            '%s is not managed by the container.',
+            $key
         ));
     }
 
@@ -245,7 +249,8 @@ class Container implements Contract\ContainerContract, \ArrayAccess
      * @param  mixed $value   Value
      * @return $this          Allow chaining
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
         if (is_null($offset)) {
             $this->container[] = $value;
         } else {
@@ -259,7 +264,8 @@ class Container implements Contract\ContainerContract, \ArrayAccess
      * @param  string $offset Identifier
      * @return boolean        Exists or not
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
         return $this->has($offset);
     }
 
@@ -268,7 +274,8 @@ class Container implements Contract\ContainerContract, \ArrayAccess
      * @param  string $offset Identifier
      * @return void
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
         $this->find($offset, $found, true);
     }
 
@@ -277,7 +284,8 @@ class Container implements Contract\ContainerContract, \ArrayAccess
      * @param  string $offset Identifier
      * @return mixed          Entity
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
         return $this->get($offset);
     }
 }

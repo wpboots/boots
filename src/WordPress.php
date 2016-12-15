@@ -47,22 +47,22 @@ class WordPress
     {
         $config = $this->boots->config();
 
-        if(!in_array($config->get('type'), ['plugin', 'theme'])) {
+        if (!in_array($config->get('type'), ['plugin', 'theme'])) {
             throw new Exception\UnkownTypeException(
                 'Only plugin or theme type is acceptable.'
             );
         }
-        if(!$config->has('id')) {
+        if (!$config->has('id')) {
             throw new Exception\InvalidConfigException(
                 'id configuration key is required.'
             );
         }
-        if(!$config->has('nick')) {
+        if (!$config->has('nick')) {
             throw new Exception\InvalidConfigException(
                 'nick configuration key is required.'
             );
         }
-        if(!$config->has('version')) {
+        if (!$config->has('version')) {
             throw new Exception\InvalidConfigException(
                 'version configuration key is required.'
             );
@@ -82,10 +82,10 @@ class WordPress
         if ($type == 'plugin') {
             $pluginDirName = basename($config->get('app.path'));
             $config->set('app.url', plugins_url($pluginDirName));
-        } else if ($type == 'theme') {
+        } elseif ($type == 'theme') {
             $config->set('app.url', get_stylesheet_directory_uri());
-            $config->set('app.parent_path',  get_template_directory());
-            $config->set('app.parent_url',  get_template_directory_uri());
+            $config->set('app.parent_path', get_template_directory());
+            $config->set('app.parent_url', get_template_directory_uri());
         }
         if ($config->has('logo')) {
             $config->set('app.logo', $config->get('app.url') . '/' . ltrim($config->get('logo'), '/'));
@@ -107,8 +107,8 @@ class WordPress
         $config->set('wp.admin.pages_url', admin_url('edit.php?post_type=page'));
         $config->set('wp.theme.path', get_stylesheet_directory());
         $config->set('wp.theme.url', get_stylesheet_directory_uri());
-        $config->set('wp.theme.parent_path',  get_template_directory());
-        $config->set('wp.theme.parent_url',  get_template_directory_uri());
+        $config->set('wp.theme.parent_path', get_template_directory());
+        $config->set('wp.theme.parent_url', get_template_directory_uri());
         $config->set('wp.using_child_theme', $config->get('wp.theme.path') != $config->get('wp.theme.parent_path'));
         $config->set('boots.url', $config->get('app.url') . '/boots');
         $config->set('boots.extend_url', $config->get('boots.url') . '/extend');

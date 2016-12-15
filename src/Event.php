@@ -159,8 +159,10 @@ class Event implements EventContract
     public function __get($property)
     {
         switch ($property) {
-            case 'name': return $this->name();
-            case 'params': return $this->params();
+            case 'name':
+                return $this->name();
+            case 'params':
+                return $this->params();
         }
     }
 }
