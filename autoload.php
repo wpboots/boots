@@ -10,7 +10,7 @@ $base_dir = __DIR__ . '/src/';
 $manifest = ['version' => '', 'extensions' => []];
 $manifestFile = __DIR__ . '/boots.php';
 if (is_file($manifestFile)) {
-    $manifest = manifestFile;
+    $manifest = require $manifestFile;
 }
 $suffix = str_replace('.', '_', $manifest['version']);
 $suffix = empty($suffix) ? '' : "_{$suffix}";
