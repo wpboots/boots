@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b46cd3f637134d943c59f45e25d9f0a1",
-    "content-hash": "96b34b7bb36f46ea977cb01a588ab656",
+    "hash": "319e02dd95a827f6434833dc2796b739",
+    "content-hash": "c24f5484f749efbe378946086bf52e12",
     "packages": [],
     "packages-dev": [
         {
@@ -55,6 +55,53 @@
                 "syntax"
             ],
             "time": "2016-12-14 01:26:45"
+        },
+        {
+            "name": "boots/installer",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wpboots/installer.git",
+                "reference": "92ad91519f364e6f7233f1768616b5160dbd4933"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wpboots/installer/zipball/92ad91519f364e6f7233f1768616b5160dbd4933",
+                "reference": "92ad91519f364e6f7233f1768616b5160dbd4933",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.1"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Boots\\Installer\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "Boots\\Installer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "M. Kamal Khan",
+                    "email": "shout@bhittani.com",
+                    "homepage": "http://bhittani.com"
+                }
+            ],
+            "description": "Extension installer for the boots framework.",
+            "homepage": "http://github.com/wpboots/installer",
+            "keywords": [
+                "boots",
+                "extension",
+                "installer",
+                "wordpress"
+            ],
+            "time": "2016-12-15 12:47:03"
         },
         {
             "name": "composer/installers",
@@ -1391,11 +1438,13 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "php": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4||>=7.0"
+        "php": ">=5.4,<8.0-DEV"
     },
     "platform-dev": []
 }
