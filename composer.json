@@ -33,7 +33,7 @@
         "oomphinc/composer-installers-extender": "^1.1"
     },
     "scripts": {
-        "test": "phpunit tests",
+        "test": "phpunit tests --colors=always",
         "coverage": "phpunit tests --coverage-text",
         "coverage-html": "phpunit tests --coverage-html coverage",
         "coverage-clover": "phpunit tests --coverage-clover clover.xml",
