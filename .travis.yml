@@ -63,4 +63,4 @@ before_script:
     - composer install
     - echo "CI_TEST=/tmp/wordpress" > .env
 
-script: phpunit tests
+script: composer check
