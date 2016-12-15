@@ -148,6 +148,16 @@ class BootsTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function ext_method_should_return_an_extension()
+    {
+        $acme = $this->boots->ext('acme');
+        $this->assertInstanceOf('Boots\Test\Boots\Acme_x_y_z', $acme);
+        $this->assertInstanceOf('Boots\Test\Boots\Dep_x_y_z', $acme->dep);
+        $this->assertInstanceOf('Boots\Boots', $acme->boots);
+        $this->assertSame($this->boots, $acme->boots);
+    }
+
+    /** @test */
     public function __get_magic_method_should_return_an_extension()
     {
         $acme = $this->boots->acme;
