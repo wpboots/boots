@@ -77,13 +77,14 @@ class Mount
     protected static function getPsr4Fqcns($dir, $prefix = '')
     {
         $prefix = rtrim($prefix, '\\');
+        $prefix .= empty($prefix) ? '' : '\\';
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
         $files = new \RegexIterator($files, '/\.php$/');
         $fqcns = [];
         foreach ($files as $file) {
             $path = $file->getRealPath();
             $class = ltrim(rtrim(substr($path, strlen($dir)), '.php'), '/');
-            $fqcns[] = $prefix . '\\' . str_replace('/', '\\', $class);
+            $fqcns[] = $prefix . str_replace('/', '\\', $class);
         }
         return $fqcns;
     }
@@ -91,14 +92,15 @@ class Mount
     protected static function getPsr4Regexes($dir, $prefix = '', $suffix = '')
     {
         $prefix = rtrim($prefix, '\\');
+        $prefix .= empty($prefix) ? '' : '\\\\';
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
         $files = new \RegexIterator($files, '/\.php$/');
         $regexes = [];
         foreach ($files as $file) {
             $path = $file->getRealPath();
             $class = ltrim(rtrim(substr($path, strlen($dir)), '.php'), '/');
-            $fqcn = $prefix . '\\' . str_replace('/', '\\', $class);
-            $regexes['/^\\\?' . preg_quote($fqcn) . '$/'] = $suffix;
+            $fqcn = $prefix . str_replace('/', '\\\\', $class);
+            $regexes['/^\\\\?' . $fqcn . '$/'] = $suffix;
         }
         return $regexes;
     }
@@ -139,12 +141,12 @@ class Mount
     {
         $composer = $event->getComposer();
         $baseDir = dirname($composer->getConfig()->getConfigSource()->getName());
-        $configFile = "{$baseDir}/boots.php";
-        $config = static::readConfig($configFile);
         $extendDir = "{$baseDir}/extend";
         if (!is_dir($extendDir)) {
             return;
         }
+        $configFile = "{$baseDir}/boots.php";
+        $config = static::readConfig($configFile);
         $regexes = static::getPsr4Regexes(
             "{$baseDir}/src",
             'Boots',
@@ -172,13 +174,13 @@ class Mount
             if (array_key_exists('mounted', $manifest)
                 && !$manifest['mounted']
             ) {
-                static::mount($path, static::getSuffix($sanitizedVersion));
+                static::mount($path, static::getSuffix($sanitizedVersion), $regexes);
                 $manifest['mounted'] = true;
                 static::writeManifest($manifestPath, $manifest);
             }
             $manifest['version'] = $sanitizedVersion;
             $manifest['autoload'] = $autoload;
-            $manifest['mounted'] = false;
+            $manifest['mounted'] = array_key_exists('mounted', $manifest) ? $manifest['mounted'] : false;
             $extensions[$extension] = $manifest;
         }
         $config['extensions'] = $extensions;
