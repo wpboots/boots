@@ -1,4 +1,4 @@
-Boots [![Build Status](https://travis-ci.org/wpboots/boots.svg?branch=master)](https://travis-ci.org/wpboots/boots)
+Boots [![Build Status](https://travis-ci.org/wpboots/boots.svg?branch=master)](https://travis-ci.org/wpboots/boots) [![codecov](https://codecov.io/gh/wpboots/boots/branch/master/graph/badge.svg)](https://codecov.io/gh/wpboots/boots) [![Packagist](https://img.shields.io/packagist/v/boots/boots.svg)](https://packagist.org/packages/boots/boots)
 ======
 A rapid wordpress plugin and theme development framework.
 
