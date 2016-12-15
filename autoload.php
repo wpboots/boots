@@ -7,7 +7,11 @@ $prefix = 'Boots\\';
 $base_dir = __DIR__ . '/src/';
 
 // project-specific version
-$manifest = require __DIR__ . '/boots.php';
+$manifest = ['version' => '', 'extensions' => []];
+$manifestFile = __DIR__ . '/boots.php';
+if (is_file($manifestFile)) {
+    $manifest = manifestFile;
+}
 $suffix = str_replace('.', '_', $manifest['version']);
 $suffix = empty($suffix) ? '' : "_{$suffix}";
 

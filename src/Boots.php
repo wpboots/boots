@@ -85,7 +85,11 @@ class Boots extends Container
         $appDir = rtrim($appDir, '/');
         $baseDir = $appDir . '/' . static::NAME;
         $extendDir = $baseDir . '/extend';
-        $manifest = require $baseDir . '/' . static::NAME . '.php';
+        $manifest = ['version' => '', 'extensions' => []];
+        $manifestFile = $baseDir . '/' . static::NAME . '.php';
+        if (is_file($manifestFile)) {
+            $manifest = require $manifestFile;
+        }
         $version = $manifest['version'];
         $extensions = $manifest['extensions'];
         $repository = new Repository($config);
