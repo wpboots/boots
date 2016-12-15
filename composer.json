@@ -34,11 +34,12 @@
     "scripts": {
         "test": "phpunit tests --colors=always",
         "coverage": "phpunit tests --coverage-text",
-        "coverage-html": "phpunit tests --coverage-html coverage",
-        "coverage-clover": "phpunit tests --coverage-clover clover.xml",
+        "coverage-html": "phpunit tests --colors=always --coverage-html coverage",
+        "coverage-clover": "phpunit tests --colors=always --coverage-clover clover.xml",
         "cs-check": "phpcs --standard=PSR2 src",
         "cs-fix": "phpcbf --standard=PSR2 src",
         "check": ["@cs-check", "@test"],
+        "ci": ["@cs-check", "@coverage-clover"],
         "mount": "Boots\\Mounter\\Mount::mountExtensions",
         "post-create-project-cmd": "Boots\\Mounter\\Mount::mountBoots",
         "post-autoload-dump": "@mount"

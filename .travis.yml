@@ -64,3 +64,6 @@ before_script:
     - echo "CI_TEST=/tmp/wordpress" > .env
 
 script: composer check
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
