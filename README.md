@@ -1,4 +1,4 @@
-Boots [![Build Status](https://travis-ci.org/wpboots/boots.svg?branch=master)](https://travis-ci.org/wpboots/boots) [![codecov](https://codecov.io/gh/wpboots/boots/branch/master/graph/badge.svg)](https://codecov.io/gh/wpboots/boots) [![Packagist](https://img.shields.io/packagist/v/boots/boots.svg)](https://packagist.org/packages/boots/boots)
+Boots [![Build Status](https://travis-ci.org/wpboots/boots.svg?branch=master)](https://travis-ci.org/wpboots/boots) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b3a1bfec825b45ce8363d8dce42c3236)](https://www.codacy.com/app/shout_3/boots?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wpboots/boots&amp;utm_campaign=Badge_Grade) [![Packagist](https://img.shields.io/packagist/v/boots/boots.svg)](https://packagist.org/packages/boots/boots)
 ======
 A rapid wordpress plugin and theme development framework.
 
