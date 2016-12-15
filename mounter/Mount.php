@@ -36,6 +36,12 @@ class Mount
         )))));
     }
 
+    protected static function write($path, array $manifest)
+    {
+        $contents = '<?php return ' . var_export($manifest, true) . ';' . PHP_EOL;
+        file_put_contents($path, $contents);
+    }
+
     protected static function mount($dir, $suffix, array $regexes = [])
     {
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
@@ -60,10 +66,18 @@ class Mount
         $name = $package->getPrettyName();
         $version = $package->getPrettyVersion();
         $sanitizedVersion = static::sanitize($version);
+
         $baseDir = dirname($composer->getConfig()->getConfigSource()->getName());
-        // $composer->getConfig()->getConfigSource()->addConfigSetting('foo', 'bar');
         $suffix = str_replace('.', '_', $sanitizedVersion);
         $suffix = empty($suffix) ? '' : "_{$suffix}";
-        static::mount("{$baseDir}/temp", $suffix);
+        static::mount("{$baseDir}/src", $suffix);
+
+        $manifest = ['version' => '', 'extensions' => []];
+        $manifestFile = "{$baseDir}/boots.php";
+        if (is_file($manifestFile)) {
+            $manifest = require $manifestFile;
+        }
+        $manifest['version'] = $sanitizedVersion;
+        static::write($manifestFile, $manifest);
     }
 }
