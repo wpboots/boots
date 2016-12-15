@@ -154,8 +154,18 @@ class Boots extends Container
      * @param  string $extension Identifier
      * @return object            The extension instance
      */
-    public function __get($extension)
+    public function ext($extension)
     {
         return $this->dispenser->dispense($extension);
+    }
+
+    /**
+     * Get an extension by indentifier. Proxy to Boots::ext()
+     * @param  string $extension Identifier
+     * @return object            The extension instance
+     */
+    public function __get($extension)
+    {
+        return $this->ext($extension);
     }
 }
