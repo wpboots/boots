@@ -47,7 +47,7 @@ class Mount
 
     protected static function writeManifest($path, array $manifest)
     {
-        file_put_contents($path, json_encode($contents));
+        file_put_contents($path, json_encode($manifest));
     }
 
     protected static function readConfig($path)
