@@ -138,8 +138,6 @@ class Dispenser implements DispenserContract
         foreach ($this->psr4 as $dir => $mappings) {
             $version = $mappings['version'];
             foreach ($mappings['maps'] as $prefix => $subDir) {
-                $baseDir = "{$this->directory}/{$dir}/{$subDir}";
-                $baseDir = rtrim($baseDir, '/') . '/';
                 $len = strlen($prefix);
                 if (strncmp($prefix, $class, $len) !== 0) {
                     continue;
@@ -149,10 +147,16 @@ class Dispenser implements DispenserContract
                 $suffix = empty($suffix) ? '' : "_{$suffix}";
                 $search = '/'.preg_quote($suffix).'$/';
                 $relativeClass = preg_replace($search, '', $relativeClass);
-                $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
-                if (file_exists($file)) {
-                    require $file;
-                    return true;
+
+                $subDirs = is_array($subDir) ? $subDir : [$subDir];
+                foreach ($subDirs as $subDir) {
+                    $baseDir = "{$this->directory}/{$dir}/{$subDir}";
+                    $baseDir = rtrim($baseDir, '/') . '/';
+                    $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
+                    if (file_exists($file)) {
+                        require $file;
+                        return true;
+                    }
                 }
             }
         }

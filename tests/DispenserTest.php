@@ -23,9 +23,11 @@ class DispenserTest extends PHPUnit_Framework_TestCase
                                 $this->chocobar = new Chocobar;
                             }
                         }',
-                    'Chocobar.php' => '<?php
-                        namespace Boots\Test\Dispenser\Chocolate;
-                        class Chocobar {}',
+                    'src' => [
+                        'Chocobar.php' => '<?php
+                            namespace Boots\Test\Dispenser\Chocolate;
+                            class Chocobar {}',
+                    ],
                 ],
                 'apple-juice' => [
                     'src' => [
@@ -58,7 +60,7 @@ class DispenserTest extends PHPUnit_Framework_TestCase
                 'class' => 'Boots\\Test\\Dispenser\\Chocolate\\Chocolate',
                 'autoload' => [
                     'psr-4' => [
-                        'Boots\\Test\\Dispenser\\Chocolate\\' => '',
+                        'Boots\\Test\\Dispenser\\Chocolate\\' => ['', 'src/'],
                     ],
                 ],
             ],
