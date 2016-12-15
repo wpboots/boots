@@ -4,22 +4,22 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "319e02dd95a827f6434833dc2796b739",
-    "content-hash": "c24f5484f749efbe378946086bf52e12",
+    "hash": "4d18efa6ffeb7ccf1f3d5e8ce110e888",
+    "content-hash": "7520995263be195853fce9d63dc1b2c0",
     "packages": [],
     "packages-dev": [
         {
             "name": "bhittani/php-parser",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kamalkhan/php-parser.git",
-                "reference": "af5fe330de6221f5a27e1307b3b51dea4d643417"
+                "reference": "9f4ad1a70276908dfc785ae911f283f65484edc1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kamalkhan/php-parser/zipball/af5fe330de6221f5a27e1307b3b51dea4d643417",
-                "reference": "af5fe330de6221f5a27e1307b3b51dea4d643417",
+                "url": "https://api.github.com/repos/kamalkhan/php-parser/zipball/9f4ad1a70276908dfc785ae911f283f65484edc1",
+                "reference": "9f4ad1a70276908dfc785ae911f283f65484edc1",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "parser",
                 "syntax"
             ],
-            "time": "2016-12-14 01:26:45"
+            "time": "2016-12-14 05:24:03"
         },
         {
             "name": "boots/installer",
