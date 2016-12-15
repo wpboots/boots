@@ -141,12 +141,15 @@ class Mount
         $baseDir = dirname($composer->getConfig()->getConfigSource()->getName());
         $configFile = "{$baseDir}/boots.php";
         $config = static::readConfig($configFile);
+        $extendDir = "{$baseDir}/extend";
+        if (!is_dir($extendDir)) {
+            return;
+        }
         $regexes = static::getPsr4Regexes(
             "{$baseDir}/src",
             'Boots',
             static::getSuffix($config['version'])
         );
-        $extendDir = "{$baseDir}/extend";
         $manifestFile = 'boots.json';
         $files = new \IteratorIterator(new \DirectoryIterator($extendDir));
         $extensions = [];
