@@ -29,8 +29,7 @@
         "boots/installer": "^0.1.0",
         "mikey179/vfsStream": "^1.6",
         "bhittani/php-parser": "^0.1.0",
-        "squizlabs/php_codesniffer": "^2.7",
-        "oomphinc/composer-installers-extender": "^1.1"
+        "squizlabs/php_codesniffer": "^2.7"
     },
     "scripts": {
         "test": "phpunit tests --colors=always",
